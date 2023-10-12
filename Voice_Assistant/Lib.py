@@ -4,7 +4,7 @@ import speech_recognition as sr
 import time
 import subprocess
 import pyttsx3
-
+import json
 #Modules import here:
 from EmailService.CodeGeneration import shuffleTxtEntry
 
@@ -45,3 +45,14 @@ def word_to_number(word):
         "eleven": 11
     }
     return mapping.get(word, None)
+
+## Accessing config data
+def Config_Json():
+    try:
+        with open("Config.json", "r") as file:
+            data = json.load(file)
+            return data
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass  # If file doesn't exist or is empty, continue with an empty list
+    
+    

@@ -1,15 +1,22 @@
 from Requirments.Install_Packages import install_packages
-
+## try and find wheather all libraries have been download or not
 try:
  from Voice_Assistant.Lib import *  
- ##here
 except ModuleNotFoundError as e:
-    install_packages()
-    
+    ## if the library is not found install it
+    install_packages() 
 from Voice_Assistant.Lib import *  
-greetings = shuffleTxtEntry()
-Speak(greetings, -1, 1.0)
 
+## Check if the file did not go through the activsion file (for auth)
+data = Config_Json()
+if data["System"]["Active"] == False:
+    subprocess.Popen(["python", "System_Activision.py"])
+    quit()
+    
+else: 
+ greetings = shuffleTxtEntry()
+ Speak(greetings, -1, 1.0)
+ 
 def listen_for_keywords():
   
     recognizer = sr.Recognizer()
@@ -23,12 +30,11 @@ def listen_for_keywords():
 
         
         if ("Taylor" in recognized_text):
-            print("ty t!")
+            Speak("ty t!", -1, 1.0)
             
         
         elif ("quit" in recognized_text):
-            Speak("Quiting..")
-            print("quiting..")
+            Speak("quitting..", -1, 1.0)
             subprocess.Popen(["python", "System_Activision.py"])
             quit()
         ###########################################
@@ -42,7 +48,7 @@ def listen_for_keywords():
         ###########################################
         ## Email Services: observe emails ##
         ###########################################   
-        elif ("observe" in recognized_text) or ("new emails" in recognized_text):
+        elif ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
             Speak("This is the email service.. still in progress", -1, 1.0)
             pass
         ###########################################

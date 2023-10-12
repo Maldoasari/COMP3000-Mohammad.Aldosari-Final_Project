@@ -1,0 +1,27 @@
+{
+    "NetFlix": {
+        "email": "",
+        "N_APIKEY": ""
+    },
+    "PrimeVideo": {
+        "email": "",
+        "P_APIKEY": ""
+    },
+    "Spotify": {
+        "Client ID": "",
+        "Client Secret": ""
+    },
+    "Login": {
+        "L_email": "",
+        "E_APIKEY": "",
+        "TimeAccess": 0,
+        "pathAudio": "User.wav",
+        "Time_Bi_Login": 0
+    },
+    "System": {
+        "Active": false,
+        "pathAudio": "User.wav",
+        "Time_Bi_Login": 0,
+        "ENCkey": ""
+    }
+}
