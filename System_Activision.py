@@ -1,14 +1,16 @@
-import speech_recognition as sr
-import subprocess
-import pyttsx3
-import json
+from Requirments.Install_Packages import install_packages
+## try and find wheather all libraries have been download or not
+try:
+ from Voice_Assistant.Libraries import *  
+except ModuleNotFoundError as e:
+    ## if the library is not found install it
+    install_packages()
+from Voice_Assistant.Libraries import *
+from Voice_Assistant.Activision import *
 # Initialize speech recognition
 recognizer = sr.Recognizer()
 
-# Initialize text-to-speech
-engine = pyttsx3.init()
-engine.say("Hello. to activate the system say activate.")
-engine.runAndWait()
+Speak("To activate the system say activate.", -1, 1.0)
 
 # Function to recognize speech and execute commands
 def activate_system():
@@ -17,16 +19,7 @@ def activate_system():
     try:
         command = recognizer.recognize_google(audio).lower()
         if ("activate" in command) or ("activate" in command):
-            engine.say("System activated.")
-            engine.runAndWait()
-            with open("Config.json", 'r') as file:
-             data = json.load(file)
-             data["System"]["Active"] = True
-             data["System"]["Time_Bi_Login"] =+1
-              # Write the updated data back to the JSON file
-            with open("Config.json", 'w') as file:
-             json.dump(data, file, indent=4)
-             
+            system_check()
             subprocess.Popen(["python", "Main.py"])
             quit()
         else:

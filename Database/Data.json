@@ -14,14 +14,7 @@
     "Login": {
         "L_email": "",
         "E_APIKEY": "",
-        "TimeAccess": 0,
-        "pathAudio": "User.wav",
-        "Time_Bi_Login": 0
-    },
-    "System": {
-        "Active": false,
-        "pathAudio": "User.wav",
-        "Time_Bi_Login": 0,
-        "ENCkey": ""
+        "TimeAccess": 0
     }
+
 }
