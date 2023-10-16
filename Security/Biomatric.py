@@ -33,8 +33,8 @@ class VoiceRecorderApp:
             self.start_recording()
 
     def start_recording(self):
-        samplerate = 44100  # You can adjust the sample rate as needed
-        duration = 5  # Set the recording duration in seconds
+        samplerate = 44100  
+        duration = 5  
 
         audio_data = sd.rec(int(samplerate * duration), samplerate=samplerate, channels=1)
         sd.wait()
