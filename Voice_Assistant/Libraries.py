@@ -4,7 +4,12 @@ import time
 import subprocess
 import pyttsx3
 import json
-
+import tkinter as tk
+from tkinter import messagebox
+import sounddevice as sd
+import numpy as np
+import scipy.io.wavfile as wav
+import threading
 
 ## Creating a talkitive system module
 engine = pyttsx3.init()

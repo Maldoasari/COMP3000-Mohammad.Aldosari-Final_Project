@@ -1,2 +1,5 @@
 SpeechRecognition
 pyttsx3
+numpy
+sounddevice
+tkinter
