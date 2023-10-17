@@ -1,5 +1,3 @@
-import json
-import tkinter
 from Voice_Assistant.Libraries import *
 from Security.Biomatric import VoiceRecorderApp
 
@@ -25,7 +23,7 @@ def system_check():
         
 def NewUser(data):
     Speak("It seems that you are a new user. please record yourself for 5 sec. to enjoy the app with more security", -1, 1.0)
-    root = tkinter.Tk()
+    root = tk.Tk()
     app = VoiceRecorderApp(root)
     root.mainloop()
     data["System"]["NewUser"] = False

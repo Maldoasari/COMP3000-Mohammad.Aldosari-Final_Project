@@ -3,3 +3,6 @@ pyttsx3
 numpy
 sounddevice
 tkinter
+cryptography
+librosa
+scipy

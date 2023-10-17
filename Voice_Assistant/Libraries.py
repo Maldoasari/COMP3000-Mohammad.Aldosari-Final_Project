@@ -10,6 +10,9 @@ import sounddevice as sd
 import numpy as np
 import scipy.io.wavfile as wav
 import threading
+import librosa
+from scipy.spatial import distance
+from cryptography.fernet import Fernet
 
 ## Creating a talkitive system module
 engine = pyttsx3.init()
