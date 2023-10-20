@@ -1,11 +1,12 @@
 from Requirments.Install_Packages import install_packages
 ## try and find wheather all libraries have been download or not
 try:
- from Voice_Assistant.Libraries import *  
+ from Libraries import *  
 except ModuleNotFoundError as e:
     ## if the library is not found install it
     install_packages()
-from Voice_Assistant.Libraries import *
+from Libraries import *
+from Voice_Assistant.Speak import Speak
 from Voice_Assistant.Activision import *
 # Initialize speech recognition
 recognizer = sr.Recognizer()

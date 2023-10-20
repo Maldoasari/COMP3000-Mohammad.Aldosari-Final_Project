@@ -1,4 +1,4 @@
-from Voice_Assistant.Libraries import tk, sd, wav, messagebox
+from Libraries import tk, sd, wav, messagebox
 
 class VoiceRecorderApp:
     def __init__(self, root):

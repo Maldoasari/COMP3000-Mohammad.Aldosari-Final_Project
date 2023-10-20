@@ -1,4 +1,4 @@
-from Voice_Assistant.Libraries import json, Fernet
+from Libraries import json, Fernet
 
 def encrypt_json_file(file_path, key):
     with open(file_path, 'r') as file:

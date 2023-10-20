@@ -1,4 +1,4 @@
-from Voice_Assistant.Libraries import librosa, distance
+from Libraries import librosa, distance
 def Voice_Auth(O_Sample, N_Sample):
 # Load audio files
  audio1, sr1 = librosa.load("user_audio2.wav")

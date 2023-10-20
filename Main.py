@@ -1,20 +1,28 @@
 from Requirments.Install_Packages import install_packages
 ## try and find wheather all libraries have been download or not
 try:
- from Voice_Assistant.Libraries import *  
+ from Libraries import *  
 except ModuleNotFoundError as e:
     ## if the library is not found install it
     install_packages()
-from Voice_Assistant.Libraries import * 
+
+from Libraries import subprocess, sr, time 
+from Voice_Assistant.Speak import Speak
 from Voice_Assistant.Module import *
 from Voice_Assistant.Activision import system_Info_On
 ## Check if the file did not go through the activsion file (for auth)
 
 data = system_Info_On()
 if data["System"]["Active"] == False:
-    subprocess.Popen(["python", "System_Activision.py"])
-    quit()
-else: 
+    pass
+    #subprocess.Popen(["python", "System_Activision.py"])
+    #quit()
+else:
+ Check_Email = Check_Email_Status() 
+ if(Check_Email_Status == False):
+     ##Link this to a function where the user can do the config
+     pass
+ 
  greetings = shuffleTxtEntry()
  Speak(greetings, -1, 1.0)
  
@@ -43,6 +51,7 @@ def listen_for_keywords():
         ###########################################
         elif ("send an email" in recognized_text):
                 time.sleep(0.1)
+                #send_email("hi", "hi", "aldosari.mkj@gmail.com", "name")
                 Speak("This is the email service.. still in progress", -1, 1.0)
                 pass
          

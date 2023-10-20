@@ -1,4 +1,5 @@
-from Voice_Assistant.Libraries import *
+from Libraries import json, tk
+from Voice_Assistant.Speak import Speak
 from Security.Biomatric import VoiceRecorderApp
 
 def system_Info_On():

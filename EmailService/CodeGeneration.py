@@ -1,6 +1,5 @@
-import random
-import string
 
+from Libraries import random, string
 ## A code generator for auth. 
 def generate_random_5_digit_number():
     """Generate a random 5-digit number."""

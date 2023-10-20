@@ -1,7 +1,8 @@
 
 #Modules import here:
 from EmailService.CodeGeneration import shuffleTxtEntry
-
+from EmailService.EmailSender import send_email, delete_all_emails
+from EmailService.EmailStatus import Check_Email_Status
 ## For latter use in order to convert numbers as string to numbers as int
 def word_to_number(word):
     mapping = {
