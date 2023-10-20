@@ -1,9 +1,9 @@
 {
     "System": {
-        "Active": false,
-        "NewUser": true,
+        "Active": true,
+        "NewUser": false,
         "pathAudio": "Database/User.wav",
-        "Time_Bi_Login": 1,
+        "Time_Bi_Login": 4,
         "ENCkey": ""
     }
 }

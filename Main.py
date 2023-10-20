@@ -8,7 +8,7 @@ except ModuleNotFoundError as e:
 
 from Libraries import subprocess, sr, time 
 from Voice_Assistant.Speak import Speak
-from Voice_Assistant.Module import *
+from Module import *
 from Voice_Assistant.Activision import system_Info_On
 ## Check if the file did not go through the activsion file (for auth)
 
@@ -18,15 +18,16 @@ if data["System"]["Active"] == False:
     #subprocess.Popen(["python", "System_Activision.py"])
     #quit()
 else:
- Check_Email = Check_Email_Status() 
- if(Check_Email_Status == False):
-     ##Link this to a function where the user can do the config
-     pass
+ status = Check_Email_Accessability()
+ if(status == False):
+     Speak("Email Configuration Failed", -1, 1.0)
+     subprocess.Popen(["python", "System_Activision.py"])
+     quit()
+ else:
+     greetings = shuffleTxtEntry()
+     Speak(greetings, -1, 1.0)
  
- greetings = shuffleTxtEntry()
- Speak(greetings, -1, 1.0)
- 
-def listen_for_keywords():
+ def listen_for_keywords():
   
     recognizer = sr.Recognizer()
 
@@ -35,9 +36,7 @@ def listen_for_keywords():
 
     try:
         recognized_text = recognizer.recognize_google(audio).lower()
-        print("You said:", recognized_text)
 
-        
         if ("Taylor" in recognized_text):
             Speak("ty t!", -1, 1.0)
             
@@ -53,20 +52,20 @@ def listen_for_keywords():
                 time.sleep(0.1)
                 #send_email("hi", "hi", "aldosari.mkj@gmail.com", "name")
                 Speak("This is the email service.. still in progress", -1, 1.0)
-                pass
+                #pass
          
         ###########################################
         ## Email Services: observe emails ##
         ###########################################   
         elif ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
             Speak("This is the email service.. still in progress", -1, 1.0)
-            pass
+           # pass
         ###########################################
         ## Wbsite hanlder: ##
         ###########################################
         elif ("open" and "website" in recognized_text):
             Speak("This is the open website service.. still in progress", -1, 1.0)
-            pass
+            #pass
         
         ###########################################
         ## Clear data stored in json file ##
@@ -75,6 +74,7 @@ def listen_for_keywords():
             pass
         else:
             print("No specific keyword detected.")
+            listen_for_keywords()
 
     except sr.UnknownValueError:
         Speak("I could not understand the audio", -1, 1.0)
@@ -84,5 +84,6 @@ def listen_for_keywords():
         listen_for_keywords()
 #while True:
     #listen_for_keywords()
-while True:
+
+if __name__ == "__main__":
    listen_for_keywords() 
