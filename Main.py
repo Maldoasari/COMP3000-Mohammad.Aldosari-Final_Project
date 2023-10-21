@@ -1,13 +1,3 @@
-from Requirments.Install_Packages import install_packages
-## try and find wheather all libraries have been download or not
-try:
- from Libraries import *  
-except ModuleNotFoundError as e:
-    ## if the library is not found install it
-    install_packages()
-except ImportError as e:
-    pass
-
 from Libraries import subprocess, sr, time, recognizer
 from Voice_Assistant.Speak import Speak
 from Module import *
@@ -29,19 +19,21 @@ else:
  
   greetings = shuffleTxtEntry()
   Speak(greetings, -1, 1.0)
+
+greetings = shuffleTxtEntry()
+Speak(greetings, -1, 1.0)
  
 def listen_for_keywords():
     with sr.Microphone() as source:
         #audio = recognizer.listen(source)
         try:    
-         audio_data = recognizer.listen(source, timeout=1800, phrase_time_limit=5) 
+         audio_data = recognizer.listen(source, timeout=1800, phrase_time_limit=6) 
          save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
          start_time = time.time()
          recognized_text = process_wav_file("Database/bin/user_input.wav")
          end_time = time.time()
          elapsed_time = end_time - start_time
          print(f"Function took {elapsed_time:.6f} seconds to execute.")
-         delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav")
          if(recognized_text == False):
             Speak("Entering Sleep MODE", -1, 1.0)
             SleepMode()
@@ -49,17 +41,23 @@ def listen_for_keywords():
             print(greetings)
             Speak(greetings, -1, 1.0)
             listen_for_keywords()
+         elif(recognized_text == 500):
+             Speak("I could not understand the audio", -1, 1.0)
+             listen_for_keywords()
+         else:
+             pass
         #print(x)
         except sr.WaitTimeoutError:
-            print("No speech detected for 30 min. Retrying...")
+            print("No speech detected in 30 min. Retrying...")
             SleepMode()
             listen_for_keywords()
 
         
     try:
-        #recognized_text = recognizer.recognize_google(audio).lower()
-
-        if ("Taylor" in recognized_text):
+        delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav")
+        print(recognized_text)
+         #recognized_text = recognizer.recognize_google(audio).lower()
+        if ("taylor" in recognized_text) and ("how are you" in recognized_text):
             Speak("ty t!", -1, 1.0)
             
         

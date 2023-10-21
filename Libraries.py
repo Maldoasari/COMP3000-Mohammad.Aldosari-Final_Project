@@ -1,5 +1,7 @@
 #All Libraries must be imported here to be exttracted by the Main file
 import speech_recognition as sr
+import warnings
+warnings.filterwarnings("ignore", category=RuntimeWarning)
 import time
 import subprocess
 import pyttsx3
@@ -24,9 +26,10 @@ from pydub import AudioSegment
 import wave
 import webrtcvad
 import os
-import warnings
 import re
 import noisereduce as nr
 import soundfile as sf
 
 recognizer = sr.Recognizer()
+
+

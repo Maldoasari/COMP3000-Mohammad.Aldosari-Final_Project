@@ -3,7 +3,7 @@
         "Active": false,
         "NewUser": true,
         "pathAudio": "Database/User.wav",
-        "Time_Bi_Login": 1,
+        "Time_Bi_Login": 2,
         "attempts": 0,
         "ENCkey": ""
     }

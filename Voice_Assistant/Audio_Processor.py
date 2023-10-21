@@ -14,7 +14,7 @@ def process_wav_file(filename):
     resampled_audio = resample_wav_file("Database/bin/processed_audio.wav")
     resampled_audio.export('Database/bin/resampled_audio_file1.wav', format="wav")
     # Initialize VAD
-    vad = webrtcvad.Vad(2)
+    vad = webrtcvad.Vad(1)
     
         
     with wave.open("Database/bin/resampled_audio_file1.wav", 'rb') as wf:
@@ -44,11 +44,12 @@ def process_wav_file(filename):
                 else:
                  return False
             except sr.UnknownValueError:
-                return False
+                return 500
+                
             except sr.RequestError:
                 return "API unavailable."
         else:
-            return None
+            return recognized_text
 
 
 def resample_wav_file(filename, target_sample_rate=16000):
