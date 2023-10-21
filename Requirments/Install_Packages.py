@@ -9,13 +9,20 @@ def install_packages():
         print("Installing libraries...", end="\r")
         time.sleep(1)
     print("\n")  
-    try:
-        subprocess.check_call(['pip', 'install', '-r', requirements_file])
-        print("Libraries installed successfully.")
-        return True
-    except subprocess.CalledProcessError as e:
-        print(f"Error: Failed to install libraries. {e}")
-        return False
+    # Open and read the requirements file
+    with open(requirements_file, 'r') as f:
+        libraries = f.readlines()
+
+    # Attempt to install each library individually
+    for lib in libraries:
+        lib = lib.strip()  # Remove any whitespace or newline characters
+        if not lib or lib.startswith("#"):  # Skip empty lines or comments
+            continue
+        try:
+            subprocess.check_call(['pip', 'install', lib])
+            print(f"'{lib}' installed successfully.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error: Failed to install '{lib}'. {e}")
 
 
 

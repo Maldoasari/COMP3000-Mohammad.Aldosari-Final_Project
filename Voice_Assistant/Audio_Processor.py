@@ -1,19 +1,22 @@
-from Libraries import os, AudioSegment, sr, wave, webrtcvad
+from Libraries import os, AudioSegment, wave, webrtcvad, librosa, sf, nr, sr, np
 
 def process_wav_file(filename):
-    audio = AudioSegment.from_file(filename, format="wav")
-# Increase volume (gain)
-    amplified_audio = audio + 17  # Increase volume by 10 dB
-# Remove background noise
-    silent_audio = AudioSegment.silent(duration=len(audio), frame_rate=audio.frame_rate)
-    noise_reduced_audio = amplified_audio.overlay(silent_audio, gain_during_overlay=-5)
-    noise_reduced_audio.export("Database/bin/processed_audio.wav", format="wav")
+    if(isit_background_noise(filename)):
+        return False
+        
+    # Load audio file
+    y, samplerate = librosa.load(filename, sr=None)
+    # Perform noise reduction
+    reduced_noise = nr.reduce_noise(y=y, sr=samplerate)
+    sf.write('Database/bin/processed_audio.wav', reduced_noise, samplerate=samplerate)
+    
     # Resample the audio
     resampled_audio = resample_wav_file("Database/bin/processed_audio.wav")
     resampled_audio.export('Database/bin/resampled_audio_file1.wav', format="wav")
     # Initialize VAD
     vad = webrtcvad.Vad(2)
     
+        
     with wave.open("Database/bin/resampled_audio_file1.wav", 'rb') as wf:
         sample_rate = wf.getframerate()
         if sample_rate not in (8000, 16000, 32000, 48000):
@@ -52,11 +55,13 @@ def resample_wav_file(filename, target_sample_rate=16000):
     audio = AudioSegment.from_wav(filename)
     resampled_audio = audio.set_frame_rate(target_sample_rate)
     return resampled_audio
-def delete_recording(filename):
+def delete_recording(filename1, filename2, filename3):
     try:
-        os.remove(filename)
+        os.remove(filename1)
+        os.remove(filename2)
+        os.remove(filename3)
     except FileNotFoundError:
-        print(f"File {filename} not found!")
+        print(f"File not found!")
     except Exception as e:
         print(f"Error occurred: {e}")
 
@@ -64,3 +69,16 @@ def save_audio_as_wav(audio_data, filename):
     with open(filename, "wb") as file:
         file.write(audio_data.get_wav_data())
 
+def isit_background_noise(filename, threshold=-50):
+    # Load the audio file
+    y, sr = librosa.load(filename, sr=None)
+    frame_length = 512 
+    # Compute short-time energy
+    energy = np.array([sum(abs(y[i:i+frame_length]**2))
+                       for i in range(0, len(y), frame_length)])
+    
+    # Convert energy to dB
+    energy_db = librosa.amplitude_to_db(energy, ref=np.max)
+    
+    # If the average energy is below the threshold, it might be noise
+    return np.mean(energy_db) < threshold

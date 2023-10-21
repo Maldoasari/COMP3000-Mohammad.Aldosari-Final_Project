@@ -1,8 +1,8 @@
 SpeechRecognition
 pyttsx3
+torch
 numpy
 sounddevice
-tkinter
 cryptography
 librosa
 scipy
@@ -10,3 +10,5 @@ AudioSegment
 wave
 webrtcvad
 imageio[ffmpeg]
+noisereduce 
+pyaudio

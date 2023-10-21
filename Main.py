@@ -5,8 +5,10 @@ try:
 except ModuleNotFoundError as e:
     ## if the library is not found install it
     install_packages()
+except ImportError as e:
+    pass
 
-from Libraries import subprocess, sr, time 
+from Libraries import subprocess, sr, time, recognizer
 from Voice_Assistant.Speak import Speak
 from Module import *
 from Voice_Assistant.Activision import system_Info_On
@@ -34,10 +36,12 @@ def listen_for_keywords():
         try:    
          audio_data = recognizer.listen(source, timeout=1800, phrase_time_limit=5) 
          save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
+         start_time = time.time()
          recognized_text = process_wav_file("Database/bin/user_input.wav")
-         delete_recording("Database/bin/resampled_audio_file1.wav")
-         delete_recording("Database/bin/processed_audio.wav")
-         delete_recording("Database/bin/user_input.wav")
+         end_time = time.time()
+         elapsed_time = end_time - start_time
+         print(f"Function took {elapsed_time:.6f} seconds to execute.")
+         delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav")
          if(recognized_text == False):
             Speak("Entering Sleep MODE", -1, 1.0)
             SleepMode()
@@ -50,6 +54,7 @@ def listen_for_keywords():
             print("No speech detected for 30 min. Retrying...")
             SleepMode()
             listen_for_keywords()
+
         
     try:
         #recognized_text = recognizer.recognize_google(audio).lower()

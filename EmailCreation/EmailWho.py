@@ -39,15 +39,13 @@ def ChangerTool(reciver):
         try:
             audio = recognizer.listen(source)
             Capture = recognizer.recognize_google(audio).lower()
-            
-            index_to_change = None  # Initialize with None
-            
+            index_to_change = None  
             for n in num:
                 if n in Capture:
                     index_to_change = word_to_number(n)
                     if index_to_change is None or index_to_change > len(reciver)-1:
                         Speak("list index out of range", 0, 1.0)
-                        return ChangerTool(do_Again)   # Using return to ensure we break out
+                        return ChangerTool(do_Again)   
                     else:
                         break
                 
@@ -144,7 +142,6 @@ def ChangerToolAdd(email_address):
 
                     audio = recognizer.listen(source)
                     Capture = recognizer.recognize_google(audio).lower()
-                    print(Capture)
                     add_letter = Capture[-1]
                     
                     # Modify this line to insert the letter between the indices
@@ -301,7 +298,7 @@ def AddNew_or_ChooseFromStorage():
     return status
 
 def list_emails():
-    with open("EmailService\Cookies.json", "r") as file:
+    with open("Database\Cookies.json", "r") as file:
         data = json.load(file)
         
     emails = [record["email"] for record in data]

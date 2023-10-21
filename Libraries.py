@@ -17,6 +17,8 @@ import smtplib
 from email.mime.text import MIMEText
 import imaplib
 import random
+import numpy as np
+import io
 import string
 from pydub import AudioSegment
 import wave
@@ -24,4 +26,7 @@ import webrtcvad
 import os
 import warnings
 import re
+import noisereduce as nr
+import soundfile as sf
+
 recognizer = sr.Recognizer()
