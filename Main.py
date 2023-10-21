@@ -24,8 +24,9 @@ else:
      subprocess.Popen(["python", "System_Activision.py"])
      quit()
  else:
-     greetings = shuffleTxtEntry()
-     Speak(greetings, -1, 1.0)
+ 
+  greetings = shuffleTxtEntry()
+  Speak(greetings, -1, 1.0)
  
 def listen_for_keywords():
     with sr.Microphone() as source:
@@ -66,6 +67,20 @@ def listen_for_keywords():
         ###########################################
         elif ("send an email" in recognized_text):
                 time.sleep(0.1)
+                Speak("Would you like to add new. or pick from storage?", -1, 1.0)
+                Add_or_Storage = AddNew_or_ChooseFromStorage()
+                if(Add_or_Storage == "add"):
+                 Speak("Brillent, you have chosen the add new record service. To who?", -1, 1.0)
+                 email_address = whoIStheR()
+                elif(Add_or_Storage == "storage"):
+                    Speak("Brillent, you picked to choose from storage", -1, 1.0)
+                    email_address = storage()
+                else:
+                    Speak("The Defult path is Adding new email. To who?", -1, 1.0)
+                    email_address = whoIStheR()
+                time.sleep(1)
+                print("Email:\n", email_address)
+                time.sleep(2)
                 #send_email("hi", "hi", "aldosari.mkj@gmail.com", "name")
                 Speak("This is the email service.. still in progress", -1, 1.0)
                 #pass
