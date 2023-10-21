@@ -15,15 +15,15 @@ from Voice_Assistant.Activision import system_Info_On
 data = system_Info_On()
 if data["System"]["Active"] == False:
     pass
-    #subprocess.Popen(["python", "System_Activision.py"])
-    #quit()
+    subprocess.Popen(["python", "System_Activision.py"])
+    quit()
 else:
- #status = Check_Email_Accessability()
- #if(status == False):
-     #Speak("Email Configuration Failed", -1, 1.0)
-    # subprocess.Popen(["python", "System_Activision.py"])
-    # quit()
- #else:
+ status = Check_Email_Accessability()
+ if(status == False):
+     Speak("Email Configuration Failed", -1, 1.0)
+     subprocess.Popen(["python", "System_Activision.py"])
+     quit()
+ else:
      greetings = shuffleTxtEntry()
      Speak(greetings, -1, 1.0)
  

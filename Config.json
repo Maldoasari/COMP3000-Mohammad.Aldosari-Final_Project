@@ -15,8 +15,8 @@
         "Status": false
     },
     "Login": {
-        "L_email": "a",
-        "E_APIKEY": "a",
+        "L_email": "",
+        "E_APIKEY": "",
         "Status": false
     }
 }
