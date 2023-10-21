@@ -6,3 +6,7 @@ tkinter
 cryptography
 librosa
 scipy
+AudioSegment
+wave
+webrtcvad
+imageio[ffmpeg]

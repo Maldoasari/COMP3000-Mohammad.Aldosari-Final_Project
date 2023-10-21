@@ -18,24 +18,40 @@ if data["System"]["Active"] == False:
     #subprocess.Popen(["python", "System_Activision.py"])
     #quit()
 else:
- status = Check_Email_Accessability()
- if(status == False):
-     Speak("Email Configuration Failed", -1, 1.0)
-     subprocess.Popen(["python", "System_Activision.py"])
-     quit()
- else:
+ #status = Check_Email_Accessability()
+ #if(status == False):
+     #Speak("Email Configuration Failed", -1, 1.0)
+    # subprocess.Popen(["python", "System_Activision.py"])
+    # quit()
+ #else:
      greetings = shuffleTxtEntry()
      Speak(greetings, -1, 1.0)
  
- def listen_for_keywords():
-  
-    recognizer = sr.Recognizer()
-
+def listen_for_keywords():
     with sr.Microphone() as source:
-        audio = recognizer.listen(source)
-
+        #audio = recognizer.listen(source)
+        try:    
+         audio_data = recognizer.listen(source, timeout=1800, phrase_time_limit=5) 
+         save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
+         recognized_text = process_wav_file("Database/bin/user_input.wav")
+         delete_recording("Database/bin/resampled_audio_file1.wav")
+         delete_recording("Database/bin/processed_audio.wav")
+         delete_recording("Database/bin/user_input.wav")
+         if(recognized_text == False):
+            Speak("Entering Sleep MODE", -1, 1.0)
+            SleepMode()
+            greetings = shuffleTxtEntry()
+            print(greetings)
+            Speak(greetings, -1, 1.0)
+            listen_for_keywords()
+        #print(x)
+        except sr.WaitTimeoutError:
+            print("No speech detected for 30 min. Retrying...")
+            SleepMode()
+            listen_for_keywords()
+        
     try:
-        recognized_text = recognizer.recognize_google(audio).lower()
+        #recognized_text = recognizer.recognize_google(audio).lower()
 
         if ("Taylor" in recognized_text):
             Speak("ty t!", -1, 1.0)

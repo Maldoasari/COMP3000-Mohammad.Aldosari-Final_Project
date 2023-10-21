@@ -18,3 +18,9 @@ from email.mime.text import MIMEText
 import imaplib
 import random
 import string
+from pydub import AudioSegment
+import wave
+import webrtcvad
+import os
+import warnings
+recognizer = sr.Recognizer()
