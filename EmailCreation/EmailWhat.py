@@ -50,9 +50,11 @@ def Subject():
     except sr.UnknownValueError:
         Speak("Could not understand audio", 0, 1.0)
         print("Could not understand audio")
+        Speak("What is the Subject?", -1, 1.0)
         Email_Subject = Subject() 
     except sr.RequestError as e:
         Speak("Could not request results {0}".format(e), 0, 1.0)
         print("Could not request results; {0}".format(e))
+        Speak("Retrying, What is the Subject?", -1, 1.0)
         Email_Subject = Subject() 
     return Email_Subject 

@@ -51,12 +51,21 @@ def listen_for_keywords():
         except sr.WaitTimeoutError:
             print("No speech detected in 30 min. Retrying...")
             SleepMode()
+            greetings = shuffleTxtEntry()
+            print(greetings)
+            Speak(greetings, -1, 1.0)
+            listen_for_keywords()
+        except sr.UnknownValueError:
+            Speak("Entering Sleep MODE", -1, 1.0)
+            SleepMode()
+            greetings = shuffleTxtEntry()
+            print(greetings)
+            Speak(greetings, -1, 1.0)
             listen_for_keywords()
 
         
     try:
         delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav")
-        print(recognized_text)
          #recognized_text = recognizer.recognize_google(audio).lower()
         if ("taylor" in recognized_text) and ("how are you" in recognized_text):
             Speak("ty t!", -1, 1.0)
@@ -90,6 +99,11 @@ def listen_for_keywords():
                 time.sleep(1)
                 print("Subject:\n",email_subject)
                 time.sleep(1)
+                Speak("What is your message?", -1, 1.0)
+                email_message = ReadMsg()
+                time.sleep(1)
+                print("Message:\n",email_message)
+                time.sleep(4)
                 
                 #send_email("hi", "hi", "aldosari.mkj@gmail.com", "name")
                 Speak("This is the email service.. still in progress", -1, 1.0)

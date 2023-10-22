@@ -37,7 +37,7 @@ def ChangerTool(reciver):
     
     with sr.Microphone() as source:
         try:
-            audio = recognizer.listen(source)
+            audio = recognizer.listen(source, timeout=3)
             Capture = recognizer.recognize_google(audio).lower()
             index_to_change = None  
             for n in num:
@@ -178,18 +178,18 @@ def Top_level_domain():
                 else:
                     Speak("the given domain is not found", 0, 1.0)
                     print("the given domain is not found")
-                    Top_level_domain()
+                    domain = Top_level_domain()
                 return i
         except sr.UnknownValueError:
             Speak("Could not understand audio", 0, 1.0)
             print("Could not understand audio")
             Speak("Check what you have said", 0, 1.0)
-            Top_level_domain()
+            domain = Top_level_domain()
         except sr.RequestError:
             Speak("API error", 0, 1.0)
             print("API error")
-            Top_level_domain()
-        domain = i
+            domain = Top_level_domain()
+        
     return domain
 
 def checkWho(reciver):
@@ -200,7 +200,7 @@ def checkWho(reciver):
     with sr.Microphone() as source:
         try:
             print("\nConfirm.. or Change letters... or insert a letter")
-            audio = recognizer.listen(source)
+            audio = recognizer.listen(source, timeout=3)
             Capture = recognizer.recognize_google(audio).lower()
 
             if ("yes" in Capture) or ("confirm" in Capture) or ("posative" in Capture):
@@ -217,42 +217,42 @@ def checkWho(reciver):
                 result = ChangerTool(reciver_without_spaces)
                 Speak("Modified Successfully", 0, 1.0)
                 print(f"Modified: {result}")
-                checkWho(result)
-                #return email_address
+                email_address = checkWho(result)
+                return email_address
             elif ("add a letter" in Capture) or ("add letters" in Capture) or ("insert" in Capture):
                 Speak("Add letters in the email", 0, 1.0)
                 print("Add letters in the email")
                 result = ChangerToolAdd(reciver_without_spaces)
                 Speak("Modified", 0, 1.0)
                 print(f"{result}")
-                checkWho(result)
+                email_address = checkWho(result)
+                return email_address
                 #return email_address
+            elif("try again" in Capture) or ("new attempt" in Capture):
+                Speak("okey, to who?", 0, 1.0)
+                email_address = whoIStheR()
+                
             else:
                 Speak("Sorry, Didn't catch it", 0, 1.0)
                 print("Sorry, Didn't catch it")
                 Speak("Check what you have said", 0, 1.0)
                 print(f"{reciver_without_spaces}")
-                checkWho(reciver_without_spaces)
-            
+                email_address = checkWho(reciver_without_spaces)
         except sr.UnknownValueError:
             Speak("Could not understand audio", 0, 1.0)
             print("Could not understand audio")
             Speak("Check what you have said", 0, 1.0)
-            checkWho(reciver_without_spaces)
+            email_address = checkWho(reciver_without_spaces)
         except sr.RequestError:
             Speak("API error", 0, 1.0)
             print("API error")
-            checkWho(reciver_without_spaces)
-    return email_address
-
+            email_address = checkWho(reciver_without_spaces)
     
 def whoIStheR():
     SenderEmail = ''
-    time.sleep(0.2)
    # Speak("To Who?", 0, 1.0)
     with sr.Microphone() as source:
         try:
-            
             print("To Who?")
             audio = recognizer.listen(source)
             reciver = recognizer.recognize_google(audio).lower().replace("period", ".")
@@ -264,10 +264,10 @@ def whoIStheR():
         except sr.UnknownValueError:
              print("Could not understand audio")
              Speak("Could not understand audio", 0, 1.0)
-             SenderEmail = whoIStheR() 
+             whoIStheR() 
         except sr.RequestError:
             print("API error")
-            SenderEmail = whoIStheR()
+            whoIStheR()
           
     
     return SenderEmail

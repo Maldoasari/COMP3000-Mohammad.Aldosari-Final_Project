@@ -40,26 +40,28 @@ def process_wav_file(filename):
             out_wf.setsampwidth(wf.getsampwidth())
             out_wf.setframerate(sample_rate)
             out_wf.writeframes(combined_audio)
-
-    # Check for background noise on the combined audio
-    if isit_background_noise("Database/bin/vad_combined_audio.wav"):
+    audio = AudioSegment.from_file("Database/bin/vad_combined_audio.wav", format="wav")
+    if len(audio) <= 0:
         return False
-
+    # Check for background noise on the combined audio
+    elif isit_background_noise("Database/bin/vad_combined_audio.wav"):
+        return False
+    else:  
     # Convert frames to AudioData for recognition
     # Load your audio file
-    recognizer = sr.Recognizer()
-    with sr.AudioFile('Database/bin/user_input.wav') as source:
+     recognizer = sr.Recognizer()
+     with sr.AudioFile('Database/bin/user_input.wav') as source:
     # Record the audio file as an audio data object
-     audio_data = recognizer.record(source)
-    recognized_text = recognizer.recognize_google(audio_data)
-    try:
+      audio_data = recognizer.record(source)
+      recognized_text = recognizer.recognize_google(audio_data)
+     try:
         if len(recognized_text) > 0:
             return recognized_text
         else:
             return None
-    except sr.UnknownValueError:
+     except sr.UnknownValueError:
         return 500
-    except sr.RequestError:
+     except sr.RequestError:
         return "API unavailable."
 
 
