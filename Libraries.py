@@ -29,6 +29,7 @@ import os
 import re
 import noisereduce as nr
 import soundfile as sf
+import scipy.signal
 
 recognizer = sr.Recognizer()
 

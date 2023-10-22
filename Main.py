@@ -4,6 +4,7 @@ from Module import *
 from Voice_Assistant.Activision import system_Info_On
 ## Check if the file did not go through the activsion file (for auth)
 
+"""""
 data = system_Info_On()
 if data["System"]["Active"] == False:
     pass
@@ -19,7 +20,7 @@ else:
  
   greetings = shuffleTxtEntry()
   Speak(greetings, -1, 1.0)
-
+"""
 greetings = shuffleTxtEntry()
 Speak(greetings, -1, 1.0)
  
@@ -54,7 +55,7 @@ def listen_for_keywords():
 
         
     try:
-        delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav")
+        delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav")
         print(recognized_text)
          #recognized_text = recognizer.recognize_google(audio).lower()
         if ("taylor" in recognized_text) and ("how are you" in recognized_text):
@@ -68,7 +69,7 @@ def listen_for_keywords():
         ###########################################
         ## Email Services: Send email ##
         ###########################################
-        elif ("send an email" in recognized_text):
+        elif ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
                 time.sleep(0.1)
                 Speak("Would you like to add new. or pick from storage?", -1, 1.0)
                 Add_or_Storage = AddNew_or_ChooseFromStorage()
@@ -84,6 +85,12 @@ def listen_for_keywords():
                 time.sleep(1)
                 print("Email:\n", email_address)
                 time.sleep(2)
+                Speak("What is the Subject?", -1, 1.0)
+                email_subject = Subject()
+                time.sleep(1)
+                print("Subject:\n",email_subject)
+                time.sleep(1)
+                
                 #send_email("hi", "hi", "aldosari.mkj@gmail.com", "name")
                 Speak("This is the email service.. still in progress", -1, 1.0)
                 #pass

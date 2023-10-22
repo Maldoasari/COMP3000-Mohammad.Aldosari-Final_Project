@@ -178,17 +178,17 @@ def Top_level_domain():
                 else:
                     Speak("the given domain is not found", 0, 1.0)
                     print("the given domain is not found")
-                    domain = Top_level_domain()
+                    Top_level_domain()
                 return i
         except sr.UnknownValueError:
             Speak("Could not understand audio", 0, 1.0)
             print("Could not understand audio")
             Speak("Check what you have said", 0, 1.0)
-            domain = Top_level_domain()
+            Top_level_domain()
         except sr.RequestError:
             Speak("API error", 0, 1.0)
             print("API error")
-            domain = Top_level_domain()
+            Top_level_domain()
         domain = i
     return domain
 
@@ -215,34 +215,34 @@ def checkWho(reciver):
                 Speak("Change letters within the email", 0, 1.0)
                 print("Change letters within the email")
                 result = ChangerTool(reciver_without_spaces)
-                email_address = checkWho(result)
                 Speak("Modified Successfully", 0, 1.0)
-                print(f"Modified: {email_address}")
-                return email_address
+                print(f"Modified: {result}")
+                checkWho(result)
+                #return email_address
             elif ("add a letter" in Capture) or ("add letters" in Capture) or ("insert" in Capture):
                 Speak("Add letters in the email", 0, 1.0)
                 print("Add letters in the email")
                 result = ChangerToolAdd(reciver_without_spaces)
                 Speak("Modified", 0, 1.0)
                 print(f"{result}")
-                email_address = checkWho(result)
-                return email_address
+                checkWho(result)
+                #return email_address
             else:
                 Speak("Sorry, Didn't catch it", 0, 1.0)
                 print("Sorry, Didn't catch it")
                 Speak("Check what you have said", 0, 1.0)
                 print(f"{reciver_without_spaces}")
-                email_address = checkWho(reciver_without_spaces)
+                checkWho(reciver_without_spaces)
             
         except sr.UnknownValueError:
             Speak("Could not understand audio", 0, 1.0)
             print("Could not understand audio")
             Speak("Check what you have said", 0, 1.0)
-            email_address = checkWho(reciver_without_spaces)
+            checkWho(reciver_without_spaces)
         except sr.RequestError:
             Speak("API error", 0, 1.0)
             print("API error")
-            email_address = checkWho(reciver_without_spaces)
+            checkWho(reciver_without_spaces)
     return email_address
 
     
