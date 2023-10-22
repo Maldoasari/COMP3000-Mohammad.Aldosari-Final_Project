@@ -7,6 +7,9 @@ from EmailService.EmailAccessability import Check_Email_Accessability
 from EmailCreation.EmailWho import whoIStheR, AddNew_or_ChooseFromStorage, storage
 from EmailCreation.EmailWhat import Subject
 from EmailCreation.EmailAbout import ReadMsg
+from EmailCreation.EmailCheck import check
+from EmailCreation.EmailName import ReadName
+from EmailService.EmailsStorage import get_name_email
 from Voice_Assistant.Audio_Processor import process_wav_file, delete_recording, save_audio_as_wav
 from Voice_Assistant.Sleep_Mode import SleepMode
 ## For latter use in order to convert numbers as string to numbers as int

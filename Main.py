@@ -103,10 +103,29 @@ def listen_for_keywords():
                 email_message = ReadMsg()
                 time.sleep(1)
                 print("Message:\n",email_message)
-                time.sleep(4)
-                
+                time.sleep(1)
+                Speak("What his. or her. or its name?", -1, 1.0)
+                Speak("Say space to add space", -1, 1.0)
+                email_name = ReadName()
+                time.sleep(1)
+                print("Name:\n",email_name)
+                time.sleep(1)
+                Speak("Would you like to send?", -1, 1.0)
+                status = check()
+                if status == True:
+                    send_email(email_subject, email_message, email_address, email_name)
+                    Speak("Email has been sent with success", -1, 1.0)
+                    x = get_name_email(email_name, email_address)
+                    Speak(f"Also, {x} with success", -1, 1.0)
+                else:
+                    print("\nSomething went wrong\n")
+                    greetings = shuffleTxtEntry()
+                    print(greetings)
+                    Speak(greetings, -1, 1.0)
+                    listen_for_keywords()
                 #send_email("hi", "hi", "aldosari.mkj@gmail.com", "name")
                 Speak("This is the email service.. still in progress", -1, 1.0)
+                #Debugging and full test of its functionality next day!
                 #pass
          
         ###########################################
