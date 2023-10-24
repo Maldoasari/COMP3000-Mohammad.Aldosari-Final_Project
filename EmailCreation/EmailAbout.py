@@ -1,5 +1,5 @@
 from Voice_Assistant.Speak import Speak
-from Libraries import sr, time
+from Libraries import sr, time, re
 mesg = sr.Recognizer()
 
 
@@ -99,6 +99,7 @@ def checkmsg(message):
     return msg
 
 def Organise_Msg(message):
+    
     if "comma" in message:
         message = message.replace("comma", ",")
     if "coma" in message:
@@ -106,12 +107,12 @@ def Organise_Msg(message):
     if "period" in message:
         message = message.replace("period", ".")
     if "dot" in message:
-        message = message.replace("period", ".")
-        
-    sentences = message.split('.')
-    sentences = [s.strip().capitalize() for s in sentences if s]
-    message = '. \n'.join(sentences)
-    
+        message = message.replace("dot", ".")
+    if "new line" in message:
+        message = message.replace("new line", " \n ")
+    if "new space" in message:
+        message = message.replace("new space", " \n ")
+    message = re.sub(r'\s+\.', '.', message)
     
     return message
 
@@ -126,9 +127,13 @@ def ReadMsg():
         organised_Msg = Organise_Msg(message)
         Speak(f"Check what you have said:\n", 0, 1.0)
         print("Do You Confirm That you have said:\n", organised_Msg)
-        time.sleep(6)
-        msg = checkmsg(message)
-        return msg
+        #time.sleep(6)
+        msg = checkmsg(organised_Msg)
+        sentences = msg.split('.')
+        sentences = [s.strip().capitalize() for s in sentences if s]
+        msg = '. \n'.join(sentences)
+        formatted_message = '\n'.join(line.strip() for line in msg.splitlines())
+        return formatted_message
     except sr.UnknownValueError:
         Speak("Could not understand audio", 0, 1.0)
         print("Could not understand audio")

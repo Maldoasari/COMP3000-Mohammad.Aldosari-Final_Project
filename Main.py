@@ -1,3 +1,15 @@
+from Requirments.Install_Packages import install_packages
+## try and find wheather all libraries have been download or not
+try:
+ from Libraries import *  
+except ModuleNotFoundError as e:
+    ## if the library is not found install it
+    install_packages()
+except OSError as e:
+    print(e)
+    pass
+
+    
 from Libraries import subprocess, sr, time, recognizer
 from Voice_Assistant.Speak import Speak
 from Module import *
@@ -127,7 +139,8 @@ def listen_for_keywords():
                 Speak("This is the email service.. still in progress", -1, 1.0)
                 #Debugging and full test of its functionality next day!
                 #pass
-         
+                
+
         ###########################################
         ## Email Services: observe emails ##
         ###########################################   

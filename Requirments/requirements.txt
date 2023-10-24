@@ -12,3 +12,5 @@ webrtcvad
 imageio[ffmpeg]
 noisereduce 
 pyaudio
+llvmlite 
+numba

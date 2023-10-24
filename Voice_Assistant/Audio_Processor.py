@@ -1,4 +1,4 @@
-from Libraries import os, AudioSegment, wave, webrtcvad, librosa, sf, nr, sr, np, scipy
+from Libraries import os, AudioSegment, wave, webrtcvad, librosa, nr, sf, sr, np, scipy
 
 def process_wav_file(filename):
     # Load audio file

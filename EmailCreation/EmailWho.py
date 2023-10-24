@@ -264,12 +264,10 @@ def whoIStheR():
         except sr.UnknownValueError:
              print("Could not understand audio")
              Speak("Could not understand audio", 0, 1.0)
-             whoIStheR() 
+             SenderEmail = whoIStheR() 
         except sr.RequestError:
             print("API error")
-            whoIStheR()
-          
-    
+            SenderEmail = whoIStheR()
     return SenderEmail
    
 
