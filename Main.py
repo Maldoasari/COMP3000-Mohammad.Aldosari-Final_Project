@@ -145,6 +145,13 @@ def listen_for_keywords():
         ## Email Services: observe emails ##
         ###########################################   
         elif ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
+            emails = get_emails()
+            if(len(emails) == 0):
+                Speak("You have no new messages")
+            print(emails)
+            email_id = str(Listen_for_id(emails))
+            print(email_id)
+            view_email_content(email_id, emails)
             Speak("This is the email service.. still in progress", -1, 1.0)
            # pass
         ###########################################

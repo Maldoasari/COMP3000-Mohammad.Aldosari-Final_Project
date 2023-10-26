@@ -10,6 +10,7 @@ from EmailCreation.EmailAbout import ReadMsg
 from EmailCreation.EmailCheck import check
 from EmailCreation.EmailName import ReadName
 from EmailService.EmailsStorage import get_name_email
+from EmailService.EmailObserver import get_emails, Listen_for_id, view_email_content
 from Voice_Assistant.Audio_Processor import process_wav_file, delete_recording, save_audio_as_wav
 from Voice_Assistant.Sleep_Mode import SleepMode
 ## For latter use in order to convert numbers as string to numbers as int
