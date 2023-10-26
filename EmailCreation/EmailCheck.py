@@ -1,16 +1,13 @@
-import speech_recognition as sr
-import time
-
-checkR = sr.Recognizer()
+from Libraries import time, sr, recognizer
 
 def check():
     boolg = False
     print("Want to send it?")
     try:
      with sr.Microphone() as source:
-         audio = checkR.listen(source)
+         audio = recognizer.listen(source)
     
-     Capture = checkR.recognize_google(audio).lower()
+     Capture = recognizer.recognize_google(audio).lower()
 
      if "yes" or "confirm" in Capture:
         boolg = True

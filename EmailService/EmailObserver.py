@@ -1,11 +1,5 @@
-import imaplib
-from email import policy
-from email.parser import BytesParser
-import re
 from Voice_Assistant.Speak import Speak
-import speech_recognition as sr
-import json
-
+from Libraries import sr, json, re, imaplib, BytesParser, policy, recognizer
 def word_to_number(word):
     mapping = {
         "zero": 0,
@@ -92,7 +86,6 @@ def view_email_content(email_id, email_list):
     print("Email not found.")
 
 
-recognizer = sr.Recognizer()
 num = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twleve"]
 def Listen_for_id(emails):
     Speak("Which email you want to open", 0, 1.0)

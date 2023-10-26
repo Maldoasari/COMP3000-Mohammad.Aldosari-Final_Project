@@ -1,7 +1,5 @@
-import speech_recognition as sr
-import time
+from Libraries import sr, time, recognizer
 from Voice_Assistant.Speak import Speak
-rec = sr.Recognizer()
 
 def checkName(nameofrec):
     name = ''  
@@ -11,8 +9,8 @@ def checkName(nameofrec):
     with sr.Microphone() as source:
         try:  
          print("\nYes or No...")
-         audio = rec.listen(source)
-         Capture = rec.recognize_google(audio).lower()
+         audio = recognizer.listen(source)
+         Capture = recognizer.recognize_google(audio).lower()
     
          if "yes" in Capture:
           capitalized_name = ' '.join(word.capitalize() for word in reciver_with_spaces.split())
@@ -35,10 +33,10 @@ def ReadName():
     name = ''
     print("What is the Name?")
     with sr.Microphone() as source:
-        audio = rec.listen(source)
+        audio = recognizer.listen(source)
     
     try:
-        getname = rec.recognize_google(audio).lower()
+        getname = recognizer.recognize_google(audio).lower()
         
         Speak(f"Do You Confirm That you have said:{getname}\n", 0, 1.0)
         print("Do You Confirm That you have said:\n", getname)

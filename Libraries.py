@@ -30,7 +30,8 @@ import re
 import noisereduce as nr
 import soundfile as sf
 import scipy.signal
-
+from email.parser import BytesParser
+from email import policy
 recognizer = sr.Recognizer()
 
 

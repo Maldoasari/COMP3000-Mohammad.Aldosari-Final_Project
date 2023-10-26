@@ -1,6 +1,5 @@
 from Voice_Assistant.Speak import Speak
-from Libraries import sr, time, re
-mesg = sr.Recognizer()
+from Libraries import sr, time, re, recognizer
 
 
 def edit_message(message):
@@ -18,9 +17,9 @@ def edit_message(message):
     with sr.Microphone() as source:
         Speak("Say the line number to capture:", 0, 1.0)
         print("Say the line number to capture:")
-        audio = mesg.listen(source)
+        audio = recognizer.listen(source)
         try:
-            capture = mesg.recognize_google(audio).lower()
+            capture = recognizer.recognize_google(audio).lower()
             for i in range(1, len(message_chunks)+1):
                 if str(i) in capture:
                     Speak(f"The picked line is:{message_chunks[i - 1]}", 0, 1.0)
@@ -44,8 +43,8 @@ def edit_message(message):
         try:
             Speak("Rewrite message to:", 0, 1.0)
             print("Rewrite message to:")
-            audio = mesg.listen(source)
-            capture = mesg.recognize_google(audio).lower()
+            audio = recognizer.listen(source)
+            capture = recognizer.recognize_google(audio).lower()
             message_chunks[line_num] = capture
             message = "\n".join(message_chunks)
        
@@ -68,8 +67,8 @@ def checkmsg(message):
     with sr.Microphone() as source:
         try:
           print("Yes or No or edit...")
-          audio = mesg.listen(source)
-          Capture = mesg.recognize_google(audio).lower()
+          audio = recognizer.listen(source)
+          Capture = recognizer.recognize_google(audio).lower()
     
           if "yes" in Capture:
            msg = message
@@ -121,8 +120,8 @@ def ReadMsg():
     msg = ''
     print("Message?")
     with sr.Microphone() as source:
-        audio = mesg.listen(source)
-        message = mesg.recognize_google(audio).lower()
+        audio = recognizer.listen(source)
+        message = recognizer.recognize_google(audio).lower()
     try: 
         organised_Msg = Organise_Msg(message)
         Speak(f"Check what you have said:\n", 0, 1.0)

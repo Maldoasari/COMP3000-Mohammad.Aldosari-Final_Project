@@ -1,15 +1,14 @@
 from Voice_Assistant.Speak import Speak
-from Libraries import sr
-
-Subj = sr.Recognizer()     
+from Libraries import sr, recognizer
+   
 def checkSub(sub):
     Do_Again = sub
     subject = ''
     Speak("Say yes to confirm. or no to rewrite the subject\n", 0, 1.0)
     with sr.Microphone() as source:
      print("\nYes or No...")
-     audio = Subj.listen(source)
-     Capture = Subj.recognize_google(audio).lower()
+     audio = recognizer.listen(source)
+     Capture = recognizer.recognize_google(audio).lower()
     try:
      if "yes" in Capture:
         subject = sub.capitalize() 
@@ -40,8 +39,8 @@ def Subject():
     #time.sleep(1.5)
     with sr.Microphone() as source:
        # print("Listening...")
-        audio = Subj.listen(source)
-        subject = Subj.recognize_google(audio).lower()
+        audio = recognizer.listen(source)
+        subject = recognizer.recognize_google(audio).lower()
     try:
         Speak(f"Do You Confirm That you have said:{subject}\n", 0, 1.0)
         print("Do You Confirm That you have said:\n", subject)
