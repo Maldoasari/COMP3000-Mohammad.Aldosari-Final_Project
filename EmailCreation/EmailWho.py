@@ -313,9 +313,6 @@ def choose_email(emails):
         return emails[0]
     else:
      print(f"your storage have {len(emails)} records")
-     time.sleep(2)
-     print("Say what postion you want to pick")
-     time.sleep(2)
      with sr.Microphone() as source:
         try:
             audio = recognizer.listen(source)
@@ -370,3 +367,9 @@ def storage():
         return confirm_or_specify_email(chosen_email)
     else:
         return None
+def storageCheck():
+    emails = list_emails()
+    if len(emails) <= 1:
+        return None
+    else:
+        return emails
