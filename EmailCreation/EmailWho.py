@@ -310,8 +310,6 @@ def choose_email(emails):
     print(len(emails))
     
     if(len(emails) == 1):
-        print(f"your storage is empty\n with {len(emails)-1} records \n Please add new to store it")
-        time.sleep(2)
         return emails[0]
     else:
      print(f"your storage have {len(emails)} records")

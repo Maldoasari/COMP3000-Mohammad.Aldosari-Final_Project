@@ -1,3 +1,4 @@
+"""""
 from Requirments.Install_Packages import install_packages
 ## try and find wheather all libraries have been download or not
 try:
@@ -8,7 +9,7 @@ except ModuleNotFoundError as e:
 except OSError as e:
     print(e)
     pass
-
+"""""
     
 from Libraries import subprocess, sr, time, recognizer
 from Voice_Assistant.Speak import Speak
@@ -74,8 +75,6 @@ def listen_for_keywords():
             print(greetings)
             Speak(greetings, -1, 1.0)
             listen_for_keywords()
-
-        
     try:
         delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav")
          #recognized_text = recognizer.recognize_google(audio).lower()
@@ -91,44 +90,15 @@ def listen_for_keywords():
         ## Email Services: Send email ##
         ###########################################
         elif ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
-                time.sleep(0.1)
-                Speak("Would you like to add new. or pick from storage?", -1, 1.0)
-                Add_or_Storage = AddNew_or_ChooseFromStorage()
-                if(Add_or_Storage == "add"):
-                 Speak("Brillent, you have chosen the add new record service. To who?", -1, 1.0)
-                 email_address = whoIStheR()
-                elif(Add_or_Storage == "storage"):
-                    Speak("Brillent, you picked to choose from storage", -1, 1.0)
-                    email_address = storage()
-                else:
-                    Speak("The Defult path is Adding new email. To who?", -1, 1.0)
-                    email_address = whoIStheR()
-                time.sleep(1)
-                print("Email:\n", email_address)
-                time.sleep(2)
-                Speak("What is the Subject?", -1, 1.0)
-                email_subject = Subject()
-                time.sleep(1)
-                print("Subject:\n",email_subject)
-                time.sleep(1)
-                Speak("What is your message?", -1, 1.0)
-                email_message = ReadMsg()
-                time.sleep(1)
-                print("Message:\n",email_message)
-                time.sleep(1)
-                Speak("What his. or her. or its name?", -1, 1.0)
-                Speak("Say space to add space", -1, 1.0)
-                email_name = ReadName()
-                time.sleep(1)
-                print("Name:\n",email_name)
-                time.sleep(1)
+                generate_email = Generate_Email()
+                print(generate_email)
                 Speak("Would you like to send?", -1, 1.0)
                 status = check()
                 if status == True:
-                    send_email(email_subject, email_message, email_address, email_name)
+                    send_email(generate_email[0], generate_email[1], generate_email[2], generate_email[3])
                     Speak("Email has been sent with success", -1, 1.0)
-                    x = get_name_email(email_name, email_address)
-                    Speak(f"Also, {x} with success", -1, 1.0)
+                    store_email = get_name_email(generate_email[2], generate_email[3])
+                    Speak(f"Also, {store_email} with success", -1, 1.0)
                 else:
                     print("\nSomething went wrong\n")
                     greetings = shuffleTxtEntry()
@@ -176,8 +146,46 @@ def listen_for_keywords():
     except sr.RequestError as e:
         Speak("Could not request results; {0}".format(e), -1, 1.0)
         listen_for_keywords()
-#while True:
-    #listen_for_keywords()
 
+def Generate_Email():
+    generate_email = []
+    check_Storage = storage()
+    if (check_Storage == None):
+        Speak("Brillent, What is the email?", -1, 1.0)
+        email_address = whoIStheR()
+    else:  
+        Speak("Would you like to add new. or pick from storage?", -1, 1.0)
+        Add_or_Storage = AddNew_or_ChooseFromStorage()
+        if(Add_or_Storage == "add"):
+           Speak("Brillent, you have chosen the add new record service. To who?", -1, 1.0)
+           email_address = whoIStheR()
+        elif(Add_or_Storage == "storage"):
+            Speak("Brillent, you picked to choose from storage", -1, 1.0)
+            email_address = storage()
+        else:
+            Speak("The Defult path is Adding new email. To who?", -1, 1.0)
+            email_address = whoIStheR()
+    time.sleep(1)
+    print("Email:\n", email_address)
+    time.sleep(2)
+    Speak("What is the Subject?", -1, 1.0)
+    email_subject = Subject()
+    time.sleep(1)
+    print("Subject:\n",email_subject)
+    time.sleep(1)
+    Speak("What is your message?", -1, 1.0)
+    email_message = ReadMsg()
+    time.sleep(1)
+    print("Message:\n",email_message)
+    time.sleep(1)
+    Speak("What his. or her. or its name?", -1, 1.0)
+    Speak("Say space to add space", -1, 1.0)
+    email_name = ReadName()
+    time.sleep(1)
+    print("Name:\n",email_name)
+    time.sleep(1)
+    generate_email = [email_subject, email_message, email_address, email_name]
+    return generate_email
+    
 if __name__ == "__main__":
    listen_for_keywords() 
