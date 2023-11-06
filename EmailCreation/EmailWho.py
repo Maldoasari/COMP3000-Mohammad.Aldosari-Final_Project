@@ -1,6 +1,6 @@
 from Libraries import sr, time, json, re, recognizer
 from Voice_Assistant.Speak import Speak
-from Voice_Assistant.Read_Email_Voice_Inputs import POST_Email
+from Voice_Assistant.Read_Email_Voice_Inputs import POST
 num = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twleve"]
 top_level_domain  = ['gmail', 'outlook', 'yahoo', 'hotmail', 'mail', 'icloud'] 
 
@@ -27,14 +27,16 @@ def ChangerTool(reciver):
     do_Again = reciver
     new_stri = list(reciver)
     #print(len(reciver))
+    x = ''
+    count = 0
     for index, letter in enumerate(reciver):
-        time.sleep(0.1)
-        Speak(f"Letter '{letter}' at position: {index}", -5, 1.0)
-        print(f"Letter '{letter}' at position: {index}")
-
-    print("Say what index you want to change")
-    Speak("Say what index you want to change", 0, 1.0)
-    time.sleep(0.5)
+        count = count + 1 
+        x = x + f"letter {letter} : at {index},\n"
+    count = count / 2 - 2.5
+    print(count)
+    POST("Database/Email.json", "system", "post", f"{x}")
+    time.sleep(count)
+    Speak("Look at the console. say what index you want to change", 0, 1.0)
     
     with sr.Microphone() as source:
         try:
@@ -72,10 +74,13 @@ def ChangerTool(reciver):
                     Capture2 = recognizer.recognize_google(audio2).lower()
                     
                     new_stri[index_to_change] = Capture2[-1]
-                    print(f"From {reciver[index_to_change].upper()}")
-                    print(f"To {Capture2[-1].upper()}")
-                    Speak(f"From {reciver[index_to_change].upper()}", 0, 1.0)
-                    Speak(f"To {Capture2[-1].upper()}", 0, 1.0)
+                    POST("Database/Email.json", "system", "post", " ")
+                    p = ""
+                    p = f"FROM {reciver[index_to_change].upper()} : TO {Capture2[-1].upper()}"
+                    POST("Database/Email.json", "system", "post", f"{p}")
+                    time.sleep(0.5)
+                    Speak(f"From {reciver[index_to_change].upper()}, To {Capture2[-1].upper()}", 0, 1.0)
+                    POST("Database/Email.json", "system", "post", " ")
                 #print("lets try again\n")
                 #print(Capture)
                 #ChangerTool(do_Again)
@@ -95,6 +100,7 @@ def ChangerTool(reciver):
             
     email_address = ''.join(new_stri)
     #time.sleep(1)
+    
     return email_address
 
 def ChangerToolAdd(email_address):
@@ -255,7 +261,8 @@ def whoIStheR():
         try:
             print("To Who?")
             audio = recognizer.listen(source)
-            reciver = recognizer.recognize_google(audio).lower().replace("period", ".")
+            p_reciver = recognizer.recognize_google(audio).lower().replace("period", ".")
+            reciver = p_reciver.replace(" ", "")
             Speak(f"Check what you have said:\n", 0, 1.0)
             print(f"Confirm that you have said:\n {reciver}")
             time.sleep(1)

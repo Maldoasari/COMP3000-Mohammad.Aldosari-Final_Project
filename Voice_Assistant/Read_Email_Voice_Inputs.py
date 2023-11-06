@@ -38,7 +38,7 @@ def Email_gui_template():
         add_character(char_iter)  
 
      #typing effect function for widget
-    def typing_effect_in_widget(text_widget, full_text, speed=80):
+    def typing_effect_in_widget(text_widget, full_text, speed=10):
         text_widget.config(state="normal")
         text_widget.delete('1.0', tk.END)
 
@@ -107,7 +107,7 @@ def Email_gui_template():
     systemFrame.grid(row=4, column=1, sticky="ew")
 
     msg_scrollbar = tk.Scrollbar(msg_frame)
-    msg_text = tk.Text(msg_frame, width=50, height=10, wrap="word", yscrollcommand=msg_scrollbar.set, bg="lightgrey")
+    msg_text = tk.Text(msg_frame, width=50, height=7, wrap="word", yscrollcommand=msg_scrollbar.set, bg="lightgrey")
     msg_scrollbar.config(command=msg_text.yview)
     msg_text.grid(row=0, column=0, sticky="nsew")
     msg_scrollbar.grid(row=0, column=1, sticky="ns")
@@ -115,7 +115,7 @@ def Email_gui_template():
     msg_frame.rowconfigure(0, weight=1)
 
     sys_scrollbar = tk.Scrollbar(systemFrame)
-    system_text = tk.Text(systemFrame, width=50, height=3, wrap="word", yscrollcommand=sys_scrollbar.set, bg="lightgrey")
+    system_text = tk.Text(systemFrame, width=50, height=7, wrap="word", yscrollcommand=sys_scrollbar.set, bg="lightgrey")
     sys_scrollbar.config(command=system_text.yview)
     system_text.grid(row=0, column=0, sticky="nsew")
     sys_scrollbar.grid(row=0, column=1, sticky="ns")
