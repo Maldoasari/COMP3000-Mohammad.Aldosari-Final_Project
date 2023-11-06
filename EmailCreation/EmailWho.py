@@ -33,6 +33,8 @@ def ChangerTool(reciver):
         count = count + 1 
         x = x + f"letter {letter} : at {index},\n"
     count = count / 2 - 2.5
+    if(count < 0):
+        count = 2
     print(count)
     POST("Database/Email.json", "system", "post", f"{x}")
     time.sleep(count)
@@ -48,7 +50,7 @@ def ChangerTool(reciver):
                     index_to_change = word_to_number(n)
                     if index_to_change is None or index_to_change > len(reciver)-1:
                         Speak("list index out of range", 0, 1.0)
-                        return ChangerTool(do_Again)   
+                        email_address = ChangerTool(do_Again)   
                     else:
                         break
                 
@@ -58,11 +60,11 @@ def ChangerTool(reciver):
                     index_to_change = int(numbers[0])
                     if index_to_change > len(reciver)-1:
                         Speak("list index out of range", 0, 1.0)
-                        return ChangerTool(do_Again)   # Using return to ensure we break out
+                        email_address = ChangerTool(do_Again)   # Using return to ensure we break out
                         
             if index_to_change is None:
                 Speak("Let's try again", 0, 1.0)
-                return ChangerTool(do_Again)  # Using return to ensure we break out
+                email_address = ChangerTool(do_Again)  # Using return to ensure we break out
             #print(int(Capture[-1]))
 
             if index_to_change is not None and index_to_change < len(new_stri):
@@ -87,16 +89,17 @@ def ChangerTool(reciver):
             else:
                 print("lets try again\n")
                 Speak("lets try again\n", 0, 1.0)
-                ChangerTool(do_Again)
+                email_address = ChangerTool(do_Again)
                 
         except sr.UnknownValueError:
             print("Sorry, I couldn't understand the audio.")
             Speak("Sorry, I couldn't understand the audio.", 0, 1.0)
             print("lets try again\n")
             Speak("lets try again\n", 0, 1.0)
-            ChangerTool(do_Again)
+            email_address = ChangerTool(do_Again)
         except sr.RequestError:
             print("API unavailable or quota exceeded.")
+            email_address = ChangerTool(do_Again)
             
     email_address = ''.join(new_stri)
     #time.sleep(1)
@@ -105,16 +108,21 @@ def ChangerTool(reciver):
 
 def ChangerToolAdd(email_address):
     # Enumerate letters of email address
+    x = ""
+    count = 0
     for index, letter in enumerate(email_address):
+        count = count + 1
         time.sleep(0.1)
-        Speak(f"Letter '{letter}' at position: {index}", 0, 1.0)
-        print(f"Letter '{letter}' at position: {index}")
-
+        x = x + f"Letter: '{letter}' at position: {index} \n"
+    count = count / 2 - 2.5
+    if(count < 0):
+        count = 2
+    print(x)
+    POST("Database/Email.json", "system", "post", f"{x}")
     while True:  # Using a loop instead of recursion
-        print("Please choose two consecutive indexes to add your value in between")
-        print("You must say: [index] and [index]")
-        time.sleep(1)
-
+        time.sleep(count)
+        Speak("Please choose two consecutive indexes to add your value in between", 0, 1.0)
+        Speak("You must say: [index] and [index]", 0, 1.0)
         with sr.Microphone() as source:
             try:
                 l = []
@@ -145,12 +153,12 @@ def ChangerToolAdd(email_address):
 
                 if indexStart is not None and indexEnd is not None and indexStart + 1 == indexEnd:
                     print("Indexes are consecutive")
-                    print("Now choose the letter or number that you want to add in between")
-
+                    Speak("Now choose the letter or number that you want to add in between", 0, 1.0)
+                    POST("Database/Email.json", "system", "post", " ")
                     audio = recognizer.listen(source)
                     Capture = recognizer.recognize_google(audio).lower()
                     add_letter = Capture[-1]
-                    
+                    Speak("Added with success", 0, 1.0)
                     # Modify this line to insert the letter between the indices
                     return email_address[:indexEnd] + add_letter + email_address[indexEnd:]
 
@@ -200,6 +208,7 @@ def Top_level_domain():
     return domain
 
 def checkWho(reciver):
+    POST("Database/Email.json", "system", "post", " ")
     email_address = ''
     reciver_without_spaces = reciver.replace(" ", "")
     time.sleep(0.1)
@@ -221,7 +230,7 @@ def checkWho(reciver):
                 Speak("Change letters within the email", 0, 1.0)
                 result = ChangerTool(reciver_without_spaces)
                 Speak("Modified Successfully", 0, 1.0)
-                print(f"Modified: {result}")
+                POST("Database/Email.json", "system", "post", f"{result}")
                 email_address = checkWho(result)
                 return email_address 
             
