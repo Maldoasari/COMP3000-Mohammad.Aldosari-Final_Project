@@ -24,12 +24,13 @@ if data["System"]["Active"] == False:
     subprocess.Popen(["python", "System_Activision.py"])
     quit()
 else:
- status = Check_Email_Accessability()
- if(status == False):
+
+status = Check_Email_Accessability()
+if(status == False):
      Speak("Email Configuration Failed", -1, 1.0)
      subprocess.Popen(["python", "System_Activision.py"])
      quit()
- else:
+else:
  
   greetings = shuffleTxtEntry()
   Speak(greetings, -1, 1.0)

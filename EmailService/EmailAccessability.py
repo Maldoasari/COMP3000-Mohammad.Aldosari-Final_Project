@@ -1,4 +1,5 @@
 from Libraries import tk, json, messagebox
+import email, imaplib
 from Voice_Assistant.Speak import Speak
 from Module import Check_Email_Status, send_email, delete_all_emails
 from Configuration.Config import SetUpApp
@@ -31,6 +32,57 @@ def Check_Email_Accessability():
             return False
      else:
             messagebox.showinfo("Success", "Email Service configured with success")
+            Store_Contacts()
             return True
  else:
      return True
+ 
+
+def Store_Contacts():
+    try:
+      with open("Database/Data.json", "r") as file:
+          data = json.load(file)
+          if(data["Login"]["L_email"] == ""):
+              return 401
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass
+    IMAP_email = data['Login']['L_email']
+    IMAP = data['Login']['E_APIKEY']
+    # Gmail IMAP settings
+    imap_url = 'imap.gmail.com'
+    mail = imaplib.IMAP4_SSL(imap_url)
+    mail.login(IMAP_email, IMAP)
+    mail.select('inbox')  
+
+    result, data = mail.search(None, 'ALL')
+    email_ids = data[0].split()
+
+    contacts = {}
+
+    for e_id in email_ids:
+        
+        result, data = mail.fetch(e_id, '(RFC822)')
+        raw_email = data[0][1]
+        
+        email_message = email.message_from_bytes(raw_email)
+
+        
+        from_header = email.utils.parseaddr(email_message['From'])
+        email_addr = from_header[1]
+        name = from_header[0]
+    
+        if name:
+            name = str(email.header.make_header(email.header.decode_header(name)))
+        
+        if email_addr and email_addr not in contacts:
+            contacts[email_addr] = name
+
+
+    contacts_list = [{'name': name, 'email': email} for email, name in contacts.items()]
+
+
+    with open('Database/Cookies.json', 'w') as json_file:
+        json.dump(contacts_list, json_file, indent=4)
+
+
+    mail.logout()
