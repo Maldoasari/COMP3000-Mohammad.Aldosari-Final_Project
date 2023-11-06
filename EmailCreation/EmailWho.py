@@ -1,5 +1,6 @@
 from Libraries import sr, time, json, re, recognizer
 from Voice_Assistant.Speak import Speak
+from Voice_Assistant.Read_Email_Voice_Inputs import POST_Email
 num = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twleve"]
 top_level_domain  = ['gmail', 'outlook', 'yahoo', 'hotmail', 'mail', 'icloud'] 
 
@@ -207,18 +208,17 @@ def checkWho(reciver):
                 time.sleep(0.5)
                 TopLevelDomain = Top_level_domain()
                 email_address = reciver_without_spaces + "@" + TopLevelDomain +".com"
-                print("Structuring email...\n", email_address)
                 Speak(f"Structuring email...{email_address}", 0, 1.0)
                 return email_address
                 
             elif ("no" in Capture) or ("change letter" in Capture) or ("change" in Capture):
                 Speak("Change letters within the email", 0, 1.0)
-                print("Change letters within the email")
                 result = ChangerTool(reciver_without_spaces)
                 Speak("Modified Successfully", 0, 1.0)
                 print(f"Modified: {result}")
                 email_address = checkWho(result)
-                return email_address
+                return email_address 
+            
             elif ("add a letter" in Capture) or ("add letters" in Capture) or ("insert" in Capture):
                 Speak("Add letters in the email", 0, 1.0)
                 print("Add letters in the email")

@@ -1,54 +1,16 @@
 import json, os, tkinter as tk
+    
+def POST(Jsonfile, tragetData, status, input):
+    with open(Jsonfile, 'r') as file:
+        data = json.load(file)
+    if status == "post":
+      data[f"{tragetData}"] =  input
+      with open(Jsonfile, 'w') as file:
+         json.dump(data, file, indent=4)
+    else:
+        return 501
 
-def POST_Email(status, email):
-    with open("Database/Email.json", 'r') as file:
-        data = json.load(file)
-    if status == "post":
-      data["Email"] = email  
-      with open("Database/Email.json", 'w') as file:
-         json.dump(data, file, indent=4) 
-    else:
-        return 501
-    
-def POST_Subject(status, subject):
-    with open("Database/Email.json", 'r') as file:
-        data = json.load(file)
-    if status == "post":
-      data["Subject"] = subject  
-      with open("Database/Email.json", 'w') as file:
-         json.dump(data, file, indent=4) 
-    else:
-        return 501
-    
-def POST_Message(status, msg):
-    with open("Database/Email.json", 'r') as file:
-        data = json.load(file)
-    if status == "post":
-      data["message"] = msg  
-      with open("Database/Email.json", 'w') as file:
-         json.dump(data, file, indent=4)
-    else:
-        return 501
-    
-def POST_Name(status, name):
-    with open("Database/Email.json", 'r') as file:
-        data = json.load(file)
-    if status == "post":
-      data["Name"] = name  
-      with open("Database/Email.json", 'w') as file:
-         json.dump(data, file, indent=4)
-    else:
-        return 501
-    
-def POST_sys(status, sys):
-    with open("Database/Email.json", 'r') as file:
-        data = json.load(file)
-    if status == "post":
-      data["system"] = sys  
-      with open("Database/Email.json", 'w') as file:
-         json.dump(data, file, indent=4)
-    else:
-        return 501
+
 
 def Email_gui_template():
     # Nested function to load JSON data
