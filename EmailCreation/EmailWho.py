@@ -208,7 +208,7 @@ def Top_level_domain():
     return domain
 
 def checkWho(reciver):
-    POST("Database/Email.json", "system", "post", " ")
+    
     email_address = ''
     reciver_without_spaces = reciver.replace(" ", "")
     time.sleep(0.1)
@@ -223,14 +223,15 @@ def checkWho(reciver):
                 time.sleep(0.5)
                 TopLevelDomain = Top_level_domain()
                 email_address = reciver_without_spaces + "@" + TopLevelDomain +".com"
-                Speak(f"Structuring email...{email_address}", 0, 1.0)
+                POST("Database/Email.json", "system", "post", " ")
                 return email_address
                 
             elif ("no" in Capture) or ("change letter" in Capture) or ("change" in Capture):
                 Speak("Change letters within the email", 0, 1.0)
                 result = ChangerTool(reciver_without_spaces)
                 Speak("Modified Successfully", 0, 1.0)
-                POST("Database/Email.json", "system", "post", f"{result}")
+                POST("Database/Email.json", "system", "post", f"{result}: \n is the first part of the email \n are you happy with it?")
+                time.sleep(7)
                 email_address = checkWho(result)
                 return email_address 
             
@@ -239,7 +240,8 @@ def checkWho(reciver):
                 print("Add letters in the email")
                 result = ChangerToolAdd(reciver_without_spaces)
                 Speak("Modified", 0, 1.0)
-                print(f"{result}")
+                POST("Database/Email.json", "system", "post", f"{result}: \n is the first part of the email \n are you happy with it?")
+                time.sleep(7)
                 email_address = checkWho(result)
                 return email_address
                 #return email_address
@@ -314,73 +316,69 @@ def AddNew_or_ChooseFromStorage():
 def list_emails():
     with open("Database\Cookies.json", "r") as file:
         data = json.load(file)
-        
+    x = "" 
+    count = 0
     emails = [record["email"] for record in data]
     for index, email in enumerate(emails, start=1):
-        time.sleep(1)
-        print(f"{index}. {email}")
-        time.sleep(1)
-    return emails
-
-def choose_email(emails):
-    print(len(emails))
+        count = count + 1
+        x = x + f"{index}. {email} \n"
     
+    return emails, x, count
+
+def choose_email(emails, x, count):
+    POST("Database/Email.json", "system", "post", f"your storage have {len(emails)} records")
+    Speak(f"your storage have {len(emails)} records", 0, 1.0)
     if(len(emails) == 1):
         return emails[0]
     else:
-     print(f"your storage have {len(emails)} records")
+     POST("Database/Email.json", "system", "post", f"{x}")
+     count = count / 2 - 2.5
+     if(count < 0):
+        count = 2
+     time.sleep(count)
+     Speak("What email you want to choose?", 0, 1.0)
      with sr.Microphone() as source:
         try:
             audio = recognizer.listen(source)
             captureit = recognizer.recognize_google(audio).lower()
-            print(captureit)
+          
             for n in num:
                 if n in captureit:
-                 index_to_change = word_to_number(n)
+                    index_to_change = word_to_number(n)
+                    break
+
+           
+            if index_to_change is None:
+                numbers = re.findall(r'\b\d+\b', captureit)
+                if numbers:
+                   
+                    index_to_change = int(''.join(numbers))
                 else:
-                    index_to_change = int(captureit[-1])
-                    pass
-            #print(index_to_change) 
-                
+                     print("No numbers found in the input.")
+            #print(index_to_change)   
             if index_to_change is not None and index_to_change < len(emails):
                return emails[index_to_change - 1]
             #elif captureit[-1] != len(emails[int(captureit[-1])-1]):
                 #return emails[int(captureit[-1]) - 1]
             elif (index_to_change is None) or (captureit.isalpha()):
                  print("something went wrong\n lets try again aa")
-                 choose_email(emails)
+                 choose_email(emails, x, count)
             else:
                 print("what are you doing!!")
             return emails[index_to_change - 1]
         except sr.UnknownValueError:
             print("Could not understand the audio _-_")
-            return choose_email(emails)
+            return choose_email(emails, x, count)
         except sr.RequestError as e:
             print("Could not request results; {0}".format(e))
-            return choose_email(emails)
+            return choose_email(emails, x, count)
 
-def confirm_or_specify_email(chosen_email):
-        time.sleep(0.5)
-        if(chosen_email == "defult"):
-            whoIStheR()
-        else:
-         try_Again = chosen_email
-         try:
-            print(f"Confirm that you have choosen:\n {chosen_email}")
-            time.sleep(2)
-            return checkWho(chosen_email)
-         except sr.UnknownValueError:
-            print("Could not understand audio")
-            return confirm_or_specify_email(try_Again)
-         except sr.RequestError:
-            print("API error")
-            return confirm_or_specify_email(try_Again)
 
 def storage():
-    emails = list_emails()
-    chosen_email = choose_email(emails)
+    emails, x, count = list_emails()
+    chosen_email = choose_email(emails, x, count)
     if chosen_email:
-        return confirm_or_specify_email(chosen_email)
+        return chosen_email
     else:
         return None
 def storageCheck():

@@ -1,5 +1,6 @@
 from Voice_Assistant.Speak import Speak
 from Libraries import sr, recognizer
+from Voice_Assistant.Read_Email_Voice_Inputs import POST
    
 def checkSub(sub):
     Do_Again = sub
@@ -12,12 +13,12 @@ def checkSub(sub):
     try:
      if "yes" in Capture:
         subject = sub.capitalize() 
-        Speak(f"Subject is {subject}\n", 0, 1.0)
-        print("Structring Subject...")
+        POST("Database/Email.json", "system", "post", f"Subject is:\n {subject}")
         return subject
     
      elif "no" in Capture:
-        Speak(f"What would you like me to chnage to?\n", 0, 1.0)
+        Speak(f"What would you like me to chnage it to?\n", 0, 1.0)
+        POST("Database/Email.json", "system", "post", " ")
         subject = Subject()
      else:
         Speak(f"Sorry, Didn't catch it\n", 0, 1.0)
@@ -43,7 +44,8 @@ def Subject():
         subject = recognizer.recognize_google(audio).lower()
     try:
         Speak(f"Do You Confirm That you have said:{subject}\n", 0, 1.0)
-        print("Do You Confirm That you have said:\n", subject)
+        POST("Database/Email.json", "system", "post", f"DO You Confirm That you have said:\n {subject}")
+
         Email_Subject = checkSub(subject)
         return Email_Subject 
     except sr.UnknownValueError:

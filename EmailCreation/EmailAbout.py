@@ -1,3 +1,4 @@
+from Voice_Assistant.Read_Email_Voice_Inputs import POST
 from Voice_Assistant.Speak import Speak
 from Libraries import sr, time, re, recognizer
 
@@ -6,24 +7,28 @@ def edit_message(message):
     do_again = message
 
     message_chunks = [message[i:i+40] for i in range(0, len(message), 40)]
-
+    x = []
+    count = 0
     for index, line in enumerate(message_chunks, start=1):
-        print(f"Line {index}: {line}")
-        Speak(f"Line {index}: {line}", 0, 1.0)
+        count = count + 1
+        x.append(f"Line {index}: {line}")
 
-
+    count = count / 2 - 2.5
+    if(count < 0):
+        count = 2
+    print(x)
+    POST("Database/Email.json", "system", "post", f"{x}")
     line_num = 0
 
     with sr.Microphone() as source:
-        Speak("Say the line number to capture:", 0, 1.0)
-        print("Say the line number to capture:")
+        Speak("Say the line number to edit:", 0, 1.0)
         audio = recognizer.listen(source)
         try:
             capture = recognizer.recognize_google(audio).lower()
             for i in range(1, len(message_chunks)+1):
                 if str(i) in capture:
                     Speak(f"The picked line is:{message_chunks[i - 1]}", 0, 1.0)
-                    print(message_chunks[i - 1])
+                    POST("Database/Email.json", "system", "post", f"{message_chunks[i - 1]}")
                     line_num = i - 1
                     break
             else:
@@ -42,7 +47,7 @@ def edit_message(message):
     with sr.Microphone() as source:
         try:
             Speak("Rewrite message to:", 0, 1.0)
-            print("Rewrite message to:")
+            POST("Database/Email.json", "system", "post", "Rewrite message to:")
             audio = recognizer.listen(source)
             capture = recognizer.recognize_google(audio).lower()
             message_chunks[line_num] = capture
@@ -75,7 +80,7 @@ def checkmsg(message):
            return msg
           elif "no" in Capture:
             Speak("Okey! what is your message", 0, 1.0)
-            print("Okey! what is your")
+            POST("Database/Email.json", "system", "post", f" ")
             msg = ReadMsg()
           elif "edit" in Capture:
             Speak("Okey!", 0, 1.0)
@@ -124,9 +129,13 @@ def ReadMsg():
         message = recognizer.recognize_google(audio).lower()
     try: 
         organised_Msg = Organise_Msg(message)
+        count = len(organised_Msg)
         Speak(f"Check what you have said:\n", 0, 1.0)
-        print("Do You Confirm That you have said:\n", organised_Msg)
-        #time.sleep(6)
+        POST("Database/Email.json", "system", "post", f"Do You Confirm That you have said:\n {organised_Msg}")
+        count = count / 2 - 2.5
+        if(count < 0):
+         count = 2
+        time.sleep(count)
         msg = checkmsg(organised_Msg)
         sentences = msg.split('.')
         sentences = [s.strip().capitalize() for s in sentences if s]

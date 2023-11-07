@@ -82,7 +82,6 @@ def listen_for_keywords():
         if ("taylor" in recognized_text) and ("how are you" in recognized_text):
             Speak("ty t!", -1, 1.0)
             
-        
         elif ("quit" in recognized_text):
             Speak("quitting..", -1, 1.0)
             subprocess.Popen(["python", "System_Activision.py"])
@@ -170,17 +169,20 @@ def Generate_Email():
     time.sleep(1)
     POST("Database/Email.json", "Email", "post", email_address)
     print("Email:\n", email_address)
+    POST("Database/Email.json", "system", "post", " ")
     time.sleep(2)
     Speak("What is the Subject?", -1, 1.0)
     email_subject = Subject()
     time.sleep(1)
     POST("Database/Email.json", "Subject", "post", email_subject)
     print("Subject:\n",email_subject)
+    POST("Database/Email.json", "system", "post", " ")
     time.sleep(1)
     Speak("What is your message?", -1, 1.0)
     email_message = ReadMsg()
     time.sleep(1)
     POST("Database/Email.json", "message", "post", email_message)
+    POST("Database/Email.json", "system", "post", " ")
     print("Message:\n",email_message)
     time.sleep(1)
     Speak("What his. or her. or its name?", -1, 1.0)
