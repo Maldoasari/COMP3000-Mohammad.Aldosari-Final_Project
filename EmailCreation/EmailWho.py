@@ -42,7 +42,7 @@ def ChangerTool(reciver):
     
     with sr.Microphone() as source:
         try:
-            audio = recognizer.listen(source, timeout=3)
+            audio = recognizer.listen(source)
             Capture = recognizer.recognize_google(audio).lower()
             index_to_change = None  
             for n in num:
@@ -65,6 +65,7 @@ def ChangerTool(reciver):
             if index_to_change is None:
                 Speak("Let's try again", 0, 1.0)
                 email_address = ChangerTool(do_Again)  # Using return to ensure we break out
+                
             #print(int(Capture[-1]))
 
             if index_to_change is not None and index_to_change < len(new_stri):
@@ -96,7 +97,9 @@ def ChangerTool(reciver):
             Speak("Sorry, I couldn't understand the audio.", 0, 1.0)
             print("lets try again\n")
             Speak("lets try again\n", 0, 1.0)
-            email_address = ChangerTool(do_Again)
+            x = ChangerTool(do_Again)
+            return x
+            
         except sr.RequestError:
             print("API unavailable or quota exceeded.")
             email_address = ChangerTool(do_Again)
@@ -163,7 +166,7 @@ def ChangerToolAdd(email_address):
                     return email_address[:indexEnd] + add_letter + email_address[indexEnd:]
 
                 else:
-                    print("You have chosen two indexes that are not consecutive")
+                    Speak("You have chosen two indexes that are not consecutive", 0, 1.0)
                     print("Try again\n")
                     continue
 
@@ -248,6 +251,7 @@ def checkWho(reciver):
             elif("try again" in Capture) or ("new attempt" in Capture):
                 Speak("okey, to who?", 0, 1.0)
                 email_address = whoIStheR()
+                return email_address
                 
             else:
                 Speak("Sorry, Didn't catch it", 0, 1.0)
@@ -255,15 +259,18 @@ def checkWho(reciver):
                 Speak("Check what you have said", 0, 1.0)
                 print(f"{reciver_without_spaces}")
                 email_address = checkWho(reciver_without_spaces)
+                return email_address
         except sr.UnknownValueError:
             Speak("Could not understand audio", 0, 1.0)
             print("Could not understand audio")
             Speak("Check what you have said", 0, 1.0)
             email_address = checkWho(reciver_without_spaces)
+            return email_address
         except sr.RequestError:
             Speak("API error", 0, 1.0)
             print("API error")
             email_address = checkWho(reciver_without_spaces)
+            return email_address
         except sr.WaitTimeoutError:
             print("No speech detected. Retrying...")
             email_address = checkWho(reciver_without_spaces)
@@ -329,6 +336,9 @@ def list_emails():
     return emails, x, count
 
 def choose_email(emails, x, count):
+    clone_emails = emails
+    clone_x = x
+    clone_count = count
     POST("Database/Email.json", "system", "post", f"your storage have {len(emails)} records")
     Speak(f"your storage have {len(emails)} records", 0, 1.0)
     if(len(emails) == 1):
@@ -349,23 +359,22 @@ def choose_email(emails, x, count):
                 if n in captureit:
                     index_to_change = word_to_number(n)
                     break
-
-           
+                index_to_change = None
             if index_to_change is None:
                 numbers = re.findall(r'\b\d+\b', captureit)
                 if numbers:
-                   
                     index_to_change = int(''.join(numbers))
                 else:
                      print("No numbers found in the input.")
             #print(index_to_change)   
-            if index_to_change is not None and index_to_change < len(emails):
+            if index_to_change is not None and index_to_change <= len(emails):
                return emails[index_to_change - 1]
             #elif captureit[-1] != len(emails[int(captureit[-1])-1]):
                 #return emails[int(captureit[-1]) - 1]
             elif (index_to_change is None) or (captureit.isalpha()):
                  print("something went wrong\n lets try again aa")
-                 choose_email(emails, x, count)
+                 b = choose_email(emails, x, count)
+                 return b
             else:
                 print("what are you doing!!")
             return emails[index_to_change - 1]
