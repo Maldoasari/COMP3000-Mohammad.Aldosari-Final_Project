@@ -128,6 +128,14 @@ def listen_for_keywords():
         ## Wbsite hanlder: ##
         ###########################################
         elif ("open" and "website" in recognized_text):
+            url = webHandler(recognized_text)
+            url = web_Search(url)
+            if "netflix" in url:
+                NetflixHandler(url)
+            elif "primevideo" in url:
+                PrimeVideoHandler(url)
+            else:
+                OtherWebHandler(url)
             Speak("This is the open website service.. still in progress", -1, 1.0)
             #pass
         

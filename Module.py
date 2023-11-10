@@ -4,8 +4,10 @@ from EmailService.CodeGeneration import shuffleTxtEntry
 from EmailService.EmailSender import send_email, delete_all_emails
 from EmailService.EmailStatus import Check_Email_Status
 from EmailService.EmailAccessability import Check_Email_Accessability
-
-
+from Web_BrowsingService.Netflix import NetflixHandler
+from Web_BrowsingService.primevideo import PrimeVideoHandler
+from Web_BrowsingService.OpenWeb import webHandler, web_Search
+from Web_BrowsingService.Other_Websites import OtherWebHandler
 from EmailCreation.EmailWho import whoIStheR, AddNew_or_ChooseFromStorage, storage, storageCheck
 from EmailCreation.EmailWhat import Subject
 from EmailCreation.EmailAbout import ReadMsg
