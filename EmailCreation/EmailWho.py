@@ -216,7 +216,7 @@ def checkWho(reciver):
     with sr.Microphone() as source:
         try:
             print("\nConfirm.. or Change letters... or insert a letter")
-            audio = recognizer.listen(source, timeout=3)
+            audio = recognizer.listen(source)
             Capture = recognizer.recognize_google(audio).lower()
 
             if ("yes" in Capture) or ("confirm" in Capture) or ("posative" in Capture):
@@ -233,7 +233,7 @@ def checkWho(reciver):
                 POST("Database/Email.json", "system", "post", f"{result}: \n is the first part of the email \n are you happy with it?")
                 time.sleep(7)
                 email_address = checkWho(result)
-                return email_address 
+                return email_address
             
             elif ("add a letter" in Capture) or ("add letters" in Capture) or ("insert" in Capture):
                 Speak("Add letters in the email", 0, 1.0)
@@ -263,6 +263,9 @@ def checkWho(reciver):
         except sr.RequestError:
             Speak("API error", 0, 1.0)
             print("API error")
+            email_address = checkWho(reciver_without_spaces)
+        except sr.WaitTimeoutError:
+            print("No speech detected. Retrying...")
             email_address = checkWho(reciver_without_spaces)
     
 def whoIStheR():
