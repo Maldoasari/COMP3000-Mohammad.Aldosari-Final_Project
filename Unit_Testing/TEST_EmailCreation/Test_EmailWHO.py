@@ -21,7 +21,6 @@ from Voice_Assistant.Read_Email_Voice_Inputs import POST
 
 # Unit test class
 class TestEmailWHO(unittest.TestCase):
-    """""
     @patch('EmailCreation.EmailWho.recognizer.recognize_google')
     @patch('EmailCreation.EmailWho.checkWho')
     @patch('Voice_Assistant.Speak.Speak')
@@ -246,7 +245,7 @@ class TestEmailWHO(unittest.TestCase):
         mock_choose_email.return_value = None
         result = storage()
         self.assertIsNone(result, None)
-    """""
+    
     
     @patch('EmailCreation.EmailWho.list_emails')
     def test_storageCheck(self, mock_list_emails):
