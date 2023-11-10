@@ -272,7 +272,7 @@ def whoIStheR():
         try:
             print("To Who?")
             audio = recognizer.listen(source)
-            p_reciver = recognizer.recognize_google(audio).lower().replace("period", ".")
+            p_reciver = recognizer.recognize_google(audio).lower().replace("period", ".").replace("dash", "-")
             reciver = p_reciver.replace(" ", "")
             Speak(f"Check what you have said:\n", 0, 1.0)
             print(f"Confirm that you have said:\n {reciver}")
