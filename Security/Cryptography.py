@@ -1,4 +1,8 @@
-from Libraries import json, Fernet
+import hashlib
+import os
+from cryptography.fernet import Fernet
+import json
+
 
 def encrypt_json_file(file_path, key):
     with open(file_path, 'r') as file:
