@@ -31,10 +31,10 @@ def edit_message(message):
                     POST("Database/Email.json", "system", "post", f"{message_chunks[i - 1]}")
                     line_num = i - 1
                     break
-            else:
-                Speak("index out of range", 0, 1.0)
-                print("index out of range")
-                return edit_message(do_again)
+                else:
+                 Speak("index out of range", 0, 1.0)
+                 print("index out of range")
+                 return edit_message(do_again)
         except sr.UnknownValueError:
             Speak("Google Speech Recognition could not understand audio", 0, 1.0)
             print("Google Speech Recognition could not understand audio")
@@ -45,10 +45,10 @@ def edit_message(message):
             return edit_message(do_again)
 
     with sr.Microphone() as source:
+        audio = recognizer.listen(source)
         try:
             Speak("Rewrite message to:", 0, 1.0)
             POST("Database/Email.json", "system", "post", "Rewrite message to:")
-            audio = recognizer.listen(source)
             capture = recognizer.recognize_google(audio).lower()
             message_chunks[line_num] = capture
             message = "\n".join(message_chunks)
@@ -70,9 +70,9 @@ def checkmsg(message):
     do_again = message
     Speak("Say yes to confirm or no to rewrite the message or edit to modify the message", 0, 1.0)
     with sr.Microphone() as source:
+        audio = recognizer.listen(source)
         try:
           print("Yes or No or edit...")
-          audio = recognizer.listen(source)
           Capture = recognizer.recognize_google(audio).lower()
     
           if "yes" in Capture:
@@ -82,43 +82,43 @@ def checkmsg(message):
             Speak("Okey! what is your message", 0, 1.0)
             POST("Database/Email.json", "system", "post", f" ")
             msg = ReadMsg()
+            return msg
           elif "edit" in Capture:
             Speak("Okey!", 0, 1.0)
             result = edit_message(message)
             organisMsg = Organise_Msg(result)
             msg = checkmsg(organisMsg)
+            return msg
           else:
            Speak("Sorry, Didn't catch it", 0, 1.0)
            print("Sorry, Didn't catch it")
            msg = checkmsg(do_again)
+           return msg
            
         except sr.UnknownValueError:
             Speak("Could not understand audio", 0, 1.0)
             print("Could not understand audio")
             msg = checkmsg(do_again)
+            return msg
         except sr.RequestError:
             Speak("API error", 0, 1.0)
             print("API error")
             msg = checkmsg(do_again)
-    return msg
+            return msg
+   
 
 def Organise_Msg(message):
-    
-    if "comma" in message:
-        message = message.replace("comma", ",")
-    if "coma" in message:
-        message = message.replace("coma", ",")
-    if "period" in message:
-        message = message.replace("period", ".")
-    if "dot" in message:
-        message = message.replace("dot", ".")
-    if "new line" in message:
-        message = message.replace("new line", " \n ")
-    if "new space" in message:
-        message = message.replace("new space", " \n ")
+    message = re.sub(r'\s*comma', ',', message)
+    message = re.sub(r'\s*coma', ',', message)
+    message = re.sub(r'\s*period', '.', message)
+    message = re.sub(r'\s*dot', '.', message)
+    message = re.sub(r'new line', "\n", message)
+    message = re.sub(r'new space', "\n", message)
     message = re.sub(r'\s+\.', '.', message)
     
-    return message
+    return message.strip()
+
+
 
 def ReadMsg():
     
@@ -126,8 +126,8 @@ def ReadMsg():
     print("Message?")
     with sr.Microphone() as source:
         audio = recognizer.listen(source)
-        message = recognizer.recognize_google(audio).lower()
     try: 
+        message = recognizer.recognize_google(audio).lower()
         organised_Msg = Organise_Msg(message)
         count = len(organised_Msg)
         Speak(f"Check what you have said:\n", 0, 1.0)
@@ -146,9 +146,11 @@ def ReadMsg():
         Speak("Could not understand audio", 0, 1.0)
         print("Could not understand audio")
         msg = ReadMsg()
+        return msg
     except sr.RequestError as e:
         Speak("Could not request results; {0}".format(e), 0, 1.0)
         print("Could not request results; {0}".format(e))
         msg = ReadMsg()
-    return msg
+        return msg
+ 
 

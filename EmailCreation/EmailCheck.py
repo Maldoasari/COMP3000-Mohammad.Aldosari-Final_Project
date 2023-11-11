@@ -19,6 +19,8 @@ def check():
     except sr.UnknownValueError:
         print("Could not understand audio")
         boolg = check()
+        return boolg
     except sr.RequestError as e:
         print("Could not request results; {0}".format(e))
         boolg = check()
+        return boolg
