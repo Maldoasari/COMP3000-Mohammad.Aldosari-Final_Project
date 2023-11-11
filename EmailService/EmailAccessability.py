@@ -1,13 +1,14 @@
 from Libraries import tk, json, messagebox
 import email, imaplib
 from Voice_Assistant.Speak import Speak
-from Module import Check_Email_Status, send_email, delete_all_emails
+from EmailService.EmailStatus import Check_Email_Status
+#from Module import Check_Email_Status, send_email, delete_all_emails
+from EmailService.EmailSender import send_email, delete_all_emails
 from Configuration.Config import SetUpApp
 def Check_Email_Accessability():
  Check_Email = Check_Email_Status() 
  if(Check_Email == False):
      Speak("The System cannot access your email. Here you go", -1, 1.0)
-    
      root = tk.Tk()
      app = SetUpApp(root, "Set up Email", "lightblue", "grey", "Email")
      root.mainloop()
