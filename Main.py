@@ -80,10 +80,12 @@ def listen_for_keywords():
     try:
         delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav")
          #recognized_text = recognizer.recognize_google(audio).lower()
-        if ("taylor" in recognized_text) and ("how are you" in recognized_text):
-            Speak("ty t!", -1, 1.0)
+        print(recognized_text)
+        if ("Taylor" in recognized_text) and ("how are you" in recognized_text):
+            Speak("I am good. how about you?", -1, 1.0)
+            listen_for_keywords()
             
-        elif ("quit" in recognized_text):
+        elif ("Taylor" in recognized_text) and ("quit" in recognized_text):
             Speak("quitting..", -1, 1.0)
             DisableSys()
             subprocess.Popen(["python", "System_Activision.py"])
@@ -91,7 +93,7 @@ def listen_for_keywords():
         ###########################################
         ## Email Services: Send email ##
         ###########################################
-        elif ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
+        elif ("Taylor" in recognized_text) and ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
                 generate_email = Generate_Email()
                 print(generate_email)
                 Speak("Would you like to send?", -1, 1.0)
@@ -103,20 +105,15 @@ def listen_for_keywords():
                     Speak(f"Also, {store_email} with success", -1, 1.0)
                 else:
                     print("\nSomething went wrong\n")
-                    greetings = shuffleTxtEntry()
-                    print(greetings)
-                    Speak(greetings, -1, 1.0)
+                    Speak("Something went wrong", -1, 1.0)
                     listen_for_keywords()
-                #send_email("hi", "hi", "aldosari.mkj@gmail.com", "name")
-                Speak("This is the email service.. still in progress", -1, 1.0)
-                #Debugging and full test of its functionality next day!
-                #pass
+                listen_for_keywords()
                 
 
         ###########################################
         ## Email Services: observe emails ##
         ###########################################   
-        elif ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
+        elif ("Taylor" in recognized_text) and ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
             emails = get_emails()
             if(len(emails) == 0):
                 Speak("You have no new messages")
@@ -129,7 +126,7 @@ def listen_for_keywords():
         ###########################################
         ## Wbsite hanlder: ##
         ###########################################
-        elif ("open" and "website" in recognized_text):
+        elif ("open" in recognized_text) and ("website" in recognized_text):
             url = webHandler(recognized_text)
             url = web_Search(url)
             if "netflix" in url:
@@ -144,7 +141,7 @@ def listen_for_keywords():
         ###########################################
         ## Clear data stored in json file ##
         ###########################################   
-        elif ("clear data" in recognized_text):
+        elif ("Taylor" in recognized_text) and ("clear data" in recognized_text):
             pass
         else:
             print("No specific keyword detected.")

@@ -1,10 +1,20 @@
+import re
 import speech_recognition as sr
 from Voice_Assistant.Speak import Speak
 
+def extract_words_between(text, first_word, second_word):
+    pattern = fr"{first_word}\s+((?:\w+\s*)+?){second_word}"
+    match = re.search(pattern, text)
+    if match:
+        return match.group(1).strip()
+    else:
+        return "Words not found"
+    
 def webHandler(webSite):
-    cut_open = webSite.replace("open", "")
-    cut_website = cut_open.replace("website", "")
-    host = cut_website.replace(" ", "").lower()
+    get_web = extract_words_between(webSite, "open", "website")
+    #cut_open = webSite.replace("open", "")
+    #cut_website = cut_open.replace("website", "")
+    host = get_web.replace(" ", "").lower()
     print(host)
     #host = Clone_Name.split()[-2]
     url = f"https://www.{host}.com"

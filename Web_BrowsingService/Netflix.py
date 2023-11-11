@@ -33,12 +33,14 @@ def NetflixHandler(url):
            break
          elif "scroll up" in recognized_text:
                     scroll_up_page(NetFlix_page, recognized_text)
+                    continue
          elif "scroll down" in recognized_text:
                     scroll_down_page(NetFlix_page, recognized_text)
+                    continue
          elif "click on" in recognized_text and "button" in recognized_text:
-                    print(recognized_text)
                     extracted_word = extract_words_between(recognized_text, "click on", "button")
                     click_button_by_text(NetFlix_page, extracted_word)
+                    continue
         except sr.WaitTimeoutError:
             continue
         except sr.UnknownValueError:
@@ -60,6 +62,7 @@ def scroll_up_page(page, text):
 def scroll_down_page(page, text):
     numbers = re.findall(r'\b\d+\b', text)
     int_numbers = [int(nums) for nums in numbers]
+    print(int_numbers)
     if int_numbers:
       for _ in range(30):
         page.evaluate(f"window.scrollBy(0, {int_numbers});")
