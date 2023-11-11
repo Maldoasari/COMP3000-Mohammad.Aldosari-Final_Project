@@ -8,6 +8,7 @@ except ModuleNotFoundError as e:
 from Libraries import *
 from Voice_Assistant.Speak import Speak
 from Voice_Assistant.Activision import *
+
 # Initialize speech recognition
 recognizer = sr.Recognizer()
 

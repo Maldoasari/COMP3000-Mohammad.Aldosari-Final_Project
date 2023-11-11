@@ -1,3 +1,4 @@
+import json
 from Libraries import tk, sd, wav, messagebox
 
 class VoiceRecorderApp:
@@ -42,7 +43,6 @@ class VoiceRecorderApp:
         # Save the recorded audio to a WAV file
         if len(audio_data) > 0:
             wav.write("Database/User.wav", samplerate, audio_data)
-
         self.root.destroy()
 
         

@@ -10,21 +10,22 @@ except OSError as e:
     print(e)
     pass
 """""
-    
-from Libraries import subprocess, sr, time, recognizer
-from Voice_Assistant.Speak import Speak
-from Module import *
-from Voice_Assistant.Activision import system_Info_On
+import subprocess
 ## Check if the file did not go through the activsion file (for auth)
-
 """""
+from Voice_Assistant.Activision import system_Info_On
 data = system_Info_On()
 if data["System"]["Active"] == False:
     pass
     subprocess.Popen(["python", "System_Activision.py"])
     quit()
-else:
+"""
+from Libraries import sr, time, recognizer, json
+from Voice_Assistant.Speak import Speak
+from Module import *   
 
+"""
+else:
 status = Check_Email_Accessability()
 if(status == False):
      Speak("Email Configuration Failed", -1, 1.0)
@@ -84,6 +85,7 @@ def listen_for_keywords():
             
         elif ("quit" in recognized_text):
             Speak("quitting..", -1, 1.0)
+            DisableSys()
             subprocess.Popen(["python", "System_Activision.py"])
             quit()
         ###########################################
@@ -154,6 +156,16 @@ def listen_for_keywords():
     except sr.RequestError as e:
         Speak("Could not request results; {0}".format(e), -1, 1.0)
         listen_for_keywords()
+
+def DisableSys():
+    try:
+     with open("System.json", "r") as file:
+      data = json.load(file)
+      data["System"]["Active"] = False
+    except (FileNotFoundError, json.JSONDecodeError):
+     pass
+    with open("System.json", 'w') as file:
+     json.dump(data, file, indent=4)
 
 def Generate_Email():
     subprocess.Popen(["python", "Voice_Assistant/Read_Email_Voice_Inputs.py"])
