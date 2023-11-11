@@ -4,8 +4,10 @@ import tkinter as tk
 from tkinter import messagebox, font
 import json
 
+
+def LoginOrSign():
 # Fade effect
-def fade_in(widget, step=0.05):
+ def fade_in(widget, step=0.05):
     alpha = widget.attributes("-alpha")
     if alpha < 1:
         alpha += step
@@ -13,30 +15,30 @@ def fade_in(widget, step=0.05):
         widget.after(50, lambda: fade_in(widget, step))
 
 # Functions for placeholder text handling
-def on_entry_click(event, default_text):
+ def on_entry_click(event, default_text):
     if event.widget.get() == default_text:
         event.widget.delete(0, "end")
         event.widget.config(fg='black')
 
-def on_focusout(event, default_text):
+ def on_focusout(event, default_text):
     if not event.widget.get():
         event.widget.insert(0, default_text)
         event.widget.config(fg='grey')
 
 # Hashing functions
-def hash_password(password):
+ def hash_password(password):
     salt = os.urandom(32)
     pwdhash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
     return salt.hex() + pwdhash.hex()
 
-def verify_password(stored_password, provided_password):
+ def verify_password(stored_password, provided_password):
     salt = bytes.fromhex(stored_password[:64])
     stored_password = bytes.fromhex(stored_password[64:])
     pwdhash = hashlib.pbkdf2_hmac('sha256', provided_password.encode('utf-8'), salt, 100000)
     return pwdhash == stored_password
 
 # Function to save user data
-def save_user_data(user_data):
+ def save_user_data(user_data):
     filename = './Database/User.json'
     try:
         with open(filename, 'r') as file:
@@ -51,7 +53,7 @@ def save_user_data(user_data):
         json.dump(data_to_save, file, indent=4)
 
 # Function to attempt login
-def attempt_login(email, password, pin):
+ def attempt_login(email, password, pin):
     filename = './Database/User.json'
     try:
         with open(filename, 'r') as file:
@@ -66,7 +68,7 @@ def attempt_login(email, password, pin):
     return False
 
 # Sign In Action
-def sign_in_action():
+ def sign_in_action():
     email = email_entry.get() if email_entry.get() != "Enter Email" else ""
     password = password_entry.get() if password_entry.get() != "Enter Password" else ""
 
@@ -85,7 +87,7 @@ def sign_in_action():
     open_pin_window(user_data)
 
 # Login Action
-def login_action():
+ def login_action():
     email = email_entry.get() if email_entry.get() != "Enter Email" else ""
     password = password_entry.get() if password_entry.get() != "Enter Password" else ""
 
@@ -97,7 +99,7 @@ def login_action():
     open_login_pin_window(email, password)
 
 # Open Pin Window for sign in
-def open_pin_window(user_data):
+ def open_pin_window(user_data):
     root.withdraw()
     pin_window = tk.Toplevel(root)
     pin_window.title("Enter Pincode")
@@ -128,7 +130,7 @@ def open_pin_window(user_data):
     tk.Button(pin_window, text="Submit Pin", command=on_pin_submit, font=custom_font).pack(pady=10)
 
 # Open Pin Window for login
-def open_login_pin_window(email, password):
+ def open_login_pin_window(email, password):
     root.withdraw()
     login_pin_window = tk.Toplevel(root)
     login_pin_window.title("Enter Pincode")
@@ -156,37 +158,37 @@ def open_login_pin_window(email, password):
     tk.Button(login_pin_window, text="Submit Pin", command=on_pin_submit, font=custom_font).pack(pady=10)
 
 # Main window setup
-root = tk.Tk()
-root.title("Sign In / Login")
-root.geometry("300x200")
-root.configure(bg='#333333')
-root.attributes("-alpha", 0)
-root.attributes('-topmost', True)
+ root = tk.Tk()
+ root.title("Sign In / Login")
+ root.geometry("300x200")
+ root.configure(bg='#333333')
+ root.attributes("-alpha", 0)
+ root.attributes('-topmost', True)
 
 # Custom font
-custom_font = font.Font(family="Helvetica", size=12)
+ custom_font = font.Font(family="Helvetica", size=12)
 
 # Email Entry
-email_entry = tk.Entry(root, font=custom_font, fg='grey')
-email_entry.insert(0, "Enter Email")
-email_entry.bind('<FocusIn>', lambda event: on_entry_click(event, "Enter Email"))
-email_entry.bind('<FocusOut>', lambda event: on_focusout(event, "Enter Email"))
-email_entry.pack(pady=10)
+ email_entry = tk.Entry(root, font=custom_font, fg='grey')
+ email_entry.insert(0, "Enter Email")
+ email_entry.bind('<FocusIn>', lambda event: on_entry_click(event, "Enter Email"))
+ email_entry.bind('<FocusOut>', lambda event: on_focusout(event, "Enter Email"))
+ email_entry.pack(pady=10)
 
 # Password Entry
-password_entry = tk.Entry(root, show="*", font=custom_font, fg='grey')
-password_entry.insert(0, "Enter Password")
-password_entry.bind('<FocusIn>', lambda event: on_entry_click(event, "Enter Password"))
-password_entry.bind('<FocusOut>', lambda event: on_focusout(event, "Enter Password"))
-password_entry.pack(pady=10)
+ password_entry = tk.Entry(root, show="*", font=custom_font, fg='grey')
+ password_entry.insert(0, "Enter Password")
+ password_entry.bind('<FocusIn>', lambda event: on_entry_click(event, "Enter Password"))
+ password_entry.bind('<FocusOut>', lambda event: on_focusout(event, "Enter Password"))
+ password_entry.pack(pady=10)
 
 # Sign In and Login Buttons
-sign_in_button = tk.Button(root, text="Sign In", command=sign_in_action, font=custom_font, width=13, height=1, bg='grey', borderwidth=5)
-login_button = tk.Button(root, text="Login", command=login_action, font=custom_font, width=13, height=1, bg='grey', borderwidth=5)
-sign_in_button.pack(pady=1)
-login_button.pack(pady=2)
+ sign_in_button = tk.Button(root, text="Sign In", command=sign_in_action, font=custom_font, width=13, height=1, bg='grey', borderwidth=5)
+ login_button = tk.Button(root, text="Login", command=login_action, font=custom_font, width=13, height=1, bg='grey', borderwidth=5)
+ sign_in_button.pack(pady=1)
+ login_button.pack(pady=2)
 
 # Fade in the main window
-fade_in(root)
+ fade_in(root)
 
-root.mainloop()
+ root.mainloop()

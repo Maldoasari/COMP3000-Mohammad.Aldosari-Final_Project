@@ -1,6 +1,6 @@
 from Libraries import json, tk
 from Voice_Assistant.Speak import Speak
-from Security.Biomatric import VoiceRecorderApp
+from Security.LoginORsignIN import LoginOrSign
 
 def system_Info_On():
     try:
@@ -23,10 +23,8 @@ def system_check():
       Speak("System activated.", -1, 1.0)
         
 def NewUser(data):
-    Speak("It seems that you are a new user. please record yourself for 5 sec. to enjoy the app with more security", -1, 1.0)
-    root = tk.Tk()
-    app = VoiceRecorderApp(root)
-    root.mainloop()
+    Speak("It seems that you are a new user. please sign up", -1, 1.0)
+    LoginOrSign()
     data["System"]["NewUser"] = False
     with open("System.json", 'w') as file:
         json.dump(data, file, indent=4)
