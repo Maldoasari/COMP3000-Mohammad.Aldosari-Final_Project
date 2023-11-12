@@ -127,21 +127,17 @@ def listen_for_keywords():
         ## Wbsite hanlder: ##
         ###########################################
         elif ("open" in recognized_text) and ("website" in recognized_text):
-            url = webHandler(recognized_text)
+            url = webNameHandler(recognized_text)
             url = web_Search(url)
-            if "netflix" in url:
-                NetflixHandler(url)
-            elif "primevideo" in url:
-                PrimeVideoHandler(url)
-            else:
-                OtherWebHandler(url)
+            Website_openPage_Handler(url)
             Speak("This is the open website service.. still in progress", -1, 1.0)
+            listen_for_keywords()
             #pass
         
         ###########################################
         ## Clear data stored in json file ##
         ###########################################   
-        elif ("Taylor" in recognized_text) and ("clear data" in recognized_text):
+        elif ("Taylor" in recognized_text) and ("clear cache" in recognized_text):
             pass
         else:
             print("No specific keyword detected.")
@@ -184,29 +180,29 @@ def Generate_Email():
             Speak("The Defult path is Adding new email. To who?", -1, 1.0)
             email_address = whoIStheR()
     time.sleep(1)
-    POST("Database/Email.json", "Email", "post", email_address)
+    POST("Database/Content.json", "Email", "post", email_address)
     print("Email:\n", email_address)
-    POST("Database/Email.json", "system", "post", " ")
+    POST("Database/Content.json", "system", "post", " ")
     time.sleep(2)
     Speak("What is the Subject?", -1, 1.0)
     email_subject = Subject()
     time.sleep(1)
-    POST("Database/Email.json", "Subject", "post", email_subject)
+    POST("Database/Content.json", "Subject", "post", email_subject)
     print("Subject:\n",email_subject)
-    POST("Database/Email.json", "system", "post", " ")
+    POST("Database/Content.json", "system", "post", " ")
     time.sleep(1)
     Speak("What is your message?", -1, 1.0)
     email_message = ReadMsg()
     time.sleep(1)
-    POST("Database/Email.json", "message", "post", email_message)
-    POST("Database/Email.json", "system", "post", " ")
+    POST("Database/Content.json", "message", "post", email_message)
+    POST("Database/Content.json", "system", "post", " ")
     print("Message:\n",email_message)
     time.sleep(1)
     Speak("What his. or her. or its name?", -1, 1.0)
     Speak("Say space to add space", -1, 1.0)
     email_name = ReadName()
     time.sleep(1)
-    POST("Database/Email.json", "Name", "post", email_name)
+    POST("Database/Content.json", "Name", "post", email_name)
     print("Name:\n",email_name)
     time.sleep(1)
     generate_email = [email_subject, email_message, email_address, email_name]

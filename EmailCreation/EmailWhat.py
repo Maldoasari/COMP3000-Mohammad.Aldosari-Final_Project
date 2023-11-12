@@ -13,12 +13,12 @@ def checkSub(sub):
      Capture = recognizer.recognize_google(audio).lower()
      if "yes" in Capture:
         subject = sub.capitalize() 
-        POST("Database/Email.json", "system", "post", f"Subject is:\n {subject}")
+        POST("Database/Content.json", "system", "post", f"Subject is:\n {subject}")
         return subject
     
      elif "no" in Capture:
         Speak(f"What would you like me to change it to?\n", 0, 1.0)
-        POST("Database/Email.json", "system", "post", " ")
+        POST("Database/Content.json", "system", "post", " ")
         subject = Subject()
         return subject
      else:
@@ -49,7 +49,7 @@ def Subject():
     try:
         subject = recognizer.recognize_google(audio).lower()
         Speak(f"Do You Confirm That you have said:{subject}\n", 0, 1.0)
-        POST("Database/Email.json", "system", "post", f"DO You Confirm That you have said:\n {subject}")
+        POST("Database/Content.json", "system", "post", f"DO You Confirm That you have said:\n {subject}")
         Email_Subject = checkSub(subject)
         return Email_Subject 
     except sr.UnknownValueError:

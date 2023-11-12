@@ -123,7 +123,7 @@ def Email_gui_template():
     systemFrame.rowconfigure(0, weight=1)
 
     # Initialize JSON file
-    json_file = 'Database/Email.json'
+    json_file = 'Database/Content.json'
     last_modified_time = os.path.getmtime(json_file)
 
     # JSON file loading and updating widgets

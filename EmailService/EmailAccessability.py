@@ -148,7 +148,7 @@ def Store_Contacts():
     contacts_list = [{'name': name, 'email': email} for email, name in contacts.items()]
 
 
-    with open('Database/Cookies.json', 'w') as json_file:
+    with open('Database/Cache.json', 'w') as json_file:
         json.dump(contacts_list, json_file, indent=4)
 
 

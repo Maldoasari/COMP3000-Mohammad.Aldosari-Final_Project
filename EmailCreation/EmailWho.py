@@ -36,7 +36,7 @@ def ChangerTool(reciver):
     if(count < 0):
         count = 2
     print(count)
-    POST("Database/Email.json", "system", "post", f"{x}")
+    POST("Database/Content.json", "system", "post", f"{x}")
     time.sleep(count)
     Speak("Look at the console. say what index you want to change", 0, 1.0)
     
@@ -77,13 +77,13 @@ def ChangerTool(reciver):
                     Capture2 = recognizer.recognize_google(audio2).lower()
                     
                     new_stri[index_to_change] = Capture2[-1]
-                    POST("Database/Email.json", "system", "post", " ")
+                    POST("Database/Content.json", "system", "post", " ")
                     p = ""
                     p = f"FROM {reciver[index_to_change].upper()} : TO {Capture2[-1].upper()}"
-                    POST("Database/Email.json", "system", "post", f"{p}")
+                    POST("Database/Content.json", "system", "post", f"{p}")
                     time.sleep(0.5)
                     Speak(f"From {reciver[index_to_change].upper()}, To {Capture2[-1].upper()}", 0, 1.0)
-                    POST("Database/Email.json", "system", "post", " ")
+                    POST("Database/Content.json", "system", "post", " ")
                 #print("lets try again\n")
                 #print(Capture)
                 #ChangerTool(do_Again)
@@ -121,7 +121,7 @@ def ChangerToolAdd(email_address):
     if(count < 0):
         count = 2
     print(x)
-    POST("Database/Email.json", "system", "post", f"{x}")
+    POST("Database/Content.json", "system", "post", f"{x}")
     while True:  # Using a loop instead of recursion
         time.sleep(count)
         Speak("Please choose two consecutive indexes to add your value in between", 0, 1.0)
@@ -157,7 +157,7 @@ def ChangerToolAdd(email_address):
                 if indexStart is not None and indexEnd is not None and indexStart + 1 == indexEnd:
                     print("Indexes are consecutive")
                     Speak("Now choose the letter or number that you want to add in between", 0, 1.0)
-                    POST("Database/Email.json", "system", "post", " ")
+                    POST("Database/Content.json", "system", "post", " ")
                     audio = recognizer.listen(source)
                     Capture = recognizer.recognize_google(audio).lower()
                     add_letter = Capture[-1]
@@ -226,14 +226,14 @@ def checkWho(reciver):
                 time.sleep(0.5)
                 TopLevelDomain = Top_level_domain()
                 email_address = reciver_without_spaces + "@" + TopLevelDomain +".com"
-                POST("Database/Email.json", "system", "post", " ")
+                POST("Database/Content.json", "system", "post", " ")
                 return email_address
                 
             elif ("no" in Capture) or ("change letter" in Capture) or ("change" in Capture):
                 Speak("Change letters within the email", 0, 1.0)
                 result = ChangerTool(reciver_without_spaces)
                 Speak("Modified Successfully", 0, 1.0)
-                POST("Database/Email.json", "system", "post", f"{result}: \n is the first part of the email \n are you happy with it?")
+                POST("Database/Content.json", "system", "post", f"{result}: \n is the first part of the email \n are you happy with it?")
                 time.sleep(7)
                 email_address = checkWho(result)
                 return email_address
@@ -243,7 +243,7 @@ def checkWho(reciver):
                 print("Add letters in the email")
                 result = ChangerToolAdd(reciver_without_spaces)
                 Speak("Modified", 0, 1.0)
-                POST("Database/Email.json", "system", "post", f"{result}: \n is the first part of the email \n are you happy with it?")
+                POST("Database/Content.json", "system", "post", f"{result}: \n is the first part of the email \n are you happy with it?")
                 time.sleep(7)
                 email_address = checkWho(result)
                 return email_address
@@ -339,12 +339,12 @@ def choose_email(emails, x, count):
     clone_emails = emails
     clone_x = x
     clone_count = count
-    POST("Database/Email.json", "system", "post", f"your storage have {len(emails)} records")
+    POST("Database/Content.json", "system", "post", f"your storage have {len(emails)} records")
     Speak(f"your storage have {len(emails)} records", 0, 1.0)
     if(len(emails) == 1):
         return emails[0]
     else:
-     POST("Database/Email.json", "system", "post", f"{x}")
+     POST("Database/Content.json", "system", "post", f"{x}")
      count = count / 2 - 2.5
      if(count < 0):
         count = 2

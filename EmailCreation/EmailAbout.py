@@ -17,7 +17,7 @@ def edit_message(message):
     if(count < 0):
         count = 2
     print(x)
-    POST("Database/Email.json", "system", "post", f"{x}")
+    POST("Database/Content.json", "system", "post", f"{x}")
     line_num = 0
 
     with sr.Microphone() as source:
@@ -28,7 +28,7 @@ def edit_message(message):
             for i in range(1, len(message_chunks)+1):
                 if str(i) in capture:
                     Speak(f"The picked line is:{message_chunks[i - 1]}", 0, 1.0)
-                    POST("Database/Email.json", "system", "post", f"{message_chunks[i - 1]}")
+                    POST("Database/Content.json", "system", "post", f"{message_chunks[i - 1]}")
                     line_num = i - 1
                     break
                 else:
@@ -48,7 +48,7 @@ def edit_message(message):
         audio = recognizer.listen(source)
         try:
             Speak("Rewrite message to:", 0, 1.0)
-            POST("Database/Email.json", "system", "post", "Rewrite message to:")
+            POST("Database/Content.json", "system", "post", "Rewrite message to:")
             capture = recognizer.recognize_google(audio).lower()
             message_chunks[line_num] = capture
             message = "\n".join(message_chunks)
@@ -80,7 +80,7 @@ def checkmsg(message):
            return msg
           elif "no" in Capture:
             Speak("Okey! what is your message", 0, 1.0)
-            POST("Database/Email.json", "system", "post", f" ")
+            POST("Database/Content.json", "system", "post", f" ")
             msg = ReadMsg()
             return msg
           elif "edit" in Capture:
@@ -131,7 +131,7 @@ def ReadMsg():
         organised_Msg = Organise_Msg(message)
         count = len(organised_Msg)
         Speak(f"Check what you have said:\n", 0, 1.0)
-        POST("Database/Email.json", "system", "post", f"Do You Confirm That you have said:\n {organised_Msg}")
+        POST("Database/Content.json", "system", "post", f"Do You Confirm That you have said:\n {organised_Msg}")
         count = count / 2 - 2.5
         if(count < 0):
          count = 2
