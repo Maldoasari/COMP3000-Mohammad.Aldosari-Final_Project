@@ -2,8 +2,9 @@
     "System": {
         "Active": false,
         "NewUser": true,
-        "Time_Bi_Login": 2,
+        "Time_Bi_Login": 1,
         "attempts": 0,
-        "ENCkey": ""
+        "EmailAddress": "mailtaylor.mkj@gmail.com",
+        "Ekey": ""
     }
 }

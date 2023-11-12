@@ -1,11 +1,36 @@
+import re
 from Libraries import tk, json, messagebox
 import email, imaplib
 from Voice_Assistant.Speak import Speak
 from EmailService.EmailStatus import Check_Email_Status
+import speech_recognition as sr
 #from Module import Check_Email_Status, send_email, delete_all_emails
-from EmailService.EmailSender import send_email, delete_all_emails
+from EmailService.EmailSender import checkAccess, send_email, delete_all_emails
+from EmailService.CodeGeneration import generate_random_5_digit_number
 from Configuration.Config import SetUpApp
+
+def word_to_number(word):
+    mapping = {
+        "zero": 0,
+        "hero": 0,
+        "one": 1,
+        "two": 2,
+        "three": 3,
+        "four": 4,
+        "five": 5,
+        "six": 6,
+        "seven": 7,
+        "eight": 8,
+        "nine": 9,
+        "ten": 10,
+        "eleven": 11
+    }
+    return mapping.get(word, None)
+recognizer = sr.Recognizer()
+num = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twleve"]
 def Check_Email_Accessability():
+ SMTP_SERVER = 'smtp.gmail.com'
+ SMTP_PORT = 587
  Check_Email = Check_Email_Status() 
  if(Check_Email == False):
      Speak("The System cannot access your email. Here you go", -1, 1.0)
@@ -17,7 +42,16 @@ def Check_Email_Accessability():
             dataCheck = json.load(file)
      except (FileNotFoundError, json.JSONDecodeError):
          pass  # If file doesn't exist or is empty, continue with an empty list
-     x = send_email("Success", "The email has been set up for you! \n Enjoy!", dataCheck["Login"]["L_email"], "User")
+     SMTP_email = dataCheck["Login"]["L_email"]
+     SMTP_pass = dataCheck['Login']['E_APIKEY']
+     status = checkAccess(SMTP_SERVER, SMTP_PORT, SMTP_email, SMTP_pass)
+     
+     if status == 0:
+        return False
+    
+    
+     codeIS = generate_random_5_digit_number()
+     x = send_email("Success", f"Please provide this email to the software to varify your email: \n {codeIS}", dataCheck["Login"]["L_email"], "User", "system email")
      
      #0 is returning a flase.  
      if  x == 0:
@@ -32,12 +66,45 @@ def Check_Email_Accessability():
              json.dump(data, file, indent=4)
             return False
      else:
-            messagebox.showinfo("Success", "Email Service configured with success")
-            Store_Contacts()
+            Speak("What is the code:\n", 0, 1.0)
+            get_code = Code_extractor()
+            if(codeIS == get_code):   
+             messagebox.showinfo("Success", "Email Service configured with success")
+             Store_Contacts()
+            else:
+                Speak("Invalid code \n", 0, 1.0)
+                return False
             return True
  else:
      return True
  
+
+def Code_extractor():
+    code = ""
+    with sr.Microphone() as source:
+     audio = recognizer.listen(source)
+     while True:
+        try:
+         Capture = recognizer.recognize_google(audio).lower()
+         for c in Capture:
+            for n in num:
+                if c == n:
+                    x = ''
+                    x = word_to_number(c)
+                    code = code + x
+                elif c.isdigit():
+                    code = code + c
+                    break  
+                else:
+                    continue
+         break
+        except sr.UnknownValueError:
+            print("Sorry, I couldn't understand the audio.")
+            continue
+        except sr.RequestError:
+            print("API unavailable or quota exceeded.")
+            continue
+    return code
 
 def Store_Contacts():
     try:
@@ -77,7 +144,6 @@ def Store_Contacts():
         
         if email_addr and email_addr not in contacts:
             contacts[email_addr] = name
-
 
     contacts_list = [{'name': name, 'email': email} for email, name in contacts.items()]
 
