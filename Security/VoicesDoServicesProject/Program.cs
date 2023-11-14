@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
+using MongoDB.Driver;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,13 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthentication("ApiKeyAuth")
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>("ApiKeyAuth", null);
+
+var mongoDbSettings = builder.Configuration.GetSection("MongoDB");
+var connectionString = mongoDbSettings["ConnectionString"];
+builder.Services.AddSingleton<IMongoClient>(new MongoClient(connectionString));
+builder.Services.AddScoped<DataLayer>();
+
+
 
 var app = builder.Build();
 
