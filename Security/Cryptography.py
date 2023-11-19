@@ -18,20 +18,41 @@ def encrypt_json_file(file_path, key):
         file.write(encrypted_data)
 
 def decrypt_json_file(file_path, key, write_back=True):
-    with open(file_path, 'rb') as file:
-        encrypted_data = file.read()
+    try:
+        with open(file_path, 'rb') as file:
+            encrypted_data = file.read()
 
-    cipher = Fernet(key)
-    decrypted_data_as_bytes = cipher.decrypt(encrypted_data)
+        cipher = Fernet(key)
+        decrypted_data_as_bytes = cipher.decrypt(encrypted_data)
 
-    # Convert bytes back to string and then to JSON
-    decrypted_data = json.loads(decrypted_data_as_bytes.decode('utf-8'))
+        
+        decrypted_data = json.loads(decrypted_data_as_bytes.decode('utf-8'))
 
-    if write_back:
-        with open(file_path, 'w') as file:
-            json.dump(decrypted_data, file)
-    else:
-        return decrypted_data
+        
+        if 'System' in decrypted_data:
+            system_data = decrypted_data['System']
+
+          
+            if 'ENCkey' in system_data:
+                Ckey = system_data['ENCkey']
+                print("Decryption successful.")
+                return Ckey
+            else:
+                print("'ENCkey' is missing in the 'System' data.")
+        else:
+            print("'System' key is missing in the decrypted data.")
+
+        if write_back:
+            with open(file_path, 'w') as file:
+                json.dump(decrypted_data, file)
+        else:
+            return decrypted_data
+
+    except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
+        
+        print(f"Error while decrypting: {e}")
+        return None
+
 
 
 #key = Fernet.generate_key()
