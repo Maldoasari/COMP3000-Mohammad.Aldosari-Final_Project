@@ -1,10 +1,11 @@
 import hashlib
 import os
+import subprocess
+import time
 import tkinter as tk
 from tkinter import messagebox, font
 import json
-
-
+from Resttful_API import Post_record, Get_record_by_email
 def LoginOrSign():
 # Fade effect
  def fade_in(widget, step=0.05):
@@ -78,9 +79,17 @@ def LoginOrSign():
 
     hashed_password = hash_password(password)
     user_data = {
-        "Email address": email,
-        "password": hashed_password,
-        "pincode": ""
+        "email_login": email,
+        "pincode_login": "string",
+        "password_login": hashed_password,
+        "email_service_login_email": "string",
+        "email_service_login_pass": "string",
+        "netflix_username": "string",
+        "netflix_pass": "string",
+        "primeVideo_username": "string",
+        "primeVideo_pass": "string",
+        "spotify_Client_ID": "string",
+        "spotify_Client_Secret": "string"
     }
 
     # Open the pincode window
@@ -105,7 +114,7 @@ def LoginOrSign():
     pin_window.title("Enter Pincode")
     pin_window.configure(bg='#333333')
     pin_window.geometry("300x200")
-    
+
     tk.Label(pin_window, text="Enter Pincode:", font=custom_font, bg='#333333', fg='white').pack(pady=10)
     pin_entry = tk.Entry(pin_window, show="*", font=custom_font)
     pin_entry.pack(pady=10)
@@ -116,16 +125,19 @@ def LoginOrSign():
     pin_window.protocol("WM_DELETE_WINDOW", on_pin_window_close)
 
     def on_pin_submit():
+        command = ["python", "./Security/Loader.py"]
         pin = pin_entry.get()
         if len(pin) == 0 or not pin.isdigit() or len(pin) != 6:
             messagebox.showerror("Invalid", "Pincode must be 6 digits and not empty")
             return
-        hashed_pin = hash_password(pin)
-        user_data["pincode"] = hashed_pin
-        save_user_data(user_data)
-        messagebox.showinfo("Sign In Successful", "You are now signed in.")
         pin_window.destroy()
         root.destroy()
+        process = subprocess.Popen(command)
+        hashed_pin = hash_password(pin)
+        user_data["pincode_login"] = hashed_pin
+        Post_record(user_data)
+        process.wait()
+        messagebox.showinfo("Sign In Successful", "You are now signed in.")
 
     tk.Button(pin_window, text="Submit Pin", command=on_pin_submit, font=custom_font).pack(pady=10)
 
@@ -192,3 +204,5 @@ def LoginOrSign():
  fade_in(root)
 
  root.mainloop()
+
+LoginOrSign()
