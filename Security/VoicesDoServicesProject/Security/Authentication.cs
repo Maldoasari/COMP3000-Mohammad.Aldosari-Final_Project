@@ -9,7 +9,7 @@ using System.Linq; // Make sure to include this for Linq methods like FirstOrDef
 public class ApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
     private const string ApiKeyHeaderName = "X-Api-Key";
-    private const string ApiKey = "..ccvvc0-9ujhvd54324wsdvkyubv543442xcvybunimin"; // In a real app, get this from a secure place
+    private const string ApiKey = "5HVEIRO8zc8X6XF-b9Ys0kWXmrSUVjZ0RwGVbD9QsSY="; // In a real app, get this from a secure place
 
     public ApiKeyAuthenticationHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
