@@ -141,7 +141,7 @@ def LoginOrSign():
     def on_pin_window_close():
         root.deiconify()  
         pin_window.destroy()
-
+        return False
     pin_window.protocol("WM_DELETE_WINDOW", on_pin_window_close)
 
     def on_pin_submit():
@@ -158,6 +158,7 @@ def LoginOrSign():
         Post_record(user_data)
         process.wait()
         messagebox.showinfo("Sign In Successful", "You are now signed in.")
+        return True
 
     tk.Button(pin_window, text="Submit Pin", command=on_pin_submit, font=custom_font).pack(pady=10)
 
@@ -175,6 +176,7 @@ def LoginOrSign():
     def on_login_pin_window_close():
         root.deiconify()  
         login_pin_window.destroy()
+        return False
 
     login_pin_window.protocol("WM_DELETE_WINDOW", on_login_pin_window_close)
     def on_pin_submit():
@@ -202,10 +204,11 @@ def LoginOrSign():
         if valid == True:
             login_pin_window.destroy()
             root.destroy()
+            return True
             
         if valid == False:
             messagebox.showerror("Login Failed", "Invalid code.")
-            return
+            return False
         else:
             messagebox.showerror("Login Failed", "Invalid pincode.")
             #login_pin_window.destroy()
