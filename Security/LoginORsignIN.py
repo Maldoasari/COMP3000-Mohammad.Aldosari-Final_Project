@@ -38,23 +38,25 @@ def LoginOrSign():
     pwdhash = hashlib.pbkdf2_hmac('sha256', provided_password.encode('utf-8'), salt, 100000)
     return pwdhash == stored_password
 
-# Function to save user data
- def save_user_data(user_data):
-    filename = './Database/User.json'
-    try:
-        with open(filename, 'r') as file:
-            data_to_save = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data_to_save = {}
-
-    email = user_data["Email address"]
-    data_to_save[email] = user_data
-
-    with open(filename, 'w') as file:
-        json.dump(data_to_save, file, indent=4)
-
 # Function to attempt login
- def attempt_login(email, password, pin):
+ def attempt_login(email, input, status):
+    user_data = Get_record_by_email(email)
+    if user_data == None:
+        return False
+    
+    if status == "check password":
+       password_verified = verify_password(user_data["password_login"], input)
+       return password_verified
+    elif status == "check pincode":
+       pin_verified = verify_password(user_data["pincode_login"], input)
+       return pin_verified
+    else:
+        return False
+    print(user_data)
+    print(user_data['password_login'])
+    print(user_data['pincode_login'])
+    
+    """""
     filename = './Database/User.json'
     try:
         with open(filename, 'r') as file:
@@ -67,6 +69,7 @@ def LoginOrSign():
     except (FileNotFoundError, json.JSONDecodeError):
         pass
     return False
+    """
 
 # Sign In Action
  def sign_in_action():
@@ -103,9 +106,11 @@ def LoginOrSign():
     if len(email) == 0 or len(password) == 0:
         messagebox.showerror("Invalid", "Email and password must not be empty")
         return
-
-    # Open the pincode window for login
-    open_login_pin_window(email, password)
+    if attempt_login(email, password, "check password"):
+        open_login_pin_window(email)
+    else: 
+     messagebox.showerror("Invalid", "Email and password invalid")
+     return 
 
 # Open Pin Window for sign in
  def open_pin_window(user_data):
@@ -142,7 +147,7 @@ def LoginOrSign():
     tk.Button(pin_window, text="Submit Pin", command=on_pin_submit, font=custom_font).pack(pady=10)
 
 # Open Pin Window for login
- def open_login_pin_window(email, password):
+ def open_login_pin_window(email):
     root.withdraw()
     login_pin_window = tk.Toplevel(root)
     login_pin_window.title("Enter Pincode")
@@ -159,12 +164,14 @@ def LoginOrSign():
     login_pin_window.protocol("WM_DELETE_WINDOW", on_login_pin_window_close)
     def on_pin_submit():
         pin = pin_entry.get()
-        if attempt_login(email, password, pin):
+        if attempt_login(email, pin, "check pincode"):
             messagebox.showinfo("Login Successful", "You are now logged in.")
             login_pin_window.destroy()
         else:
-            messagebox.showerror("Login Failed", "Invalid email, password, or pincode.")
-            login_pin_window.destroy()
+            messagebox.showerror("Login Failed", "Invalid pincode.")
+            #login_pin_window.destroy()
+            return
+        #login_pin_window.destroy()
         root.destroy()
 
     tk.Button(login_pin_window, text="Submit Pin", command=on_pin_submit, font=custom_font).pack(pady=10)
