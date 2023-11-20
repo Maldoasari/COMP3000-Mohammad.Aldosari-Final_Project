@@ -253,4 +253,5 @@ def LoginOrSign():
 
  root.mainloop()
 
-LoginOrSign()
+x= LoginOrSign()
+print(x)
