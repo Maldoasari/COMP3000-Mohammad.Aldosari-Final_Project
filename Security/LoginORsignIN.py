@@ -1,11 +1,26 @@
 import hashlib
 import os
 import subprocess
+import sys
 import time
+#######################################################################
+#temp..............................
+# Adjusting the Python path to include necessary directories
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.chdir('.')
+cur_dir = os.getcwd()
+dir2_path = os.path.join(parent_dir, fr"{cur_dir}")
+sys.path.append(dir2_path)
+#####################################################################
 import tkinter as tk
 from tkinter import messagebox, font
 import json
+from EmailService.CodeGeneration import generate_random_5_digit_number
+from EmailService.EmailAccessability import Code_extractor
+from EmailService.EmailSender import send_email
 from Resttful_API import Post_record, Get_record_by_email
+from Voice_Assistant.Speak import Speak
+
 def LoginOrSign():
 # Fade effect
  def fade_in(widget, step=0.05):
@@ -163,16 +178,39 @@ def LoginOrSign():
 
     login_pin_window.protocol("WM_DELETE_WINDOW", on_login_pin_window_close)
     def on_pin_submit():
+        valid = False
         pin = pin_entry.get()
         if attempt_login(email, pin, "check pincode"):
-            messagebox.showinfo("Login Successful", "You are now logged in.")
+            codeIS = generate_random_5_digit_number()
+            send_email("Success", f"Please provide this email to the software to varify your email: \n {codeIS}", email, "User", "system email")
+            count = 0
+            while True:
+             count = count + 1
+             Speak("What is the code:\n", 0, 1.0)
+             get_code = Code_extractor()
+             if(codeIS == get_code): 
+              messagebox.showinfo("Login Successful", "You are now logged in.")
+              valid = True
+              break
+             elif count == 4:
+                 valid = False
+                 break
+             else:
+                Speak("Incorrect\n", 0, 1.0)
+                continue
+            
+        if valid == True:
             login_pin_window.destroy()
+            root.destroy()
+            
+        if valid == False:
+            messagebox.showerror("Login Failed", "Invalid code.")
+            return
         else:
             messagebox.showerror("Login Failed", "Invalid pincode.")
             #login_pin_window.destroy()
             return
         #login_pin_window.destroy()
-        root.destroy()
 
     tk.Button(login_pin_window, text="Submit Pin", command=on_pin_submit, font=custom_font).pack(pady=10)
 

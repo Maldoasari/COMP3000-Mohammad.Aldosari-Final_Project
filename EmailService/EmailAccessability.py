@@ -49,7 +49,6 @@ def Check_Email_Accessability():
      if status == 0:
         return False
     
-    
      codeIS = generate_random_5_digit_number()
      x = send_email("Success", f"Please provide this email to the software to varify your email: \n {codeIS}", dataCheck["Login"]["L_email"], "User", "system email")
      
