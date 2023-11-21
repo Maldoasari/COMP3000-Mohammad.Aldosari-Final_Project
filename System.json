@@ -2,12 +2,5 @@
     "Login": {
         "L_email": "",
         "E_APIKEY": ""
-    },
-    "User": {
-        "S_Active": true,
-        "NewUser": false,
-        "Time_Bi_Login": 2,
-        "attempts": 0,
-        "time": " "
     }
 }

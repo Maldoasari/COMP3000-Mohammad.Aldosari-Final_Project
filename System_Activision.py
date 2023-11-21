@@ -70,11 +70,11 @@ def create_database_directory():
     },
     "User": {
         "S_Active": false,
-        "NewUser": true,
-        "Time_Bi_Login": 1,
-        "attempts": 0,
-        "time": " "
-    }}, data_file)  
+        "NewUser": true
+    },
+    "User[email]": "",
+    "Time_Bi_Login": 0
+}, data_file)  
 
     
     content_file_path = os.path.join(database_directory_path, 'Content.json')

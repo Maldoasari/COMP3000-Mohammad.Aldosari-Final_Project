@@ -9,7 +9,15 @@ def POST(Jsonfile, tragetData, status, input):
          json.dump(data, file, indent=4)
     else:
         return 501
-
+    
+def Get(Jsonfile):
+    try: 
+     with open(Jsonfile, 'r') as file:
+        data = json.load(file)
+        return data
+    except (FileNotFoundError, json.JSONDecodeError):
+        return 404
+   
 
 
 def Email_gui_template():

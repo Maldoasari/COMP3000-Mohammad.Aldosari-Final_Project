@@ -5,10 +5,8 @@
     },
     "User": {
         "S_Active": false,
-        "NewUser": true,
-        "Time_Bi_Login": 1,
-        "attempts": 0,
-        "time": " "
-    }
-
+        "NewUser": true
+    },
+    "User[email]": "moha@gmail.com",
+    "Time_Bi_Login": 4
 }

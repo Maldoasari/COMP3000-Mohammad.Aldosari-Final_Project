@@ -11,10 +11,18 @@ from EmailService.EmailAccessability import Code_extractor
 from EmailService.EmailSender import send_email
 from Security.Resttful_API import Post_record, Get_record_by_email
 from Voice_Assistant.Speak import Speak
-
+from Voice_Assistant.Read_Email_Voice_Inputs import POST, Get
 def LoginOrSign():
  x = []
  x.append(False)
+ data = Get("Database/Data.json")
+ if (data["User[email]"] != None) and (data["Time_Bi_Login"] <= 3):
+     atempt = data["Time_Bi_Login"] + 1
+     POST("Database/Data.json", "Time_Bi_Login", 'post', atempt)
+     x.clear()
+     x.append(True)
+     return x
+ POST("Database/Data.json", "Time_Bi_Login", 'post', 0)
 # Fade effect
  def fade_in(widget, step=0.05):
     alpha = widget.attributes("-alpha")
@@ -134,6 +142,7 @@ def LoginOrSign():
         Post_record(user_data)
         process.wait()
         messagebox.showinfo("Sign In Successful", "You are now signed in.")
+        POST("Database/Data.json", "User[email]", 'post', user_data["email_login"])
         x.clear()
         x.append(True)
         return True
@@ -170,7 +179,8 @@ def LoginOrSign():
              count = count + 1
              Speak("What is the code:\n", 0, 1.0)
              get_code = Code_extractor()
-             if(codeIS == get_code): 
+             if(codeIS == get_code):
+              POST("Database/Data.json", "User[email]", 'post', email) 
               messagebox.showinfo("Login Successful", "You are now logged in.")
               getstatus = True
               break
