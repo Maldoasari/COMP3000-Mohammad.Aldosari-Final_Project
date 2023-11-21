@@ -2,9 +2,9 @@ import subprocess
 ## Check if the file did not go through the activsion file (for auth)
 """""
 from Voice_Assistant.Activision import system_Info_On
+
 data = system_Info_On()
-if data["System"]["Active"] == False:
-    pass
+if data["User"]["S_Active"] == False:
     subprocess.Popen(["python", "System_Activision.py"])
     quit()
 """
@@ -86,6 +86,12 @@ def listen_for_keywords():
         ## Email Services: Send email ##
         ###########################################
         elif ("Taylor" in recognized_text) and ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
+                status = Check_Email_Accessability()
+                if(status == False):
+                   Speak("Email Configuration Failed", -1, 1.0)
+                   DisableSys()
+                   subprocess.Popen(["python", "System_Activision.py"])
+                   quit()
                 generate_email = Generate_Email()
                 print(generate_email)
                 Speak("Would you like to send?", -1, 1.0)

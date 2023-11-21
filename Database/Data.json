@@ -1,18 +1,14 @@
 {
-    "NetFlix": {
-        "email": "",
-        "N_APIKEY": ""
-    },
-    "PrimeVideo": {
-        "email": "",
-        "P_APIKEY": ""
-    },
-    "Spotify": {
-        "Client ID": "",
-        "Client Secret": ""
-    },
     "Login": {
         "L_email": "",
         "E_APIKEY": ""
+    },
+    "User": {
+        "S_Active": false,
+        "NewUser": true,
+        "Time_Bi_Login": 1,
+        "attempts": 0,
+        "time": " "
     }
+
 }
