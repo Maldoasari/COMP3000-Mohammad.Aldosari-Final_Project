@@ -81,8 +81,8 @@ def Check_Email_Accessability():
 def Code_extractor():
     code = ""
     with sr.Microphone() as source:
-     audio = recognizer.listen(source)
      while True:
+        audio = recognizer.listen(source)
         try:
          Capture = recognizer.recognize_google(audio).lower()
          for c in Capture:

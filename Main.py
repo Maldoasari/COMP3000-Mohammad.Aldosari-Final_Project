@@ -1,15 +1,3 @@
-"""""
-from Requirments.Install_Packages import install_packages
-## try and find wheather all libraries have been download or not
-try:
- from Libraries import *  
-except ModuleNotFoundError as e:
-    ## if the library is not found install it
-    install_packages()
-except OSError as e:
-    print(e)
-    pass
-"""""
 import subprocess
 ## Check if the file did not go through the activsion file (for auth)
 """""
@@ -23,7 +11,11 @@ if data["System"]["Active"] == False:
 from Libraries import sr, time, recognizer, json
 from Voice_Assistant.Speak import Speak
 from Module import *   
-
+valid = LoginOrSign()
+if valid[0] == False:
+    Speak("Login or Sign up Failed", -1, 1.0)
+    quit()
+    
 """
 else:
 status = Check_Email_Accessability()

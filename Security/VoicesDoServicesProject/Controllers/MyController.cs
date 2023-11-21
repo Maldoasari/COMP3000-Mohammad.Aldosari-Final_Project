@@ -28,13 +28,13 @@ public class MyController : ControllerBase
         _dataLayer.InsertMyData(model);
         return Ok();
     }
-    [HttpPut("{id}")]
+    [HttpPut("ById/{id}")]
     public async Task<IActionResult> UpdateData(string id, [FromBody] MyDataModel newData)
     {
         await _dataLayer.UpdateMyDataAsync(id, newData);
         return Ok();
     }
-    [HttpDelete("{id}")]
+    [HttpDelete("ById/{id}")]
     public async Task<IActionResult> DeleteData(string id)
     {
         await _dataLayer.DeleteMyDataAsync(id);

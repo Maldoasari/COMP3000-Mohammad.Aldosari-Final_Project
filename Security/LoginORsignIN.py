@@ -3,25 +3,18 @@ import os
 import subprocess
 import sys
 import time
-#######################################################################
-#temp..............................
-# Adjusting the Python path to include necessary directories
-parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-os.chdir('.')
-cur_dir = os.getcwd()
-dir2_path = os.path.join(parent_dir, fr"{cur_dir}")
-sys.path.append(dir2_path)
-#####################################################################
 import tkinter as tk
 from tkinter import messagebox, font
 import json
 from EmailService.CodeGeneration import generate_random_5_digit_number
 from EmailService.EmailAccessability import Code_extractor
 from EmailService.EmailSender import send_email
-from Resttful_API import Post_record, Get_record_by_email
+from Security.Resttful_API import Post_record, Get_record_by_email
 from Voice_Assistant.Speak import Speak
 
 def LoginOrSign():
+ x = []
+ x.append(False)
 # Fade effect
  def fade_in(widget, step=0.05):
     alpha = widget.attributes("-alpha")
@@ -67,30 +60,11 @@ def LoginOrSign():
        return pin_verified
     else:
         return False
-    print(user_data)
-    print(user_data['password_login'])
-    print(user_data['pincode_login'])
-    
-    """""
-    filename = './Database/User.json'
-    try:
-        with open(filename, 'r') as file:
-            users = json.load(file)
-            if email in users:
-                stored_data = users[email]
-                password_verified = verify_password(stored_data["password"], password)
-                pin_verified = verify_password(stored_data["pincode"], pin)
-                return password_verified and pin_verified
-    except (FileNotFoundError, json.JSONDecodeError):
-        pass
-    return False
-    """
-
 # Sign In Action
  def sign_in_action():
     email = email_entry.get() if email_entry.get() != "Enter Email" else ""
     password = password_entry.get() if password_entry.get() != "Enter Password" else ""
-
+    
     if len(email) == 0 or len(password) == 0:
         messagebox.showerror("Invalid", "Email and password must not be empty")
         return
@@ -141,6 +115,8 @@ def LoginOrSign():
     def on_pin_window_close():
         root.deiconify()  
         pin_window.destroy()
+        x.clear()
+        x.append(False)
         return False
     pin_window.protocol("WM_DELETE_WINDOW", on_pin_window_close)
 
@@ -158,6 +134,8 @@ def LoginOrSign():
         Post_record(user_data)
         process.wait()
         messagebox.showinfo("Sign In Successful", "You are now signed in.")
+        x.clear()
+        x.append(True)
         return True
 
     tk.Button(pin_window, text="Submit Pin", command=on_pin_submit, font=custom_font).pack(pady=10)
@@ -176,11 +154,13 @@ def LoginOrSign():
     def on_login_pin_window_close():
         root.deiconify()  
         login_pin_window.destroy()
+        x.clear()
+        x.append(False)
         return False
 
     login_pin_window.protocol("WM_DELETE_WINDOW", on_login_pin_window_close)
     def on_pin_submit():
-        valid = False
+        getstatus = None
         pin = pin_entry.get()
         if attempt_login(email, pin, "check pincode"):
             codeIS = generate_random_5_digit_number()
@@ -192,29 +172,30 @@ def LoginOrSign():
              get_code = Code_extractor()
              if(codeIS == get_code): 
               messagebox.showinfo("Login Successful", "You are now logged in.")
-              valid = True
+              getstatus = True
               break
              elif count == 4:
-                 valid = False
+                 getstatus = False
                  break
              else:
                 Speak("Incorrect\n", 0, 1.0)
                 continue
-            
-        if valid == True:
+        if getstatus == True:
             login_pin_window.destroy()
             root.destroy()
-            return True
-            
-        if valid == False:
+            x.clear()
+            x.append(True)
+            return getstatus  
+        if getstatus == False:
             messagebox.showerror("Login Failed", "Invalid code.")
-            return False
+            x.clear()
+            x.append(False)
+            return getstatus
         else:
             messagebox.showerror("Login Failed", "Invalid pincode.")
             #login_pin_window.destroy()
             return
         #login_pin_window.destroy()
-
     tk.Button(login_pin_window, text="Submit Pin", command=on_pin_submit, font=custom_font).pack(pady=10)
 
 # Main window setup
@@ -247,11 +228,11 @@ def LoginOrSign():
  login_button = tk.Button(root, text="Login", command=login_action, font=custom_font, width=13, height=1, bg='grey', borderwidth=5)
  sign_in_button.pack(pady=1)
  login_button.pack(pady=2)
-
 # Fade in the main window
  fade_in(root)
-
  root.mainloop()
+ return x
 
-x= LoginOrSign()
-print(x)
+ 
+ 
+
