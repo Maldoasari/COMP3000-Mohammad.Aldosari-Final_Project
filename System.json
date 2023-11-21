@@ -1,6 +1,6 @@
 {
-    "Login": {
-        "L_email": "",
-        "E_APIKEY": ""
+    "System": {
+        "EmailAddress": "mailtaylor.mkj@gmail.com",
+        "Ekey": ""
     }
 }

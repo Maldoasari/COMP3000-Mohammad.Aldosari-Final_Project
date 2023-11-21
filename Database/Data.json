@@ -1,12 +1,12 @@
 {
-    "Login": {
-        "L_email": "",
-        "E_APIKEY": ""
-    },
-    "User": {
-        "S_Active": false,
-        "NewUser": true
-    },
-    "User[email]": "moha@gmail.com",
-    "Time_Bi_Login": 4
+  "Login": {
+    "L_email": "",
+    "E_APIKEY": ""
+  },
+  "User": {
+    "S_Active": false,
+    "NewUser": true
+  },
+  "User_email": "",
+  "Time_Bi_Login": 0
 }

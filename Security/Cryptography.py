@@ -57,9 +57,9 @@ def decrypt_json_file(file_path, key, write_back=True):
 
 #key = Fernet.generate_key()
 #print(key)
-with open("System.json", 'rb') as file:
-    data = json.load(file)
-    Ckey = data['System']['ENCkey']
+#with open("System.json", 'rb') as file:
+   # data = json.load(file)
+   # Ckey = data['System']['ENCkey']
 
 
 #Encrypt the JSON file
@@ -67,3 +67,54 @@ with open("System.json", 'rb') as file:
 
 # Decrypt the JSON file
 #decrypt_json_file('Cookies.json', key=Ckey)
+
+def create_database_directory():
+    # Get the current working directory
+    current_directory = os.getcwd()
+    database_directory_name = 'Database'
+    database_directory_path = os.path.join(current_directory, database_directory_name)
+    if os.path.exists(database_directory_path):
+        print(f"Directory '{database_directory_path}' already exists. Skipping creation.")
+        return
+
+    os.makedirs(database_directory_path)
+    
+    bin_directory = os.path.join(database_directory_path, 'bin')
+    os.makedirs(bin_directory)
+
+    data_file_path = os.path.join(database_directory_path, 'Data.json')
+    with open(data_file_path, 'w') as data_file:
+        json.dump(
+            {
+                "Login": {
+                    "L_email": "",
+                    "E_APIKEY": ""
+                },
+                "User": {
+                    "S_Active": False,  
+                    "NewUser": True
+                },
+                "User_email": "",
+                "Time_Bi_Login": 0
+            }
+        , data_file, indent=2)  # Indent for better readability
+    
+    content_file_path = os.path.join(database_directory_path, 'Content.json')
+    with open(content_file_path, 'w') as content_file:
+        json.dump(
+            {
+                "Email": "",
+                "Subject": "",
+                "massage": "",
+                "Name": "",
+                "message": "",
+                "status": "",
+                "system": " "
+            }
+        , content_file, indent=2)  # Indent for better readability
+    
+    cookies_file_path = os.path.join(database_directory_path, 'cookies.json')
+    with open(cookies_file_path, 'w') as cookies_file:
+        json.dump([{"name": "defult", "email": "defult"}], cookies_file, indent=2)  # Indent for better readability
+
+    print(f"Database directory '{database_directory_path}' created successfully.")

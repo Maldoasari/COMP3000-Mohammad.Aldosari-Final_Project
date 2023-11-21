@@ -12,17 +12,23 @@ from EmailService.EmailSender import send_email
 from Security.Resttful_API import Post_record, Get_record_by_email
 from Voice_Assistant.Speak import Speak
 from Voice_Assistant.Read_Email_Voice_Inputs import POST, Get
+from Security.Cryptography import create_database_directory
 def LoginOrSign():
+ count_Attempts = [4]
  x = []
  x.append(False)
+ create_database_directory()
  data = Get("Database/Data.json")
- if (data["User[email]"] != None) and (data["Time_Bi_Login"] <= 3):
+ print(len(data["User_email"]))
+ print(data["Time_Bi_Login"] <= 3)
+ if (len(data["User_email"]) > 0) and (data["Time_Bi_Login"] < 3):
      atempt = data["Time_Bi_Login"] + 1
      POST("Database/Data.json", "Time_Bi_Login", 'post', atempt)
      x.clear()
      x.append(True)
      return x
- POST("Database/Data.json", "Time_Bi_Login", 'post', 0)
+ 
+ 
 # Fade effect
  def fade_in(widget, step=0.05):
     alpha = widget.attributes("-alpha")
@@ -96,17 +102,25 @@ def LoginOrSign():
     open_pin_window(user_data)
 
 # Login Action
+ 
  def login_action():
     email = email_entry.get() if email_entry.get() != "Enter Email" else ""
     password = password_entry.get() if password_entry.get() != "Enter Password" else ""
-
     if len(email) == 0 or len(password) == 0:
         messagebox.showerror("Invalid", "Email and password must not be empty")
         return
     if attempt_login(email, password, "check password"):
+        count_Attempts[0] = 4
         open_login_pin_window(email)
+    if count_Attempts[0] == 0:
+        x.clear()
+        x.append(False)
+        root.destroy()
     else: 
-     messagebox.showerror("Invalid", "Email and password invalid")
+     counts = count_Attempts[0] - 1
+     count_Attempts.clear()
+     count_Attempts.append(counts)
+     messagebox.showerror("Invalid", f"Email and password invalid you have {counts} attempts left")
      return 
 
 # Open Pin Window for sign in
@@ -142,7 +156,7 @@ def LoginOrSign():
         Post_record(user_data)
         process.wait()
         messagebox.showinfo("Sign In Successful", "You are now signed in.")
-        POST("Database/Data.json", "User[email]", 'post', user_data["email_login"])
+        POST("Database/Data.json", "User_email", 'post', user_data["email_login"])
         x.clear()
         x.append(True)
         return True
@@ -180,7 +194,8 @@ def LoginOrSign():
              Speak("What is the code:\n", 0, 1.0)
              get_code = Code_extractor()
              if(codeIS == get_code):
-              POST("Database/Data.json", "User[email]", 'post', email) 
+              POST("Database/Data.json", "User_email", 'post', email) 
+              POST("Database/Data.json", "Time_Bi_Login", 'post', 0)
               messagebox.showinfo("Login Successful", "You are now logged in.")
               getstatus = True
               break
@@ -201,8 +216,15 @@ def LoginOrSign():
             x.clear()
             x.append(False)
             return getstatus
+        if count_Attempts[0] == 0:
+            x.clear()
+            x.append(False)
+            root.destroy()
         else:
-            messagebox.showerror("Login Failed", "Invalid pincode.")
+            counts = count_Attempts[0] - 1
+            count_Attempts.clear()
+            count_Attempts.append(counts)
+            messagebox.showerror("Invalid", f"Invalid pincode. you have {count_Attempts} left")
             #login_pin_window.destroy()
             return
         #login_pin_window.destroy()
@@ -232,7 +254,6 @@ def LoginOrSign():
  password_entry.bind('<FocusIn>', lambda event: on_entry_click(event, "Enter Password"))
  password_entry.bind('<FocusOut>', lambda event: on_focusout(event, "Enter Password"))
  password_entry.pack(pady=10)
-
 # Sign In and Login Buttons
  sign_in_button = tk.Button(root, text="Sign In", command=sign_in_action, font=custom_font, width=13, height=1, bg='grey', borderwidth=5)
  login_button = tk.Button(root, text="Login", command=login_action, font=custom_font, width=13, height=1, bg='grey', borderwidth=5)

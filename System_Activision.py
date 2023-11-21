@@ -39,54 +39,6 @@ def activate_system():
     except sr.RequestError as e:
         print(f"Could not request results; {e}")
 
-def create_database_directory():
-    # Get the current working directory
-    current_directory = os.getcwd()
-
-    # Specify the new directory name
-    database_directory_name = 'Database'
-
-    # Create the main database directory in the current working directory
-    database_directory_path = os.path.join(current_directory, database_directory_name)
-
-    # Check if the directory already exists
-    if os.path.exists(database_directory_path):
-        print(f"Directory '{database_directory_path}' already exists. Skipping creation.")
-        return
-
-    os.makedirs(database_directory_path)
-
-    # Create the 'bin' directory inside the main database directory
-    bin_directory = os.path.join(database_directory_path, 'bin')
-    os.makedirs(bin_directory)
-
-    # Create the 'Data.json' file inside the main database directory
-    data_file_path = os.path.join(database_directory_path, 'Data.json')
-    with open(data_file_path, 'w') as data_file:
-        json.dump({
-    "Login": {
-        "L_email": "",
-        "E_APIKEY": ""
-    },
-    "User": {
-        "S_Active": false,
-        "NewUser": true
-    },
-    "User[email]": "",
-    "Time_Bi_Login": 0
-}, data_file)  
-
-    
-    content_file_path = os.path.join(database_directory_path, 'Content.json')
-    with open(content_file_path, 'w') as content_file:
-        json.dump({}, content_file)  
-
-
-    cookies_file_path = os.path.join(database_directory_path, 'cookies.json')
-    with open(cookies_file_path, 'w') as cookies_file:
-        json.dump({}, cookies_file)  
-
-    print(f"Database directory '{database_directory_path}' created successfully.")
 
 # Main loop to continuously listen for activation
 if __name__ == "__main__":
