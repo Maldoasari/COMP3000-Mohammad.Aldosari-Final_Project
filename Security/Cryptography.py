@@ -99,6 +99,10 @@ def create_database_directory():
     
     cookies_file_path = os.path.join(database_directory_path, 'cookies.json')
     with open(cookies_file_path, 'w') as cookies_file:
-        json.dump([{"name": "defult", "email": "defult"}], cookies_file, indent=2)  # Indent for better readability
+        json.dump([{"name": "defult", "email": "defult"}], cookies_file, indent=2) 
+        
+    output_file_path = os.path.join(database_directory_path, 'Output.json')
+    with open(output_file_path, 'w') as output_file:
+        json.dump({"Email": "", "Subject": "", "Message": "", "System": ""}, output_file, indent=2)
 
     print(f"Database directory '{database_directory_path}' created successfully.")

@@ -1,5 +1,7 @@
 from tkinter import messagebox
 from Libraries import imaplib, smtplib, MIMEText, json
+from Security.Cryptography import decrypt_text
+from Security.Resttful_API import Get_record_by_email, Update_record_by_email
 def delete_all_emails(user_email, app_password):
     
     # Connect to Gmail's IMAP server
@@ -41,12 +43,15 @@ def send_email(subject, message_body, to_email, nameOfRec, type):
               SMTP_pass = data['System']['Ekey']
       elif type == "user email":
         with open("Database/Data.json", "r") as file:
-           data = json.load(file)
-           if(data["Login"]["L_email"] == "") or (data["Login"]["E_APIKEY"] == ""):
-              return 404
-           else:
-              SMTP_email = data['Login']['L_email']
-              SMTP_pass = data['Login']['E_APIKEY']
+          GetEmail = json.load(file)
+          GetEmail = GetEmail["User_email"]
+          data = Get_record_by_email(GetEmail)
+          decryptKey = decrypt_text(data["email_service_login_pass"])
+        if(len(data["email_service_login_email"]) == 0) or (len(decryptKey) == 0):
+              return 400
+        else:
+              SMTP_email = data["email_service_login_email"]
+              SMTP_pass = decryptKey
               status = checkAccess(SMTP_SERVER, SMTP_PORT, SMTP_email, SMTP_pass)
               if status == 1:
                   pass
@@ -106,13 +111,13 @@ def checkAccess(SMTP_SERVER, SMTP_PORT, SMTP_email, SMTP_pass):
     except Exception as e:
         messagebox.showerror("Error", "The Given email or and password is incorrect")
             #data = {"Login": {"L_email": "", "L_password": ""}}
-        with open("Database/Data.json", 'r') as file:
-         data = json.load(file)
-         data["Login"]["L_email"] = ""
-         data["Login"]["E_APIKEY"] = ""
-         # Write the updated data back to the JSON file
-        with open("Database/Data.json", 'w') as file:
-         json.dump(data, file, indent=4)
+        with open("Database/Data.json", "r") as file:
+          GetEmail = json.load(file)
+          GetEmail = GetEmail["User_email"]
+        update_data = {
+            "email_service_login_email": " ",
+            "email_service_login_pass": " "}
+        Update_record_by_email(GetEmail, update_data)
     # Handle exceptions (e.g., authentication failure, connection errors)
         print(f"An error occurred: {e}")
         return 0

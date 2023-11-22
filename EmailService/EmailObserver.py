@@ -1,3 +1,5 @@
+from Security.Cryptography import decrypt_text
+from Security.Resttful_API import Get_record_by_email
 from Voice_Assistant.Speak import Speak
 from Libraries import sr, json, re, imaplib, BytesParser, policy, recognizer
 def word_to_number(word):
@@ -19,13 +21,13 @@ def word_to_number(word):
     return mapping.get(word, word)
 
 def get_emails(n=5):
-    try:
-      with open("Database/Data.json", "r") as file:
-          data = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        pass
-    EMAIL = data['Login']['L_email']
-    APP_PASSWORD = data['Login']['E_APIKEY']
+    with open("Database/Data.json", "r") as file:
+          GetEmail = json.load(file)
+          GetEmail = GetEmail["User_email"]
+    data = Get_record_by_email(GetEmail)
+    decryptKey = decrypt_text(data["email_service_login_pass"])
+    EMAIL = data["email_service_login_email"]
+    APP_PASSWORD = decryptKey
     
     # Connect to Gmail and fetch emails
     mail = imaplib.IMAP4_SSL('imap.gmail.com')
