@@ -4,38 +4,38 @@ using MongoDB.Driver;
 
 public class DataLayer
 {
-    private readonly IMongoCollection<MyDataModel> _collection;
+    private readonly IMongoCollection<User> _collection;
 
     public DataLayer(IMongoClient client)
     {
         var database = client.GetDatabase("Voices-Do-Services-Database");
-        _collection = database.GetCollection<MyDataModel>("Voices-Do-Services-Collection");
+        _collection = database.GetCollection<User>("Voices-Do-Services-Collection");
     }
 
-    public void InsertMyData(MyDataModel data)
+    public void InsertMyData(User data)
     {
         _collection.InsertOne(data);
     }
-    public async Task UpdateMyDataAsync(string id, MyDataModel newData)
+    public async Task UpdateMyDataAsync(string id, User newData)
     {
     newData.Id = ObjectId.Parse(id);
     // Convert string ID to ObjectId
     var objectId = ObjectId.Parse(id);
-    var filter = Builders<MyDataModel>.Filter.Eq(data => data.Id, objectId);
+    var filter = Builders<User>.Filter.Eq(data => data.Id, objectId);
     await _collection.ReplaceOneAsync(filter, newData);
     }
     
     public async Task DeleteMyDataAsync(string id)
     {
         var objectId = ObjectId.Parse(id); // Convert string ID to ObjectId
-        var filter = Builders<MyDataModel>.Filter.Eq(data => data.Id, objectId);
+        var filter = Builders<User>.Filter.Eq(data => data.Id, objectId);
         await _collection.DeleteOneAsync(filter);
     }
-    public async Task<MyDataModel> GetMyDataByEmailAsync(string email)
+    public async Task<User> GetMyDataByEmailAsync(string email)
     {
         return await _collection.Find(data => data.email_login == email).FirstOrDefaultAsync();
     }
-    public async Task UpdateMyDataByEmailAsync(string email, MyDataModel newData)
+    public async Task UpdateMyDataByEmailAsync(string email, User newData)
     {
     // First, find the existing document by email
     var existingData = await _collection.Find(data => data.email_login == email).FirstOrDefaultAsync();
@@ -57,13 +57,13 @@ public class DataLayer
     existingData.Spotify_Client_ID = newData.Spotify_Client_ID;
     existingData.Spotify_Client_Secret = newData.Spotify_Client_Secret;
     // Now, replace the existing document with the updated one
-    var filter = Builders<MyDataModel>.Filter.Eq(data => data.email_login, email);
+    var filter = Builders<User>.Filter.Eq(data => data.email_login, email);
     await _collection.ReplaceOneAsync(filter, existingData);
     }
 
     public async Task DeleteMyDataByEmailAsync(string email)
     {
-        var filter = Builders<MyDataModel>.Filter.Eq(data => data.email_login, email);
+        var filter = Builders<User>.Filter.Eq(data => data.email_login, email);
         await _collection.DeleteOneAsync(filter);
     }
 }

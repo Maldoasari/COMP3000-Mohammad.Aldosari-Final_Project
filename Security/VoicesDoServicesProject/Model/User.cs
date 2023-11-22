@@ -1,12 +1,12 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-public class MyDataModel
+public class User
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public ObjectId Id { get; set; }
-    public string email_login { get; set; } = "example.com"; //string.Empty;
+    public string email_login { get; set; } = string.Empty;
     public string pincode_login { get; set; } = string.Empty;
     public string password_login { get; set; } = string.Empty;
 

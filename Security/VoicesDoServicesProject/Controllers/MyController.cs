@@ -23,13 +23,13 @@ public class MyController : ControllerBase
         return Ok(data);
     }
     [HttpPost]
-    public IActionResult CreateData(MyDataModel model)
+    public IActionResult CreateData(User model)
     {
         _dataLayer.InsertMyData(model);
         return Ok();
     }
     [HttpPut("ById/{id}")]
-    public async Task<IActionResult> UpdateData(string id, [FromBody] MyDataModel newData)
+    public async Task<IActionResult> UpdateData(string id, [FromBody] User newData)
     {
         await _dataLayer.UpdateMyDataAsync(id, newData);
         return Ok();
@@ -42,7 +42,7 @@ public class MyController : ControllerBase
     }
 
     [HttpPut("ByEmail/{email}")]
-    public async Task<IActionResult> UpdateDataByEmail(string email, [FromBody] MyDataModel newData)
+    public async Task<IActionResult> UpdateDataByEmail(string email, [FromBody] User newData)
     {
         var data = await _dataLayer.GetMyDataByEmailAsync(email);
         if (data == null)
