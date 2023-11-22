@@ -1,4 +1,6 @@
 from Libraries import tk, messagebox, json
+from Security.Resttful_API import Update_record_by_email
+from Security.Cryptography import encrypt_text
 class SetUpApp:
     def __init__(self, root, title, BGcolor, txtColor, Name_Section):
         self.root = root
@@ -45,17 +47,17 @@ class SetUpApp:
         password = self.password_entry.get()
         
         if username != "" and password != "":
-            with open("Database/Data.json", 'r') as file:
-             data = json.load(file)
-             data["Login"]["L_email"] = username
-             data["Login"]["E_APIKEY"] = password
-              # Write the updated data back to the JSON file
-            with open("Database/Data.json", 'w') as file:
-             json.dump(data, file, indent=4)
-            
-            messagebox.askokcancel("Configuration", "Checking...")
-            self.root.destroy()
-            return username
+             with open("Database/Data.json", "r") as file:
+                 GetEmail = json.load(file)
+                 GetEmail = GetEmail["User_email"]
+             encryptKey = encrypt_text(password)
+             update_data = {
+            "email_service_login_email": f"{username}",
+            "email_service_login_pass": f"{encryptKey}"}
+             Update_record_by_email(GetEmail, update_data)
+             messagebox.askokcancel("Configuration", "Checking...")
+             self.root.destroy()
+             return username
         else:
             messagebox.showerror("Empty Value/s", "Incorrect username or password")
             return False

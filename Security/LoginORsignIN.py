@@ -86,16 +86,16 @@ def LoginOrSign():
     hashed_password = hash_password(password)
     user_data = {
         "email_login": email,
-        "pincode_login": "string",
+        "pincode_login": "",
         "password_login": hashed_password,
-        "email_service_login_email": "string",
-        "email_service_login_pass": "string",
-        "netflix_username": "string",
-        "netflix_pass": "string",
-        "primeVideo_username": "string",
-        "primeVideo_pass": "string",
-        "spotify_Client_ID": "string",
-        "spotify_Client_Secret": "string"
+        "email_service_login_email": "",
+        "email_service_login_pass": "",
+        "netflix_username": "",
+        "netflix_pass": "",
+        "primeVideo_username": "",
+        "primeVideo_pass": "",
+        "spotify_Client_ID": "",
+        "spotify_Client_Secret": ""
     }
 
     # Open the pincode window

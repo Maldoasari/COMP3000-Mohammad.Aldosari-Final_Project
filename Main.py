@@ -15,7 +15,6 @@ valid = LoginOrSign()
 if valid[0] == False:
     Speak("Login or Sign up Failed", -1, 1.0)
     quit()
-    
 """
 else:
 status = Check_Email_Accessability()

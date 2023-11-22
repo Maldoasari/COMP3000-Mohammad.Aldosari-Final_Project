@@ -1,65 +1,49 @@
-import hashlib
 import os
 from cryptography.fernet import Fernet
 import json
 
 
-def encrypt_json_file(file_path, key):
-    with open(file_path, 'r') as file:
+def encrypt_text(plaintext):
+    with open("System.json", 'rb') as file:
         data = json.load(file)
+        Ckey = data['System']['ENCkey']
 
-    # Convert JSON data to string and then to bytes
-    data_as_bytes = json.dumps(data).encode('utf-8')
+    plaintext_as_bytes = json.dumps(plaintext).encode('utf-8')
 
-    cipher = Fernet(key)
-    encrypted_data = cipher.encrypt(data_as_bytes)
+    cipher = Fernet(Ckey.encode('utf-8'))
+    encrypted_data = cipher.encrypt(plaintext_as_bytes)
 
-    with open(file_path, 'wb') as file:
-        file.write(encrypted_data)
+    return encrypted_data
 
-def decrypt_json_file(file_path, key, write_back=True):
+def decrypt_text(encrypted_data_str):
     try:
-        with open(file_path, 'rb') as file:
-            encrypted_data = file.read()
+        with open("System.json", 'rb') as file:
+            data = json.load(file)
+            Ckey = data['System']['ENCkey']
 
-        cipher = Fernet(key)
-        decrypted_data_as_bytes = cipher.decrypt(encrypted_data)
+        cipher = Fernet(Ckey.encode('utf-8'))
 
-        
+        # Remove the "b" prefix if it exists
+        if encrypted_data_str.startswith("b'") and encrypted_data_str.endswith("'"):
+            encrypted_data_str = encrypted_data_str[2:-1]
+
+        # Convert the string representation to bytes
+        encrypted_data_inner = encrypted_data_str.encode('utf-8')
+
+        decrypted_data_as_bytes = cipher.decrypt(encrypted_data_inner)
         decrypted_data = json.loads(decrypted_data_as_bytes.decode('utf-8'))
 
-        
-        if 'System' in decrypted_data:
-            system_data = decrypted_data['System']
-
-          
-            if 'ENCkey' in system_data:
-                Ckey = system_data['ENCkey']
-                print("Decryption successful.")
-                return Ckey
-            else:
-                print("'ENCkey' is missing in the 'System' data.")
-        else:
-            print("'System' key is missing in the decrypted data.")
-
-        if write_back:
-            with open(file_path, 'w') as file:
-                json.dump(decrypted_data, file)
-        else:
-            return decrypted_data
-
-    except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
-        
+        return decrypted_data
+    except (json.JSONDecodeError, KeyError) as e:
         print(f"Error while decrypting: {e}")
         return None
-
-
+    
+#v = decrypt_text()
+#print(v)
 
 #key = Fernet.generate_key()
 #print(key)
-#with open("System.json", 'rb') as file:
-   # data = json.load(file)
-   # Ckey = data['System']['ENCkey']
+
 
 
 #Encrypt the JSON file

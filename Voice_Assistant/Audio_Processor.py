@@ -76,7 +76,6 @@ def delete_recording(filename1, filename2, filename3, filename4):
         os.remove(filename2)
         os.remove(filename3)
         os.remove(filename4)
-
     except FileNotFoundError:
         print(f"File not found!")
     except Exception as e:

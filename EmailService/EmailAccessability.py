@@ -8,6 +8,9 @@ import speech_recognition as sr
 from EmailService.EmailSender import checkAccess, send_email, delete_all_emails
 from EmailService.CodeGeneration import generate_random_5_digit_number
 from Configuration.Config import SetUpApp
+from Security.Resttful_API import Get_record_by_email, Update_record_by_email
+from Security.Cryptography import decrypt_text
+
 
 def word_to_number(word):
     mapping = {
@@ -31,38 +34,34 @@ num = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "
 def Check_Email_Accessability():
  SMTP_SERVER = 'smtp.gmail.com'
  SMTP_PORT = 587
- Check_Email = Check_Email_Status() 
+ Check_Email, email = Check_Email_Status() 
  if(Check_Email == False):
      Speak("The System cannot access your email. Here you go", -1, 1.0)
      root = tk.Tk()
      app = SetUpApp(root, "Set up Email", "lightblue", "grey", "Email")
      root.mainloop()
-     try:
-         with open("Database/Data.json", "r") as file:
-            dataCheck = json.load(file)
-     except (FileNotFoundError, json.JSONDecodeError):
-         pass  # If file doesn't exist or is empty, continue with an empty list
-     SMTP_email = dataCheck["Login"]["L_email"]
-     SMTP_pass = dataCheck['Login']['E_APIKEY']
+     data = Get_record_by_email(email)
+     print(data["email_service_login_pass"])
+     decryptKey = decrypt_text(data["email_service_login_pass"])
+     SMTP_email = data["email_service_login_email"]
+     SMTP_pass = decryptKey
+     
      status = checkAccess(SMTP_SERVER, SMTP_PORT, SMTP_email, SMTP_pass)
      
      if status == 0:
         return False
     
      codeIS = generate_random_5_digit_number()
-     x = send_email("Success", f"Please provide this email to the software to varify your email: \n {codeIS}", dataCheck["Login"]["L_email"], "User", "system email")
+     x = send_email("Success", f"Please provide this email to the software to varify your email: \n {codeIS}", SMTP_email, "User", "system email")
      
      #0 is returning a flase.  
      if  x == 0:
             messagebox.showerror("Error", "The Given email or and password is incorrect")
             #data = {"Login": {"L_email": "", "L_password": ""}}
-            with open("Database/Data.json", 'r') as file:
-             data = json.load(file)
-             data["Login"]["L_email"] = ""
-             data["Login"]["E_APIKEY"] = ""
-              # Write the updated data back to the JSON file
-            with open("Database/Data.json", 'w') as file:
-             json.dump(data, file, indent=4)
+            update_data = {
+            "email_service_login_email": " ",
+            "email_service_login_pass": " "}
+            Update_record_by_email(email, update_data)
             return False
      else:
             Speak("What is the code:\n", 0, 1.0)
