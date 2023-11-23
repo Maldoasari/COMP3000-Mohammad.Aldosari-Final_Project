@@ -1,3 +1,4 @@
+import hashlib
 import os
 from cryptography.fernet import Fernet
 import json
@@ -51,7 +52,17 @@ def decrypt_text(encrypted_data_str):
 
 # Decrypt the JSON file
 #decrypt_json_file('Cookies.json', key=Ckey)
+# Hashing functions
+def hash_password(password):
+    salt = os.urandom(32)
+    pwdhash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+    return salt.hex() + pwdhash.hex()
 
+def verify_password(stored_password, provided_password):
+    salt = bytes.fromhex(stored_password[:64])
+    stored_password = bytes.fromhex(stored_password[64:])
+    pwdhash = hashlib.pbkdf2_hmac('sha256', provided_password.encode('utf-8'), salt, 100000)
+    return pwdhash == stored_password
 def create_database_directory():
     # Get the current working directory
     current_directory = os.getcwd()

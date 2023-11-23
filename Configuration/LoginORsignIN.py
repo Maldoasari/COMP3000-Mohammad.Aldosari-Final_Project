@@ -12,7 +12,7 @@ from EmailService.EmailSender import send_email
 from Security.Resttful_API import Post_record, Get_record_by_email
 from Voice_Assistant.Speak import Speak
 from Voice_Assistant.Read_Email_Voice_Inputs import POST, Get
-from Security.Cryptography import create_database_directory
+from Security.Cryptography import create_database_directory, hash_password, verify_password
 def LoginOrSign():
  count_Attempts = [4]
  x = []
@@ -48,17 +48,7 @@ def LoginOrSign():
         event.widget.insert(0, default_text)
         event.widget.config(fg='grey')
 
-# Hashing functions
- def hash_password(password):
-    salt = os.urandom(32)
-    pwdhash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
-    return salt.hex() + pwdhash.hex()
 
- def verify_password(stored_password, provided_password):
-    salt = bytes.fromhex(stored_password[:64])
-    stored_password = bytes.fromhex(stored_password[64:])
-    pwdhash = hashlib.pbkdf2_hmac('sha256', provided_password.encode('utf-8'), salt, 100000)
-    return pwdhash == stored_password
 
 # Function to attempt login
  def attempt_login(email, input, status):
