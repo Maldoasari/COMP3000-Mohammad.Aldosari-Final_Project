@@ -41,7 +41,6 @@ def Check_Email_Accessability():
      app = SetUpApp(root, "Set up Email", "lightblue", "grey", "Email")
      root.mainloop()
      data = Get_record_by_email(email)
-     print(data["email_service_login_pass"])
      decryptKey = decrypt_text(data["email_service_login_pass"])
      SMTP_email = data["email_service_login_email"]
      SMTP_pass = decryptKey

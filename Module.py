@@ -15,7 +15,7 @@ from EmailService.EmailObserver import get_emails, Listen_for_id, view_email_con
 from Voice_Assistant.Audio_Processor import process_wav_file, delete_recording, save_audio_as_wav
 from Voice_Assistant.Sleep_Mode import SleepMode
 from Voice_Assistant.Read_Email_Voice_Inputs import POST
-from Security.LoginORsignIN import LoginOrSign
+from Configuration.LoginORsignIN import LoginOrSign
 ## For latter use in order to convert numbers as string to numbers as int
 def word_to_number(word):
     mapping = {
