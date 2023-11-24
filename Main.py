@@ -3,17 +3,18 @@ from Libraries import sr, time, recognizer, json
 from Voice_Assistant.Speak import Speak
 from Module import *   
 
-
+# Login or Sign Up checks: 
+# If the user has failed to login or sign in the application will automaticlly quit
 valid = LoginOrSign()
 if valid[0] == False:
     Speak("Login or Sign up Failed", -1, 1.0)
     quit()
 
-
+# After a successfull login or sign in the system will greet the user:
 greetings = shuffleTxtEntry()
 Speak(greetings, -1, 1.0)
 
-
+# this is listen function that would listen non-stop, until the user quits the program
 def listen_for_keywords():
     
     with sr.Microphone() as source:
