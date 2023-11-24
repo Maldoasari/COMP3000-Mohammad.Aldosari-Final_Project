@@ -39,44 +39,47 @@ def web_Search(url):
 
 recognizer = sr.Recognizer()
 
+def maximize_window():
+    windows = gw.getWindowsWithTitle('')
+    for window in windows:
+        if "chromium" in window.title.lower():
+            window.maximize()
+            break
+
 def Website_openPage_Handler(url):
     Speak("Just to give you a haeds up, if you want to exit say exit", -1, 1.0)
     with sync_playwright() as p:
-     timeout = 120000
-     browser = p.chromium.launch(headless=False)
-     page = browser.new_page()
-     page.set_default_timeout(timeout)  # 120 seconds timeout
-     page.goto(url)
-     
-       # Maximize the window using pygetwindow
-     windows = gw.getWindowsWithTitle('')
-     for window in windows:
-            if "chromium" in window.title.lower():
-                window.maximize()
-                break
-     while True:
-       time1 = timeout
-       page.set_default_timeout(time1)
-       with sr.Microphone() as source:
-        audio = recognizer.listen(source)
-        try:    
-         recognized_text = recognizer.recognize_google(audio) 
-         if"exit" in recognized_text:
-           break
-         elif "scroll up" in recognized_text:
-                    scroll_up_page(page, recognized_text)
+        timeout = 120000
+        browser = p.chromium.launch(headless=False)
+        page = browser.new_page()
+        page.set_default_timeout(timeout)  
+        page.goto(url)
+
+        maximize_window()  
+
+        while True:
+            time1 = timeout
+            page.set_default_timeout(time1)
+            with sr.Microphone() as source:
+                audio = recognizer.listen(source)
+                try:
+                    recognized_text = recognizer.recognize_google(audio)
+                    if "exit" in recognized_text:
+                        break
+                    elif "scroll up" in recognized_text:
+                        scroll_up_page(page, recognized_text)
+                        continue
+                    elif "scroll down" in recognized_text:
+                        scroll_down_page(page, recognized_text)
+                        continue
+                    elif "click on" in recognized_text and "button" in recognized_text:
+                        extracted_word = extract_words_between(recognized_text, "click on", "button")
+                        click_button_by_text(page, extracted_word)
+                        continue
+                except sr.WaitTimeoutError:
                     continue
-         elif "scroll down" in recognized_text:
-                    scroll_down_page(page, recognized_text)
+                except sr.UnknownValueError:
                     continue
-         elif "click on" in recognized_text and "button" in recognized_text:
-                    extracted_word = extract_words_between(recognized_text, "click on", "button")
-                    click_button_by_text(page, extracted_word)
-                    continue
-        except sr.WaitTimeoutError:
-            continue
-        except sr.UnknownValueError:
-            continue
     
 def scroll_up_page(page, text):
     numbers = re.findall(r'\b\d+\b', text)

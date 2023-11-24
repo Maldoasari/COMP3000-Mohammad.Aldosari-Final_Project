@@ -24,7 +24,9 @@ class TestEmailWHAT(unittest.TestCase):
     @patch('Voice_Assistant.Speak.Speak')
     @patch('Voice_Assistant.Read_Email_Voice_Inputs.POST')
     @patch('EmailCreation.EmailWhat.checkSub')
-    def test_subject(self, mock_check_sub, mock_post, mock_speak, mock_microphone, mock_listen, mock_recognize_google):
+    def test_subject(self, mock_check_sub, mock_post, mock_speak, 
+                     mock_microphone, mock_listen, 
+                     mock_recognize_google):
         # test case 1: Simulate successful recognition
         mock_recognize_google.return_value = 'test subject'
         mock_check_sub.return_value = 'test subject'

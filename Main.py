@@ -1,39 +1,24 @@
 import subprocess
-## Check if the file did not go through the activsion file (for auth)
-"""""
-from Voice_Assistant.Activision import system_Info_On
-
-data = system_Info_On()
-if data["User"]["S_Active"] == False:
-    subprocess.Popen(["python", "System_Activision.py"])
-    quit()
-"""
 from Libraries import sr, time, recognizer, json
 from Voice_Assistant.Speak import Speak
 from Module import *   
+
+
 valid = LoginOrSign()
 if valid[0] == False:
     Speak("Login or Sign up Failed", -1, 1.0)
     quit()
-"""
-else:
-status = Check_Email_Accessability()
-if(status == False):
-     Speak("Email Configuration Failed", -1, 1.0)
-     subprocess.Popen(["python", "System_Activision.py"])
-     quit()
-else:
- 
-  greetings = shuffleTxtEntry()
-  Speak(greetings, -1, 1.0)
-"""
+
+
 greetings = shuffleTxtEntry()
 Speak(greetings, -1, 1.0)
- 
+
+
 def listen_for_keywords():
+    
     with sr.Microphone() as source:
-        #audio = recognizer.listen(source)
         try:    
+            
          audio_data = recognizer.listen(source, timeout=1800, phrase_time_limit=6) 
          save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
          start_time = time.time()
@@ -41,6 +26,7 @@ def listen_for_keywords():
          end_time = time.time()
          elapsed_time = end_time - start_time
          print(f"Function took {elapsed_time:.6f} seconds to execute.")
+         
          if(recognized_text == False):
             Speak("Entering Sleep MODE", -1, 1.0)
             SleepMode()
@@ -48,12 +34,14 @@ def listen_for_keywords():
             print(greetings)
             Speak(greetings, -1, 1.0)
             listen_for_keywords()
+            
          elif(recognized_text == 500):
              Speak("I could not understand the audio", -1, 1.0)
              listen_for_keywords()
+             
          else:
              pass
-        #print(x)
+
         except sr.WaitTimeoutError:
             print("No speech detected in 30 min. Retrying...")
             SleepMode()
@@ -61,6 +49,7 @@ def listen_for_keywords():
             print(greetings)
             Speak(greetings, -1, 1.0)
             listen_for_keywords()
+            
         except sr.UnknownValueError:
             Speak("Entering Sleep MODE", -1, 1.0)
             SleepMode()
@@ -68,10 +57,10 @@ def listen_for_keywords():
             print(greetings)
             Speak(greetings, -1, 1.0)
             listen_for_keywords()
+            
     try:
         delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav")
-         #recognized_text = recognizer.recognize_google(audio).lower()
-        print(recognized_text)
+
         if ("Taylor" in recognized_text) and ("how are you" in recognized_text):
             Speak("I am good. how about you?", -1, 1.0)
             listen_for_keywords()
@@ -81,20 +70,24 @@ def listen_for_keywords():
             DisableSys()
             subprocess.Popen(["python", "System_Activision.py"])
             quit()
+            
         ###########################################
         ## Email Services: Send email ##
         ###########################################
         elif ("Taylor" in recognized_text) and ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
                 status = Check_Email_Accessability()
+                
                 if(status == False):
                    Speak("Email Configuration Failed", -1, 1.0)
                    DisableSys()
                    subprocess.Popen(["python", "System_Activision.py"])
                    quit()
+                   
                 generate_email = Generate_Email()
                 print(generate_email)
                 Speak("Would you like to send?", -1, 1.0)
                 status = check()
+                
                 if status == True:
                     send_email(generate_email[0], generate_email[1], generate_email[2], generate_email[3])
                     Speak("Email has been sent with success", -1, 1.0)
@@ -104,6 +97,7 @@ def listen_for_keywords():
                     print("\nSomething went wrong\n")
                     Speak("Something went wrong", -1, 1.0)
                     listen_for_keywords()
+                    
                 listen_for_keywords()
                 
 
@@ -112,14 +106,18 @@ def listen_for_keywords():
         ###########################################   
         elif ("Taylor" in recognized_text) and ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
             emails = get_emails()
+            
             if(len(emails) == 0):
                 Speak("You have no new messages")
-            print(emails)
+                listen_for_keywords()
+            
             email_id = str(Listen_for_id(emails))
-            print(email_id)
+            
             view_email_content(email_id, emails)
             Speak("This is the email service.. still in progress", -1, 1.0)
-           # pass
+            listen_for_keywords()
+            
+            
         ###########################################
         ## Wbsite hanlder: ##
         ###########################################
@@ -127,15 +125,16 @@ def listen_for_keywords():
             url = webNameHandler(recognized_text)
             url = web_Search(url)
             Website_openPage_Handler(url)
-            Speak("This is the open website service.. still in progress", -1, 1.0)
             listen_for_keywords()
-            #pass
+            
         
         ###########################################
         ## Clear data stored in json file ##
         ###########################################   
         elif ("Taylor" in recognized_text) and ("clear cache" in recognized_text):
             pass
+        
+        
         else:
             print("No specific keyword detected.")
             listen_for_keywords()
