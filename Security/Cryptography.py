@@ -90,7 +90,8 @@ def create_database_directory():
                     "NewUser": True
                 },
                 "User_email": "",
-                "Time_Bi_Login": 0
+                "Time_Bi_Login": 0,
+                "pincode_statuse": False
             }
         , data_file, indent=2)  # Indent for better readability
     
