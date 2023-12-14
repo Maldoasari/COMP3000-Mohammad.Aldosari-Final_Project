@@ -89,11 +89,10 @@ def listen_for_keywords():
                 print(generate_email)
                 Speak("Would you like to send?", -1, 1.0)
                 status = check()
-                
                 if status == True:
-                    send_email(generate_email[0], generate_email[1], generate_email[2], generate_email[3])
+                    send_email(generate_email[0], generate_email[1], generate_email[2], generate_email[3], 'user email')
                     Speak("Email has been sent with success", -1, 1.0)
-                    store_email = get_name_email(generate_email[2], generate_email[3])
+                    store_email = get_name_email(generate_email[3], generate_email[2])
                     Speak(f"Also, {store_email} with success", -1, 1.0)
                 else:
                     print("\nSomething went wrong\n")
@@ -182,6 +181,9 @@ def Generate_Email():
         elif(Add_or_Storage == "storage"):
             Speak("Brillent, you picked to choose from storage", -1, 1.0)
             email_address = storage()
+            if email_address == None:
+                Speak("Add emails to store them", -1, 1.0)
+                email_address = whoIStheR()
         else:
             Speak("The Defult path is Adding new email. To who?", -1, 1.0)
             email_address = whoIStheR()

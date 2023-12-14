@@ -144,7 +144,7 @@ def LoginOrSign():
     pin_window.protocol("WM_DELETE_WINDOW", on_pin_window_close)
 
     def on_pin_submit():
-        command = ["python", "./Security/Loader.py"]
+        command = ["python", "Configuration/Loader.py"]
         pin = pin_entry.get()
         if len(pin) == 0 or not pin.isdigit() or len(pin) != 6:
             messagebox.showerror("Invalid", "Pincode must be 6 digits and not empty")
@@ -185,19 +185,22 @@ def LoginOrSign():
     login_pin_window.protocol("WM_DELETE_WINDOW", on_login_pin_window_close)
     def on_pin_submit():
         getstatus = None
+        login_pin_window.withdraw()
         pin = pin_entry.get()
         if (attempt_login(email, pin, "check pincode")):
             codeIS = generate_random_5_digit_number()
             send_email("Success", f"Please provide this email to the software to varify your email: \n {codeIS}", email, "User", "system email")
             count = 0
+            
             while True:
              count = count + 1
              Speak("I have sent you the code via email. what is it?:\n", 0, 1.0)
              get_code = Code_extractor()
              if(codeIS == get_code):
               POST("Database/Data.json", "User_email", 'post', email) 
-              POST("Database/Data.json", "pincode_statuse", 'post', False)
+              POST("Database/Data.json", "pincode_statuse", 'post', True)
               messagebox.showinfo("Login Successful", "You are now logged in.")
+              Speak("welcome back", 0, 1.0)
               getstatus = True
               break
              elif count == 4:
@@ -226,6 +229,7 @@ def LoginOrSign():
             count_Attempts.clear()
             count_Attempts.append(counts)
             messagebox.showerror("Invalid", f"Invalid pincode. you have {count_Attempts} left")
+            login_pin_window.deiconify()
             #login_pin_window.destroy()
             return
         #login_pin_window.destroy()

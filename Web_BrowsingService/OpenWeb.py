@@ -107,7 +107,7 @@ def scroll_down_page(page, text):
         time.sleep(0.2)
         
 def click_button_by_text(page, button_text):
-    page.click(f"h3[class='{button_text}']")
+    page.click(f"text={button_text}")
 
 def extract_words_between(text, first_word, second_word=None, type=None):
     if type == "Inbetween" and second_word:

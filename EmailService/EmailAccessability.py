@@ -107,12 +107,14 @@ def Store_Contacts():
     try:
       with open("Database/Data.json", "r") as file:
           data = json.load(file)
-          if(data["Login"]["L_email"] == ""):
+          if(data["User_email"] == ""):
               return 401
     except (FileNotFoundError, json.JSONDecodeError):
         pass
-    IMAP_email = data['Login']['L_email']
-    IMAP = data['Login']['E_APIKEY']
+    Getdata = Get_record_by_email(data["User_email"])
+    decryptKey = decrypt_text(Getdata["email_service_login_pass"])
+    IMAP_email = Getdata['email_service_login_email']
+    IMAP = decryptKey
     # Gmail IMAP settings
     imap_url = 'imap.gmail.com'
     mail = imaplib.IMAP4_SSL(imap_url)
@@ -145,7 +147,7 @@ def Store_Contacts():
     contacts_list = [{'name': name, 'email': email} for email, name in contacts.items()]
 
 
-    with open('Database/Cache.json', 'w') as json_file:
+    with open('Database/cookies.json', 'w') as json_file:
         json.dump(contacts_list, json_file, indent=4)
 
 

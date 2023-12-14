@@ -5,7 +5,7 @@ def get_name_email(name, email):
     status = ""
     # Try reading the existing data from the file
     try:
-        with open("Database/Cache.json", "r") as file:
+        with open("Database/cookies.json", "r") as file:
             data = json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
         pass  # If file doesn't exist or is empty, continue with an empty list
@@ -23,7 +23,7 @@ def get_name_email(name, email):
         data.append({"name": name, "email": email})
 
         # Write the data back to the file
-        with open("Database/Cache.json", "w") as file:
+        with open("Database/cookies.json", "w") as file:
             json.dump(data, file, indent=4)
             print("email saved")
             status = status + "record added"

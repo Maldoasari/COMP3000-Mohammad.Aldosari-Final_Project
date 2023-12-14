@@ -324,7 +324,7 @@ def AddNew_or_ChooseFromStorage():
     return status
 
 def list_emails():
-    with open("Database\Cookies.json", "r") as file:
+    with open("Database\cookies.json", "r") as file:
         data = json.load(file)
     x = "" 
     count = 0
@@ -340,9 +340,9 @@ def choose_email(emails, x, count):
     clone_x = x
     clone_count = count
     POST("Database/Content.json", "system", "post", f"your storage have {len(emails)} records")
-    Speak(f"your storage have {len(emails)} records", 0, 1.0)
+    Speak(f"your storage have {len(emails) - 1} records", 0, 1.0)
     if(len(emails) == 1):
-        return emails[0]
+        return None
     else:
      POST("Database/Content.json", "system", "post", f"{x}")
      count = count / 2 - 2.5
