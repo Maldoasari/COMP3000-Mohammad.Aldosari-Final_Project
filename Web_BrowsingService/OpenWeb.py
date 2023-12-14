@@ -1,4 +1,5 @@
 import re
+import keyboard
 import speech_recognition as sr
 from playwright.sync_api import sync_playwright
 import time
@@ -14,11 +15,10 @@ def extract_words_between(text, first_word, second_word):
         return "Words not found"
     
 def webNameHandler(webSite):
-    get_web = extract_words_between(webSite, "open", "website")
+    get_web = extract_words_between(webSite, "open", "website",  "Inbetween")
     #cut_open = webSite.replace("open", "")
     #cut_website = cut_open.replace("website", "")
     host = get_web.replace(" ", "").lower()
-    print(host)
     #host = Clone_Name.split()[-2]
     url = f"https://www.{host}.com"
     Speak(f"opening {host}...", 0, 1.0)
@@ -73,7 +73,7 @@ def Website_openPage_Handler(url):
                         scroll_down_page(page, recognized_text)
                         continue
                     elif "click on" in recognized_text and "button" in recognized_text:
-                        extracted_word = extract_words_between(recognized_text, "click on", "button")
+                        extracted_word = extract_words_between(recognized_text, "click on", "button", "Inbetween")
                         click_button_by_text(page, extracted_word)
                         continue
                 except sr.WaitTimeoutError:
@@ -97,7 +97,6 @@ def scroll_up_page(page, text):
 def scroll_down_page(page, text):
     numbers = re.findall(r'\b\d+\b', text)
     int_numbers = [int(nums) for nums in numbers]
-    print(int_numbers)
     if int_numbers:
       for _ in range(30):
         page.evaluate(f"window.scrollBy(0, {int_numbers});")
@@ -108,15 +107,31 @@ def scroll_down_page(page, text):
         time.sleep(0.2)
         
 def click_button_by_text(page, button_text):
-    print(button_text)
-    page.click(f"text={button_text}")
+    page.click(f"h3[class='{button_text}']")
 
-def extract_words_between(text, first_word, second_word):
-    pattern = fr"{first_word}\s+((?:\w+\s*)+?){second_word}"
+def extract_words_between(text, first_word, second_word=None, type=None):
+    if type == "Inbetween" and second_word:
+        pattern = fr"{first_word}\s+((?:\w+\s*)+?){second_word}"
+    else:
+        pattern = fr"{first_word}\s+((?:\w+\s*)+)"
+    
     match = re.search(pattern, text)
     if match:
         return match.group(1).strip()
     else:
-        return "Words not found"
+        return None
+    
+def search_google(page, query, n):
+    input_locator = page.locator("textarea[name='q']")
+    input_locator.type(f"{query}")
+    input_locator.press("Enter")
+    
+    
+def get_nth_link_after_search(page, n):
+    nth_link = page.locator('a').nth(n)
+    return nth_link.get_attribute('href') if nth_link else None
+
+    
+    
 
   

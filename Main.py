@@ -1,7 +1,8 @@
 import subprocess
 from Libraries import sr, time, recognizer, json
 from Voice_Assistant.Speak import Speak
-from Module import *   
+from Module import *
+from Web_BrowsingService.WebBrowsing import Website_Browsing_openPage_Handler   
 
 # Login or Sign Up checks: 
 # If the user has failed to login or sign in the application will automaticlly quit
@@ -126,6 +127,14 @@ def listen_for_keywords():
             url = webNameHandler(recognized_text)
             url = web_Search(url)
             Website_openPage_Handler(url)
+            listen_for_keywords()
+            
+        ###########################################
+        ## Wbsite Browsing (Google): ##
+        ###########################################
+        elif ("search" in recognized_text) and ("engine" in recognized_text):
+            url = "https://www.google.com"
+            Website_Browsing_openPage_Handler(url)
             listen_for_keywords()
             
         
