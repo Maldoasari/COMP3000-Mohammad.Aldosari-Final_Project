@@ -1,6 +1,8 @@
 import re
+import subprocess
 from Libraries import tk, json, messagebox
 import email, imaplib
+from Voice_Assistant.Read_Email_Voice_Inputs import Get
 from Voice_Assistant.Speak import Speak
 from EmailService.EmailStatus import Check_Email_Status
 import speech_recognition as sr
@@ -32,49 +34,29 @@ def word_to_number(word):
 recognizer = sr.Recognizer()
 num = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twleve"]
 def Check_Email_Accessability():
- SMTP_SERVER = 'smtp.gmail.com'
- SMTP_PORT = 587
- Check_Email, email = Check_Email_Status() 
- if(Check_Email == False):
-     Speak("The System cannot access your email. Here you go", -1, 1.0)
-     root = tk.Tk()
-     app = SetUpApp(root, "Set up Email", "lightblue", "grey", "Email")
-     root.mainloop()
-     data = Get_record_by_email(email)
-     decryptKey = decrypt_text(data["email_service_login_pass"])
-     SMTP_email = data["email_service_login_email"]
-     SMTP_pass = decryptKey
-     
-     status = checkAccess(SMTP_SERVER, SMTP_PORT, SMTP_email, SMTP_pass)
-     
-     if status == 0:
-        return False
-    
-     codeIS = generate_random_5_digit_number()
-     x = send_email("Success", f"Please provide this email to the software to varify your email: \n {codeIS}", SMTP_email, "User", "system email")
-     
-     #0 is returning a flase.  
-     if  x == 0:
-            messagebox.showerror("Error", "The Given email or and password is incorrect")
-            #data = {"Login": {"L_email": "", "L_password": ""}}
-            update_data = {
-            "email_service_login_email": " ",
-            "email_service_login_pass": " "}
-            Update_record_by_email(email, update_data)
-            return False
-     else:
-            Speak("What is the code:\n", 0, 1.0)
-            get_code = Code_extractor()
-            if(codeIS == get_code):   
-             messagebox.showinfo("Success", "Email Service configured with success")
-             Store_Contacts()
-            else:
-                Speak("Invalid code \n", 0, 1.0)
-                return False
-            return True
+ Check_Email = Check_Email_Status() 
+ if(Check_Email): 
+  return True
  else:
-     return True
- 
+  command = ["python", "EmailService/Link_Gmail_Auth0.py"]
+  subprocess.Popen(command)
+  Speak("A window has been opned. you can login securly. to your gmail account to activate the email service", -1, 1.0)
+  while True:
+        data = Get("Database/Data.json")
+        if isinstance(data, dict):
+         status = data.get("email_ststus")
+         useremail = data.get("User_email")
+        # Alternatively, you can use status = data["email_ststus"] if you're sure the key always exists
+        if (status is not None) and (useremail is not None):
+         status = status
+         useremail = useremail
+        if (status):
+            send_email("Success", f"Email Service activated with Success", useremail, "User", "system email")
+            break
+        else:
+            continue
+  Speak("Brilint. you have activated the email service", -1, 1.0)
+  return True
 
 def Code_extractor():
     code = ""

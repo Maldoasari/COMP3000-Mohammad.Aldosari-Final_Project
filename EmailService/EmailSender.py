@@ -1,7 +1,21 @@
+import os
 from tkinter import messagebox
 from Libraries import imaplib, smtplib, MIMEText, json
 from Security.Cryptography import decrypt_text
 from Security.Resttful_API import Get_record_by_email, Update_record_by_email
+from google_auth_oauthlib.flow import Flow
+
+SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+CREDENTIALS_FILE = 'Database/credentials.json'
+
+def load_credentials():
+    # Load credentials from a file
+    if os.path.exists(CREDENTIALS_FILE):
+        with open(CREDENTIALS_FILE, 'r') as credentials_file:
+            credentials_data = json.load(credentials_file)
+            return Flow.from_client_config(credentials_data, SCOPES).credentials
+    return None
+
 def delete_all_emails(user_email, app_password):
     
     # Connect to Gmail's IMAP server

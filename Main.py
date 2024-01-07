@@ -10,7 +10,7 @@ valid = LoginOrSign()
 if valid[0] == False:
     Speak("Login or Sign up Failed", -1, 1.0)
     quit()
-
+status = Check_Email_Accessability()
 # After a successfull login or sign in the system will greet the user:
 greetings = shuffleTxtEntry()
 Speak(greetings, -1, 1.0)
@@ -19,8 +19,7 @@ Speak(greetings, -1, 1.0)
 def listen_for_keywords():
     
     with sr.Microphone() as source:
-        try:    
-            
+        try:      
          audio_data = recognizer.listen(source, timeout=1800, phrase_time_limit=6) 
          save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
          start_time = time.time()
@@ -215,6 +214,6 @@ def Generate_Email():
     time.sleep(1)
     generate_email = [email_subject, email_message, email_address, email_name]
     return generate_email
-    
+         
 if __name__ == "__main__":
    listen_for_keywords() 
