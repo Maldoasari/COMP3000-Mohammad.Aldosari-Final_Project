@@ -4,17 +4,14 @@ from Libraries import imaplib, smtplib, MIMEText, json
 from Security.Cryptography import decrypt_text
 from Security.Resttful_API import Get_record_by_email, Update_record_by_email
 from google_auth_oauthlib.flow import Flow
+import base64
+import json
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from datetime import datetime
+from google.auth.transport.requests import Request
 
-SCOPES = ['https://www.googleapis.com/auth/gmail.send']
-CREDENTIALS_FILE = 'Database/credentials.json'
-
-def load_credentials():
-    # Load credentials from a file
-    if os.path.exists(CREDENTIALS_FILE):
-        with open(CREDENTIALS_FILE, 'r') as credentials_file:
-            credentials_data = json.load(credentials_file)
-            return Flow.from_client_config(credentials_data, SCOPES).credentials
-    return None
+from Voice_Assistant.Read_Email_Voice_Inputs import Get 
 
 def delete_all_emails(user_email, app_password):
     
@@ -56,21 +53,8 @@ def send_email(subject, message_body, to_email, nameOfRec, type):
               SMTP_email = data['System']['EmailAddress']
               SMTP_pass = data['System']['Ekey']
       elif type == "user email":
-        with open("Database/Data.json", "r") as file:
-          GetEmail = json.load(file)
-          GetEmail = GetEmail["User_email"]
-          data = Get_record_by_email(GetEmail)
-          decryptKey = decrypt_text(data["email_service_login_pass"])
-        if(len(data["email_service_login_email"]) == 0) or (len(decryptKey) == 0):
-              return 400
-        else:
-              SMTP_email = data["email_service_login_email"]
-              SMTP_pass = decryptKey
-              status = checkAccess(SMTP_SERVER, SMTP_PORT, SMTP_email, SMTP_pass)
-              if status == 1:
-                  pass
-              else:
-                  return 0
+         User_Email(subject, message_body, to_email, nameOfRec)
+         return
     except (FileNotFoundError, json.JSONDecodeError):
         pass
         
@@ -109,6 +93,31 @@ Try this: jax.wood.m@gmail.com
     except Exception as e:
         print(f'Error sending email: {e}')
         return 0
+def User_Email(subject, message_body, to_email, nameOfRec):
+    with open("Database/Data.json", "r") as file:
+          GetEmail = json.load(file)
+          GetEmail = GetEmail["User_email"]
+    with open('Database/credentials.json', 'r') as file:
+          credentials_data = json.load(file)
+    # Create a Credentials object
+    credentials = Credentials.from_authorized_user_info(credentials_data)
+    
+    # Check if the token is expired and refresh if necessary
+    if credentials.expired:
+        credentials.refresh(Request())
+
+    # Set up the Gmail API
+    service = build('gmail', 'v1', credentials=credentials)
+
+    # Create a simple email message
+    message = f"From: {GetEmail}\nTo: {to_email}\nSubject: {subject}\n\n {nameOfRec},\n {message_body}"
+
+    # Encode the raw content in base64url
+    raw_message_bytes = base64.urlsafe_b64encode(message.encode('utf-8'))
+    raw_message_str = raw_message_bytes.decode('utf-8')
+
+    # Send the email
+    service.users().messages().send(userId='me', body={'raw': raw_message_str}).execute()
 
 def checkAccess(SMTP_SERVER, SMTP_PORT, SMTP_email, SMTP_pass):
     try:

@@ -12,7 +12,7 @@ valid = LoginOrSign()
 if valid[0] == False:
     Speak("Login or Sign up Failed", -1, 1.0)
     quit()
-status = Check_Email_Accessability()
+
 # After a successfull login or sign in the system will greet the user:
 greetings = shuffleTxtEntry()
 Speak(greetings, -1, 1.0)
@@ -79,7 +79,6 @@ def listen_for_keywords():
         ###########################################
         elif ("Taylor" in recognized_text) and ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
                 status = Check_Email_Accessability()
-                
                 if(status == False):
                    Speak("Email Configuration Failed", -1, 1.0)
                    DisableSys()
@@ -87,7 +86,6 @@ def listen_for_keywords():
                    quit()
                    
                 generate_email = Generate_Email()
-                print(generate_email)
                 Speak("Would you like to send?", -1, 1.0)
                 status = check()
                 if status == True:
