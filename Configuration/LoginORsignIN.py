@@ -89,12 +89,6 @@ def LoginOrSign():
         "email_login": email,
         "pincode_login": "",
         "password_login": hashed_password,
-        "email_service_login_email": "",
-        "email_service_login_pass": "",
-        "netflix_username": "",
-        "netflix_pass": "",
-        "primeVideo_username": "",
-        "primeVideo_pass": "",
         "spotify_Client_ID": "",
         "spotify_Client_Secret": ""
     }

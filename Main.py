@@ -1,3 +1,4 @@
+from distutils.command import build
 import subprocess
 from Libraries import sr, time, recognizer, json
 from Voice_Assistant.Speak import Speak
@@ -6,6 +7,7 @@ from Web_BrowsingService.WebBrowsing import Website_Browsing_openPage_Handler
 
 # Login or Sign Up checks: 
 # If the user has failed to login or sign in the application will automaticlly quit
+
 valid = LoginOrSign()
 if valid[0] == False:
     Speak("Login or Sign up Failed", -1, 1.0)
@@ -214,6 +216,6 @@ def Generate_Email():
     time.sleep(1)
     generate_email = [email_subject, email_message, email_address, email_name]
     return generate_email
-         
+ 
 if __name__ == "__main__":
    listen_for_keywords() 

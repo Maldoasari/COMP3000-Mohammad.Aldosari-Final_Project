@@ -48,12 +48,6 @@ public class DataLayer
     existingData.email_login = existingData.email_login;
     existingData.password_login = newData.password_login;
     existingData.pincode_login = newData.pincode_login;
-    existingData.email_service_login_email = newData.email_service_login_email;
-    existingData.email_service_login_pass = newData.email_service_login_pass;
-    existingData.Netflix_username = newData.Netflix_username;
-    existingData.Netflix_pass = newData.Netflix_pass;
-    existingData.PrimeVideo_username = newData.PrimeVideo_username;
-    existingData.PrimeVideo_pass = newData.PrimeVideo_pass;
     existingData.Spotify_Client_ID = newData.Spotify_Client_ID;
     existingData.Spotify_Client_Secret = newData.Spotify_Client_Secret;
     // Now, replace the existing document with the updated one
