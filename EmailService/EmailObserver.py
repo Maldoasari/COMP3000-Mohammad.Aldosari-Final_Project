@@ -1,6 +1,13 @@
+import base64
+from email import message_from_bytes
+import os
 from Security.Cryptography import decrypt_text
 from Security.Resttful_API import Get_record_by_email
 from Voice_Assistant.Speak import Speak
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
 from Libraries import sr, json, re, imaplib, BytesParser, policy, recognizer
 def word_to_number(word):
     mapping = {
@@ -20,35 +27,68 @@ def word_to_number(word):
     }
     return mapping.get(word, word)
 
-def get_emails(n=5):
-    with open("Database/Data.json", "r") as file:
-          GetEmail = json.load(file)
-          GetEmail = GetEmail["User_email"]
-    data = Get_record_by_email(GetEmail)
-    decryptKey = decrypt_text(data["email_service_login_pass"])
-    EMAIL = data["email_service_login_email"]
-    APP_PASSWORD = decryptKey
-    
-    # Connect to Gmail and fetch emails
-    mail = imaplib.IMAP4_SSL('imap.gmail.com')
-    mail.login(EMAIL, APP_PASSWORD)
-    mail.select('inbox')
-    status, email_ids = mail.search(None, 'ALL')
-    email_ids = email_ids[0].split()
-    # Retrieve and print the latest n emails
-    emails = []
-    num = 0
-    for e_id in email_ids[-n:]:
-        num = num + 1
-        status, data = mail.fetch(e_id, '(RFC822)')
-        email_bytes = data[0][1]  # Get the email bytes
-        msg = BytesParser(policy=policy.default).parsebytes(email_bytes)
-        emails.append((e_id.decode('utf-8'), msg))
-        print(f"{num}. {msg['from']}. This email has {e_id.decode('utf-8')} as an ID")
-        #Speak(f"{e_id.decode('utf-8')}. From, {msg['from']}", 0, 1.0)
-    Speak(f"you have got{n} new emails", 0, 1.0)
+def get_credentials():
+    creds = None
+    if os.path.exists('Database/credentials.json'):
+        with open('Database/credentials.json', 'r') as file:
+            creds_data = json.load(file)
+        creds = Credentials(token=creds_data.get('token'),
+                            refresh_token=creds_data.get('refresh_token'),
+                            token_uri=creds_data.get('token_uri'),
+                            client_id=creds_data.get('client_id'),
+                            client_secret=creds_data.get('client_secret'),
+                            scopes=creds_data.get('scopes'))
 
-    mail.logout()
+        if creds and creds.expired:
+            creds.refresh(Request())
+
+    return creds
+
+
+def get_emails(n=5):
+    credentials = get_credentials()
+
+    # Setting up the Gmail API
+    service = build('gmail', 'v1', credentials=credentials)
+
+    # Fetching the latest n emails
+    try:
+     response = service.users().messages().list(userId='me', maxResults=n).execute()
+    except Exception as e:
+     print(f"An error occurred: {type(e).__name__}, {str(e)}")
+     return []
+
+
+    messages = response.get('messages', [])
+
+    emails = []
+    for msg in messages:
+        try:
+            # Get the message from its id
+            txt = service.users().messages().get(userId='me', id=msg['id']).execute()
+
+            # Process the message
+            payload = txt['payload']
+            headers = payload['headers']
+
+            # Extract subject and sender
+            subject = next(d['value'] for d in headers if d['name'] == 'Subject')
+            sender = next(d['value'] for d in headers if d['name'] == 'From')
+
+            # Extract the body
+            parts = payload.get('parts', [payload])
+            body = ""
+            for part in parts:
+                part_body = part.get('body', {})
+                part_data = part_body.get('data')
+                if part_data:
+                    part_data = part_data.replace("-", "+").replace("_", "/")
+                    decoded_data = base64.b64decode(part_data)
+                    body += decoded_data.decode('utf-8')
+            emails.append((msg['id'], sender, subject, body))
+        except Exception as e:
+            print(f"An error occurred while processing message {msg['id']}: {e}")
+
     return emails
 
 

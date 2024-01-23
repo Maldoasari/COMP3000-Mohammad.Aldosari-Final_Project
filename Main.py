@@ -105,10 +105,11 @@ def listen_for_keywords():
         ## Email Services: observe emails ##
         ###########################################   
         elif ("Taylor" in recognized_text) and ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
+            status = Check_Email_Accessability()
             emails = get_emails()
-            
+            print(emails)
             if(len(emails) == 0):
-                Speak("You have no new messages")
+                Speak("You have no new messages", -1, 1.0)
                 listen_for_keywords()
             
             email_id = str(Listen_for_id(emails))
