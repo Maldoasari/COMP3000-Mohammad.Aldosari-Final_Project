@@ -1,29 +1,23 @@
 import base64
-from email import message_from_bytes
 import os
-from Security.Cryptography import decrypt_text
-from Security.Resttful_API import Get_record_by_email
-from Voice_Assistant.Speak import Speak
+import json
+import re
+import speech_recognition as sr
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-from Libraries import sr, json, re, imaplib, BytesParser, policy, recognizer
+
+# Assuming Voice_Assistant.Speak module exists in your project
+from Voice_Assistant.Speak import Speak
+num = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"]
+
 def word_to_number(word):
     mapping = {
-        "zero": 0,
-        "hero": 0,
-        "one": 1,
-        "two": 2,
-        "three": 3,
-        "four": 4,
-        "five": 5,
-        "six": 6,
-        "seven": 7,
-        "eight": 8,
-        "nine": 9,
-        "ten": 10,
-        "eleven": 11
+        "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+        "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
+        "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14,
+        "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18,
+        "nineteen": 19, "twenty": 20
     }
     return mapping.get(word, word)
 
@@ -37,45 +31,35 @@ def get_credentials():
                             token_uri=creds_data.get('token_uri'),
                             client_id=creds_data.get('client_id'),
                             client_secret=creds_data.get('client_secret'),
-                            scopes=creds_data.get('scopes'))
+                            scopes=['https://www.googleapis.com/auth/gmail.readonly'])
 
         if creds and creds.expired:
             creds.refresh(Request())
 
     return creds
 
-
-def get_emails(n=5):
+def get_emails():
     credentials = get_credentials()
-
-    # Setting up the Gmail API
     service = build('gmail', 'v1', credentials=credentials)
-
-    # Fetching the latest n emails
+    
     try:
-     response = service.users().messages().list(userId='me', maxResults=n).execute()
+        # Fetching only unread emails
+        response = service.users().messages().list(userId='me', q='is:unread').execute()
     except Exception as e:
-     print(f"An error occurred: {type(e).__name__}, {str(e)}")
-     return []
-
+        print(f"An error occurred: {e}")
+        return []
 
     messages = response.get('messages', [])
-
     emails = []
+
     for msg in messages:
         try:
-            # Get the message from its id
             txt = service.users().messages().get(userId='me', id=msg['id']).execute()
-
-            # Process the message
             payload = txt['payload']
             headers = payload['headers']
-
-            # Extract subject and sender
             subject = next(d['value'] for d in headers if d['name'] == 'Subject')
             sender = next(d['value'] for d in headers if d['name'] == 'From')
 
-            # Extract the body
             parts = payload.get('parts', [payload])
             body = ""
             for part in parts:
@@ -92,87 +76,46 @@ def get_emails(n=5):
     return emails
 
 
-def extract_content(message):
-    if message.is_multipart():
-        # For multipart messages, we'll dive into each part.
-        for part in message.walk():
-            content_type = part.get_content_type()
-            content_disposition = str(part.get("Content-Disposition"))
-
-            # Check if it's a text/plain or text/html content.
-            if content_type == "text/plain" and "attachment" not in content_disposition:
-                return part.get_payload(decode=True).decode()
-            elif content_type == "text/html" and "attachment" not in content_disposition:
-                html_content = part.get_payload(decode=True).decode()
-                # If you prefer plain text over HTML, you can use some libraries to strip HTML tags.
-                # For now, I'll return HTML content as it is.
-                return html_content
-    else:
-        # For non-multipart messages.
-        return message.get_payload(decode=True).decode()
-
 def view_email_content(email_id, email_list):
-    l = 0
-    for e_id, msg in email_list:
-        print(e_id, email_list[l])
-        l = l + 1
+    for e_id, sender, subject, body in email_list:
         if e_id == email_id:
-            EmailF = msg['from']
-            EmailS = msg['subject']
-            print("\nFrom:", msg['from'])
-            print("Subject:", msg['subject'])
-            content = extract_content(msg)
-            print("\n", content)
-            Speak(f"Email From:{EmailF}. Subject: {EmailS}. Message: {content}", -1, 1.0)
+            print(f"\nFrom: {sender}")
+            print(f"Subject: {subject}")
+            print(f"\n{body}")
+            Speak(f"Email From: {sender}. Subject: {subject}. Message: {body}", -1, 1.0)
             return
     print("Email not found.")
 
-
-num = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twleve"]
-def Listen_for_id(emails):
+def listen_for_id(emails):
     Speak("Which email you want to open", 0, 1.0)
+    recognizer = sr.Recognizer()
     emailID = None
-    do_again = emails
+
     with sr.Microphone() as source:
         try:
             audio = recognizer.listen(source)
             Capture = recognizer.recognize_google(audio).lower()
-            index_to_change = None  # Initialize with None
+            index_to_change = None
             
             for n in num:
                 if n in Capture:
                     index_to_change = word_to_number(n)
-                    if index_to_change is None or index_to_change > len(emails):
-                        Speak("list index out of range", 0, 1.0)
-                        return Listen_for_id(do_again)   # Using return to ensure we break out
-                    else:
+                    if index_to_change is not None and index_to_change < len(emails):
+                        emailID = emails[index_to_change][0]  # Getting the email ID
                         break
-                
+            
             if index_to_change is None:
                 numbers = re.findall(r'\b\d+\b', Capture)
                 if numbers:
                     index_to_change = int(numbers[0])
-                    if index_to_change > len(emails):
-                        Speak("list index out of range", 0, 1.0)
-                        return Listen_for_id(do_again)   # Using return to ensure we break out
-                        
-            if index_to_change is None:
-                Speak("Let's try again", 0, 1.0)
-                return Listen_for_id(do_again)  # Using return to ensure we break out
-            #print(int(Capture[-1]))
-            emailID = index_to_change
+                    if index_to_change < len(emails):
+                        emailID = emails[index_to_change][0]
+
         except sr.UnknownValueError:
-            print("Sorry, I couldn't understand the audio.")
             Speak("Sorry, I couldn't understand the audio.", 0, 1.0)
-            print("lets try again\n")
-            Speak("lets try again\n", 0, 1.0)
-            return Listen_for_id(do_again)
+        except sr.RequestError as e:
+            Speak("API unavailable or quota exceeded.", 0, 1.0)
 
-        except sr.RequestError:
-            print("API unavailable or quota exceeded.")
-            return Listen_for_id(do_again)
-
-    # If for any other reason we reach here
-    #print(emailID)   # Debugging: print the emailID (should be None)
     return emailID
 
+    

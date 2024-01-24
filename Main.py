@@ -1,5 +1,6 @@
 from distutils.command import build
 import subprocess
+from EmailService.EmailObserver import view_email_content
 from Libraries import sr, time, recognizer, json
 from Voice_Assistant.Speak import Speak
 from Module import *
@@ -107,14 +108,16 @@ def listen_for_keywords():
         elif ("Taylor" in recognized_text) and ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
             status = Check_Email_Accessability()
             emails = get_emails()
-            print(emails)
-            if(len(emails) == 0):
-                Speak("You have no new messages", -1, 1.0)
-                listen_for_keywords()
-            
-            email_id = str(Listen_for_id(emails))
-            
-            view_email_content(email_id, emails)
+            if emails:
+                for i, (id, sender, subject, _) in enumerate(emails):
+                    print(f"{i}: From {sender}, Subject: {subject}")
+                selected_email_id = listen_for_id(emails)
+                if selected_email_id:
+                    view_email_content(selected_email_id, emails)
+                else:
+                    print("No email selected or understood.")
+            else:
+                print("No new emails.")
             Speak("This is the email service.. still in progress", -1, 1.0)
             listen_for_keywords()
             

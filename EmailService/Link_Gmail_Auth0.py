@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 CLIENT_SECRETS_FILE = 'EmailService/cre.json'  
 REDIRECT_URI = 'https://localhost:5000/callback'
-SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+SCOPES = ['https://www.googleapis.com/auth/gmail.send','https://www.googleapis.com/auth/gmail.readonly']
 CERTIFICATE_PATH = 'EmailService/cert.pem'
 PRIVATE_KEY_PATH = 'EmailService/key.pem'
 CREDENTIALS_FILE = 'Database/credentials.json'
