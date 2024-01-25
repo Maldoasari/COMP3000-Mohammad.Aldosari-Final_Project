@@ -46,7 +46,6 @@ def Check_Email_Accessability():
         if isinstance(data, dict):
          status = data.get("email_ststus")
          useremail = data.get("User_email")
-        # Alternatively, you can use status = data["email_ststus"] if you're sure the key always exists
         if (status is not None) and (useremail is not None):
          status = status
          useremail = useremail

@@ -31,29 +31,30 @@ def POST(Jsonfile, tragetData, status, input):
 
 @app.route('/')
 def login():
-    flow = Flow.from_client_secrets_file(
-        CLIENT_SECRETS_FILE,
-        scopes=SCOPES,
-        redirect_uri=REDIRECT_URI,
-    )
-    authorization_url, _ = flow.authorization_url(prompt='consent')
-    return redirect(authorization_url)
+        flow = Flow.from_client_secrets_file(
+            CLIENT_SECRETS_FILE,
+            scopes=SCOPES,
+            redirect_uri=REDIRECT_URI,
+        )
+        authorization_url, _ = flow.authorization_url(prompt='consent')
+        return redirect(authorization_url)
 
 @app.route('/callback')
 def callback():
-    flow = Flow.from_client_secrets_file(
-        CLIENT_SECRETS_FILE,
-        scopes=SCOPES,
-        redirect_uri=REDIRECT_URI,
-    )
+        flow = Flow.from_client_secrets_file(
+            CLIENT_SECRETS_FILE,
+            scopes=SCOPES,
+            redirect_uri=REDIRECT_URI,
+        )
 
-    flow.fetch_token(authorization_response=request.url)
-    credentials = flow.credentials
+        flow.fetch_token(authorization_response=request.url)
+        credentials = flow.credentials
 
-    # Store credentials for later use
-    store_credentials(credentials)
-    POST("Database/data.json", "email_ststus", "post", True)
-    return "Linked with success.."
+        # Store credentials for later use
+        store_credentials(credentials)
+        POST("Database/data.json", "email_ststus", "post", True)
+        return "Linked with success.."
+    
 
 if __name__ == '__main__':
     # Run the Flask app without the reloader
