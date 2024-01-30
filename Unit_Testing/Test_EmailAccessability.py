@@ -67,17 +67,13 @@ class TestEmailAccessibility(unittest.TestCase):
         print("Success")
         # Assert file writing
         mock_json_dump.assert_called_once()
-        
-
-    
-        
+           
     # Test when Check_Email_Status returns True initially
     @patch('EmailService.EmailAccessability.Check_Email_Status', return_value=True)
     @patch('Voice_Asistant.Speak.Speak')
     @patch('EmailService.EmailSender.send_email')
     def test_email_accessible(self, mock_send_email, mock_speak, mock_check_email_status):
         result = Check_Email_Accessability()
-
         self.assertTrue(result)
         mock_speak.assert_not_called()
         mock_send_email.assert_not_called()

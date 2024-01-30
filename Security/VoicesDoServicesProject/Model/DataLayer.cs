@@ -13,9 +13,17 @@ public class DataLayer
     }
 
     public void InsertMyData(User data)
+{
+    var existingUser = _collection.Find<User>(user => user.email_login == data.email_login).FirstOrDefault();
+    
+    if (existingUser != null)
     {
-        _collection.InsertOne(data);
+        throw new InvalidOperationException("A user with this email already exists.");
     }
+
+    // If no existing user with the same email, insert the new user
+    _collection.InsertOne(data);
+}
     public async Task UpdateMyDataAsync(string id, User newData)
     {
     newData.Id = ObjectId.Parse(id);

@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 
+using Microsoft.AspNetCore.Authorization;
+
+//[Authorize(AuthenticationSchemes = "ApiKeyAuth")]
 [Route("api/Voices-Do-services")]
 [ApiController]
 public class MyController : ControllerBase
