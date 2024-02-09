@@ -1,4 +1,4 @@
-from Libraries import json, tk
+import json
 from Voice_Assistant.Speak import Speak
 
 def system_Info_On():

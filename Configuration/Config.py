@@ -1,4 +1,6 @@
-from Libraries import tk, messagebox, json
+import json
+import tkinter as tk
+from tkinter import messagebox
 from Security.Resttful_API import Update_record_by_email
 from Security.Cryptography import encrypt_text
 class SetUpApp:

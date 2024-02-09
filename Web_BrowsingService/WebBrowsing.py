@@ -1,9 +1,7 @@
 import speech_recognition as sr
 from playwright.sync_api import sync_playwright
-import time
-import pygetwindow as gw
 from Voice_Assistant.Speak import Speak
-from Web_BrowsingService.OpenWeb import click_button_by_text, extract_words_between, get_nth_link_after_search, maximize_window, scroll_down_page, scroll_up_page, search_google
+from Web_BrowsingService.OpenWeb import click_button_by_text, extract_words_between, maximize_window, scroll_down_page, scroll_up_page, search_google
 recognizer = sr.Recognizer()
 
 def Website_Browsing_openPage_Handler(url):

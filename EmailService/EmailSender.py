@@ -1,17 +1,13 @@
-import os
 from tkinter import messagebox
-from Libraries import imaplib, smtplib, MIMEText, json
-from Security.Cryptography import decrypt_text
-from Security.Resttful_API import Get_record_by_email, Update_record_by_email
+import imaplib, smtplib, json
+from email.mime.text import MIMEText
+from Security.Resttful_API import Update_record_by_email
 from google_auth_oauthlib.flow import Flow
 import base64
 import json
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-from datetime import datetime
 from google.auth.transport.requests import Request
-
-from Voice_Assistant.Read_Email_Voice_Inputs import Get 
 
 def delete_all_emails(user_email, app_password):
     

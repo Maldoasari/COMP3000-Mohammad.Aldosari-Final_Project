@@ -1,6 +1,5 @@
 import os
-from Libraries import json
-import subprocess
+import json
 CREDENTIALS_FILE = 'Database/credentials.json'
 def Check_Email_Status():
     try:

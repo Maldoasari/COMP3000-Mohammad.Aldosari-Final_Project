@@ -1,6 +1,6 @@
-from Libraries import sr, time, recognizer
 from Voice_Assistant.Speak import Speak
-
+import speech_recognition as sr
+recognizer = sr.Recognizer()
 def checkName(nameofrec):
     cloneName = nameofrec
     name = ''  

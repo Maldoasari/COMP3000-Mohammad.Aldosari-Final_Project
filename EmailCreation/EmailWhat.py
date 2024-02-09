@@ -1,7 +1,7 @@
 from Voice_Assistant.Speak import Speak
-from Libraries import sr, recognizer
 from Voice_Assistant.Read_Email_Voice_Inputs import POST
-   
+import speech_recognition as sr
+recognizer = sr.Recognizer()
 def checkSub(sub):
     Do_Again = sub
     subject = ''

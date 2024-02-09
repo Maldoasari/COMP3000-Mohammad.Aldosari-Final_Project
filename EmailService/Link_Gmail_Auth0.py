@@ -1,10 +1,7 @@
 import json
-from google_auth_oauthlib.flow import InstalledAppFlow
 import webbrowser
 from flask import Flask, redirect, request
 from google_auth_oauthlib.flow import Flow
-from googleapiclient.discovery import build
-from google.auth.transport.requests import AuthorizedSession
 
 app = Flask(__name__)
 

@@ -1,16 +1,14 @@
 import re
 import subprocess
-from Libraries import tk, json, messagebox
+import json
 import email, imaplib
 from Voice_Assistant.Read_Email_Voice_Inputs import Get
 from Voice_Assistant.Speak import Speak
 from EmailService.EmailStatus import Check_Email_Status
 import speech_recognition as sr
 #from Module import Check_Email_Status, send_email, delete_all_emails
-from EmailService.EmailSender import checkAccess, send_email, delete_all_emails
-from EmailService.CodeGeneration import generate_random_5_digit_number
-from Configuration.Config import SetUpApp
-from Security.Resttful_API import Get_record_by_email, Update_record_by_email
+from EmailService.EmailSender import send_email
+from Security.Resttful_API import Get_record_by_email
 from Security.Cryptography import decrypt_text
 
 

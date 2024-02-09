@@ -1,10 +1,6 @@
 import os
 import sys
-from tkinter import messagebox
 import unittest
-from unittest.mock import mock_open, patch, MagicMock, create_autospec
-import speech_recognition as sr
-import json
 # Adjusting the Python path to include necessary directories
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir('.')

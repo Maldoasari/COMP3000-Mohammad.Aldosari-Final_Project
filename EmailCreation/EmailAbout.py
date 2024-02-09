@@ -1,7 +1,10 @@
+import re
+import time
 from Voice_Assistant.Read_Email_Voice_Inputs import POST
 from Voice_Assistant.Speak import Speak
-from Libraries import sr, time, re, recognizer
 
+import speech_recognition as sr
+recognizer = sr.Recognizer()
 
 def edit_message(message):
     do_again = message

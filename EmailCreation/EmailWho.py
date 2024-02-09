@@ -1,9 +1,12 @@
-from Libraries import sr, time, json, re, recognizer
+import json
+import re
+import time
 from Voice_Assistant.Speak import Speak
 from Voice_Assistant.Read_Email_Voice_Inputs import POST
 num = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twleve"]
 top_level_domain  = ['gmail', 'outlook', 'yahoo', 'hotmail', 'mail', 'icloud'] 
-
+import speech_recognition as sr
+recognizer = sr.Recognizer()
 def word_to_number(word):
     mapping = {
         "zero": 0,

@@ -3,7 +3,6 @@ import sys
 import unittest
 from unittest.mock import patch, MagicMock, create_autospec
 import speech_recognition as sr
-import json
 # Adjusting the Python path to include necessary directories
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir('.')
@@ -15,7 +14,6 @@ sys.path.append(dir2_path)
 from EmailCreation.EmailName import (
     checkName, ReadName
 )
-from Voice_Assistant.Read_Email_Voice_Inputs import POST
 
 class TestReadName(unittest.TestCase):
 

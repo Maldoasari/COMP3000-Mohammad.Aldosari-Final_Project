@@ -1,4 +1,5 @@
-from Libraries import time, sr, recognizer
+import speech_recognition as sr
+recognizer = sr.Recognizer()
 def check():
     b = None
     print("Want to send it?")

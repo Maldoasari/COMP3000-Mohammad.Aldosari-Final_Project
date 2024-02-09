@@ -1,10 +1,27 @@
-from distutils.command import build
+import json
 import subprocess
-from EmailService.EmailObserver import view_email_content
-from Libraries import sr, time, recognizer, json
+import time
+from Configuration.LoginORsignIN import LoginOrSign
+from EmailCreation.EmailAbout import ReadMsg
+from EmailCreation.EmailCheck import check
+from EmailCreation.EmailName import ReadName
+from EmailCreation.EmailWhat import Subject
+from EmailCreation.EmailWho import AddNew_or_ChooseFromStorage, storage, storageCheck, whoIStheR
+from EmailService.CodeGeneration import shuffleTxtEntry
+from EmailService.EmailAccessability import Check_Email_Accessability
+from EmailService.EmailObserver import get_emails, listen_for_id, view_email_content
+from EmailService.EmailSender import send_email
+from EmailService.EmailsStorage import get_name_email
+from Voice_Assistant.Audio_Processor import delete_recording, process_wav_file, save_audio_as_wav
+from Voice_Assistant.Read_Email_Voice_Inputs import POST
+from Voice_Assistant.Sleep_Mode import SleepMode
 from Voice_Assistant.Speak import Speak
-from Module import *
+from Web_BrowsingService.OpenWeb import Website_openPage_Handler, web_Search, webNameHandler
 from Web_BrowsingService.WebBrowsing import Website_Browsing_openPage_Handler   
+import speech_recognition as sr
+import warnings
+warnings.filterwarnings("ignore", category=RuntimeWarning)
+recognizer = sr.Recognizer()
 
 # Login or Sign Up checks: 
 # If the user has failed to login or sign in the application will automaticlly quit

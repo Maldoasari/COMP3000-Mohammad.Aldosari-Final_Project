@@ -1,4 +1,9 @@
-from Libraries import os, AudioSegment, wave, webrtcvad, librosa, nr, sf, sr, np, scipy
+import os, wave, webrtcvad, librosa, scipy
+import noisereduce as nr
+import soundfile as sf
+from pydub import AudioSegment
+import speech_recognition as sr
+import numpy as np
 
 def process_wav_file(filename):
     # Load audio file

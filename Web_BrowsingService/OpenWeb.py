@@ -1,5 +1,4 @@
 import re
-import keyboard
 import speech_recognition as sr
 from playwright.sync_api import sync_playwright
 import time

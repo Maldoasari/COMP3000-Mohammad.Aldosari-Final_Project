@@ -14,10 +14,9 @@ sys.path.append(dir2_path)
 # Importing functions from the modules
 from EmailCreation.EmailWho import (
     whoIStheR, checkWho, word_to_number, ChangerTool,
-    ChangerToolAdd, Top_level_domain, AddNew_or_ChooseFromStorage,
-    list_emails, choose_email, storage, storageCheck, top_level_domain, num
+    ChangerToolAdd, AddNew_or_ChooseFromStorage,
+    list_emails, choose_email, storage, storageCheck
 )
-from Voice_Assistant.Read_Email_Voice_Inputs import POST
 
 # Unit test class
 class TestEmailWHO(unittest.TestCase):

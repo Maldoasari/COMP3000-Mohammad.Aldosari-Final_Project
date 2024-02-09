@@ -1,19 +1,8 @@
-"""""
-from sympy import false, true
-from Requirments.Install_Packages import install_packages
-## try and find wheather all libraries have been download or not
-try:
- from Libraries import *  
-except ModuleNotFoundError as e:
-    ## if the library is not found install it
-    install_packages()
-"""""
-from sympy import false, true
-from Libraries import *
+import subprocess
+import time
+from Voice_Assistant.Activision import system_check
 from Voice_Assistant.Speak import Speak
-from Voice_Assistant.Activision import *
-import os
-import json
+import speech_recognition as sr
 
 # Initialize speech recognition
 recognizer = sr.Recognizer()

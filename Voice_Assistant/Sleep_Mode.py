@@ -1,4 +1,5 @@
-from Libraries import sr
+import speech_recognition as sr
+
 recognizer = sr.Recognizer()
 def SleepMode():
      with sr.Microphone() as source2:

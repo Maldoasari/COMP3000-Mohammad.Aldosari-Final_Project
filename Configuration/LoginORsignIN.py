@@ -1,11 +1,6 @@
-import hashlib
-import os
 import subprocess
-import sys
-import time
 import tkinter as tk
 from tkinter import messagebox, font
-import json
 from EmailService.CodeGeneration import generate_random_5_digit_number
 from EmailService.EmailAccessability import Code_extractor
 from EmailService.EmailSender import send_email
@@ -183,7 +178,7 @@ def LoginOrSign():
         pin = pin_entry.get()
         if (attempt_login(email, pin, "check pincode")):
             codeIS = generate_random_5_digit_number()
-            send_email("Success", f"Please provide this email to the software to varify your email: \n {codeIS}", email, "User", "system email")
+            send_email("Success", f"Please provide this One-Time Password (OTP) to the software to varify your id: \n {codeIS}", email, "User", "system email")
             count = 0
             
             while True:
@@ -222,7 +217,7 @@ def LoginOrSign():
             counts = count_Attempts[0] - 1
             count_Attempts.clear()
             count_Attempts.append(counts)
-            messagebox.showerror("Invalid", f"Invalid pincode. you have {count_Attempts} left")
+            messagebox.showerror("Invalid", f"Invalid pincode. you have {count_Attempts} attempts left")
             login_pin_window.deiconify()
             #login_pin_window.destroy()
             return
