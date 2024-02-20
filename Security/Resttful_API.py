@@ -1,7 +1,6 @@
 import requests
 
-url = ""
-content = ""
+
 apikey = "5HVEIRO8zc8X6XF-b9Ys0kWXmrSUVjZ0RwGVbD9QsSY="
 headers = {
     'Content-Type': 'application/json',
@@ -12,7 +11,7 @@ def Get_record_by_email(email):
     url = f'http://localhost:5108/api/Voices-Do-services/ByEmail/{email}'
     try:
         #GET request to the specified URL
-        response = requests.get(url)
+        response = requests.get(url, headers=headers)
         if response.status_code == 200:
             return response.json()
         else:
@@ -28,7 +27,7 @@ def Post_record(data):
     url = 'http://localhost:5108/api/Voices-Do-services'
     try:
         #POST request with JSON data
-        response = requests.post(url, json=data)
+        response = requests.post(url, json=data, headers=headers)
         if response.status_code == 200:
             return response.json()
         else:
@@ -37,6 +36,7 @@ def Post_record(data):
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
+    
 """""
 new_record_data = {
     "email_login": "12Mohammad@gmail.com",
