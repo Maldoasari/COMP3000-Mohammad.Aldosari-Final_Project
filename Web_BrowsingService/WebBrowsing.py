@@ -5,7 +5,7 @@ from Web_BrowsingService.OpenWeb import click_button_by_text, extract_words_betw
 recognizer = sr.Recognizer()
 
 def Website_Browsing_openPage_Handler(url):
-    Speak("Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
+    Speak("openning google serach engine. Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
     with sync_playwright() as p:
         timeout = 120000
         browser = p.chromium.launch(headless=False)
@@ -22,7 +22,6 @@ def Website_Browsing_openPage_Handler(url):
              audio = recognizer.listen(source)
              try:
                 recognized_text = recognizer.recognize_google(audio)
-                print("word is: " + recognized_text)
                 if "exit service" in recognized_text:
                     break
                 elif "scroll up" in recognized_text:

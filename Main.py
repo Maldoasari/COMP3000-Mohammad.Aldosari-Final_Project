@@ -12,6 +12,7 @@ from EmailService.EmailAccessability import Check_Email_Accessability
 from EmailService.EmailObserver import get_emails, listen_for_id, view_email_content
 from EmailService.EmailSender import send_email
 from EmailService.EmailsStorage import get_name_email
+from Security.Cryptography import create_database_directory
 from Voice_Assistant.Audio_Processor import delete_recording, process_wav_file, save_audio_as_wav
 from Voice_Assistant.Read_Email_Voice_Inputs import POST
 from Voice_Assistant.Sleep_Mode import SleepMode
@@ -22,14 +23,14 @@ import speech_recognition as sr
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 recognizer = sr.Recognizer()
-
+Software_Name = "Taylor"
 # Login or Sign Up checks: 
 # If the user has failed to login or sign in the application will automaticlly quit
 
-valid = LoginOrSign()
-if valid[0] == False:
-    Speak("Login or Sign up Failed", -1, 1.0)
-    quit()
+#valid = LoginOrSign()
+#if valid[0] == False:
+   # Speak("Login or Sign up Failed", -1, 1.0)
+    #quit()
 
 # After a successfull login or sign in the system will greet the user:
 greetings = shuffleTxtEntry()
@@ -64,7 +65,6 @@ def listen_for_keywords():
              pass
 
         except sr.WaitTimeoutError:
-            print("No speech detected in 30 min. Retrying...")
             SleepMode()
             greetings = shuffleTxtEntry()
             print(greetings)
@@ -82,11 +82,11 @@ def listen_for_keywords():
     try:
         delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav")
 
-        if ("Taylor" in recognized_text) and ("how are you" in recognized_text):
+        if (Software_Name in recognized_text) and ("how are you" in recognized_text):
             Speak("I am good. how about you?", -1, 1.0)
             listen_for_keywords()
             
-        elif ("Taylor" in recognized_text) and ("quit" in recognized_text):
+        elif (Software_Name in recognized_text) and ("quit" in recognized_text):
             Speak("quitting..", -1, 1.0)
             DisableSys()
             subprocess.Popen(["python", "System_Activision.py"])
@@ -95,7 +95,7 @@ def listen_for_keywords():
         ###########################################
         ## Email Services: Send email ##
         ###########################################
-        elif ("Taylor" in recognized_text) and ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
+        elif (Software_Name in recognized_text) and ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
                 status = Check_Email_Accessability()
                 if(status == False):
                    Speak("Email Configuration Failed", -1, 1.0)
@@ -122,7 +122,7 @@ def listen_for_keywords():
         ###########################################
         ## Email Services: observe emails ##
         ###########################################   
-        elif ("Taylor" in recognized_text) and ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
+        elif (Software_Name in recognized_text) and ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
             status = Check_Email_Accessability()
             emails = get_emails()
             if emails:
@@ -142,7 +142,7 @@ def listen_for_keywords():
         ###########################################
         ## Wbsite hanlder: ##
         ###########################################
-        elif ("open" in recognized_text) and ("website" in recognized_text):
+        elif (Software_Name in recognized_text) and ("open" in recognized_text) and ("website" in recognized_text):
             url = webNameHandler(recognized_text)
             url = web_Search(url)
             Website_openPage_Handler(url)
@@ -151,7 +151,7 @@ def listen_for_keywords():
         ###########################################
         ## Wbsite Browsing (Google): ##
         ###########################################
-        elif ("search" in recognized_text) and ("engine" in recognized_text):
+        elif (Software_Name in recognized_text) and ("search" in recognized_text) and ("engine" in recognized_text):
             url = "https://www.google.com"
             Website_Browsing_openPage_Handler(url)
             listen_for_keywords()
@@ -160,12 +160,24 @@ def listen_for_keywords():
         ###########################################
         ## Clear data stored in json file ##
         ###########################################   
-        elif ("Taylor" in recognized_text) and ("clear cache" in recognized_text):
+        elif (Software_Name in recognized_text) and ("clear cache" in recognized_text):
             pass
         
-        
+        ###########################################
+        ## Feedback from the system if the command is not recognised ##
+        ########################################### 
+        elif (Software_Name in recognized_text) and not ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text) or ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text) or ("open" in recognized_text and "website" in recognized_text) or ("search" in recognized_text and "engine" in recognized_text):
+            Speak("invalid command, please refer to the docemnation", -1, 1.0)
+            listen_for_keywords()
+            
+        ###########################################
+        ## Feedback from the system if the name of the software is not mentioned ##
+        ########################################### 
+        elif (Software_Name not in recognized_text):
+            Speak("invalid command, You must say Taylor. and the service you seek", -1, 1.0)
+            listen_for_keywords()
+            
         else:
-            print("No specific keyword detected.")
             listen_for_keywords()
 
     except sr.UnknownValueError:

@@ -60,7 +60,7 @@ def Delete_record_by_email(email):
     url = f"http://localhost:5108/api/Voices-Do-services/ByEmail/{email}"
     try:
         #DELETE request
-        response = requests.delete(url)
+        response = requests.delete(url, headers=headers)
         if response.status_code == 200:
             print(f"Record with email {email} deleted successfully.")
         else:
@@ -68,6 +68,7 @@ def Delete_record_by_email(email):
     except Exception as e:
         print(f"An error occurred: {e}")
     pass
+
 """""
 email_to_delete = "12Mohammad@gmail.com"
 Delete_record_by_email(email_to_delete)
@@ -77,19 +78,16 @@ def Update_record_by_email(email, The_Updated_Data):
     # Retrieve the existing record
     url = f'http://localhost:5108/api/Voices-Do-services/ByEmail/{email}'
     try:
-        response = requests.get(url)
+        response = requests.get(url, headers=headers)
         existing_record = response.json() if response.status_code == 200 else None
     except Exception as e:
         print(f"An error occurred while retrieving the existing record: {e}")
         existing_record = None
-
     if existing_record:
         # Merge the existing record with the updated data
         merged_data = {**existing_record, **The_Updated_Data}
-
         # Update the record
         url = f'http://localhost:5108/api/Voices-Do-services/ByEmail/{email}'
-
         try:
             # Make a PATCH request
             response = requests.put(url, json=merged_data)
@@ -98,10 +96,8 @@ def Update_record_by_email(email, The_Updated_Data):
                 # Try to parse the JSON data from the response
                  print("suceess")
                  return response.json()
-                 
                 except ValueError:
                  return None
-            
             else:
                 print(f"Error: {response.status_code} - {response.text}")
                 return None

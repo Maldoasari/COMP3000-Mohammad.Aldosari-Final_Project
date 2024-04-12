@@ -122,6 +122,9 @@ def extract_words_between(text, first_word, second_word=None, type=None):
     
 def search_google(page, query, n):
     input_locator = page.locator("textarea[name='q']")
+    input_locator.click()  
+    input_locator.select_text()  
+    input_locator.press("Backspace")
     input_locator.type(f"{query}")
     input_locator.press("Enter")
     
