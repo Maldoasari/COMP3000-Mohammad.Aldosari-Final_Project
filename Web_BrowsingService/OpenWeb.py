@@ -129,6 +129,7 @@ def search_google(page, query, n):
     input_locator.press("Enter")
     
     
+    
 def get_nth_link_after_search(page, n):
     nth_link = page.locator('a').nth(n)
     return nth_link.get_attribute('href') if nth_link else None

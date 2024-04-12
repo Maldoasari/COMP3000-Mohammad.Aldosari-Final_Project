@@ -1,3 +1,5 @@
+from Voice_Assistant.Speak import Speak
+Speak("Openning application...", -1, 1.0)
 import json
 import subprocess
 import time
@@ -16,29 +18,27 @@ from Security.Cryptography import create_database_directory
 from Voice_Assistant.Audio_Processor import delete_recording, process_wav_file, save_audio_as_wav
 from Voice_Assistant.Read_Email_Voice_Inputs import POST
 from Voice_Assistant.Sleep_Mode import SleepMode
-from Voice_Assistant.Speak import Speak
 from Web_BrowsingService.OpenWeb import Website_openPage_Handler, web_Search, webNameHandler
 from Web_BrowsingService.WebBrowsing import Website_Browsing_openPage_Handler   
 import speech_recognition as sr
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
-recognizer = sr.Recognizer()
-Software_Name = "Taylor"
+Speak("Done", -1, 1.0)
+
 # Login or Sign Up checks: 
 # If the user has failed to login or sign in the application will automaticlly quit
-
 #valid = LoginOrSign()
 #if valid[0] == False:
    # Speak("Login or Sign up Failed", -1, 1.0)
     #quit()
-
+create_database_directory()
 # After a successfull login or sign in the system will greet the user:
 greetings = shuffleTxtEntry()
 Speak(greetings, -1, 1.0)
-
+recognizer = sr.Recognizer()
+Software_Name = "Taylor"
 # this is listen function that would listen non-stop, until the user quits the program
 def listen_for_keywords():
-    
     with sr.Microphone() as source:
         try:      
          audio_data = recognizer.listen(source, timeout=1800, phrase_time_limit=6) 
@@ -60,11 +60,11 @@ def listen_for_keywords():
          elif(recognized_text == 500):
              Speak("I could not understand the audio", -1, 1.0)
              listen_for_keywords()
-             
          else:
              pass
 
         except sr.WaitTimeoutError:
+            Speak("Entering Sleep MODE", -1, 1.0)
             SleepMode()
             greetings = shuffleTxtEntry()
             print(greetings)
@@ -135,7 +135,6 @@ def listen_for_keywords():
                     print("No email selected or understood.")
             else:
                 print("No new emails.")
-            Speak("This is the email service.. still in progress", -1, 1.0)
             listen_for_keywords()
             
             
@@ -155,8 +154,7 @@ def listen_for_keywords():
             url = "https://www.google.com"
             Website_Browsing_openPage_Handler(url)
             listen_for_keywords()
-            
-        
+
         ###########################################
         ## Clear data stored in json file ##
         ###########################################   
