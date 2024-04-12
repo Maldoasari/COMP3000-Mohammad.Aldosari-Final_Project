@@ -7,7 +7,8 @@
 
 ## STEPS TO TEST & SET UP THE SOFTWARE:
 1. Clone the project:
-<--  git clone https://github.com/Maldoasari/COMP3000-Mohammad.Aldosari-Final_Project -->
+```bash
+# git clone https://github.com/Maldoasari/COMP3000-Mohammad.Aldosari-Final_Project
 3. Nevigate to the Voices Do Services dir & Build & Run it:
 <!--  cd /Security/Voices_Do_Services -->
 <!--  dotnet build -->
