@@ -7,17 +7,15 @@
 
 ## STEPS TO TEST & SET UP THE SOFTWARE:
 1. Clone the project:
-<!-- Start of Command Line Examples -->
-```bash
-# git clone https://github.com/Maldoasari/COMP3000-Mohammad.Aldosari-Final_Project
-# cd /Security/Voices_Do_Services
-# dotnet build
-# dotnet run
+- git clone https://github.com/Maldoasari/COMP3000-Mohammad.Aldosari-Final_Project
+- cd /Security/Voices_Do_Services
+- dotnet build
+- dotnet run
 
 *Note: this is the data server, it must be running. also it may need you to install some libraries. dowload the software requirments if you have not. the console output will outline what is missing after you run
 
 3. Nevigate to repo dir (COMP3000-Mohammad.Aldosari-Final_Project) & run the Main.py:
-<!-- py main.py -->
+- py main.py 
 
 *Note: this is the system server. also it may need you to install some libraries. dowload the software requirments if you have not. the console output will outline what is missing after you run the script. then rerun the script the result will be observable.
 
