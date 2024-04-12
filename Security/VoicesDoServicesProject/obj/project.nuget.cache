@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Rp9Ebn5/LRvyztajrtnor1yQwPHHT463PGabNsx/bN15fsXxpMlhPf3V1Ig9hGEcWjX3ciQJO8b2AgG/N2AdYQ==",
+  "dgSpecHash": "SoO52OEnrTcPm/nZ1e1jhCHmK/8HMAiUvJZruoLzZ2oWV8N9VX8jqUHe9RXI+azjoO556Y183OX9+o57PrGT1w==",
   "success": true,
   "projectFilePath": "C:\\Users\\moham\\Desktop\\hi\\COMP3000-Mohammad.Aldosari-Final_Project\\Security\\VoicesDoServicesProject\\VoicesDoServicesProject.csproj",
   "expectedPackageFiles": [
@@ -28,11 +28,7 @@
     "C:\\Users\\moham\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\5.0.0\\system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512",
     "C:\\Users\\moham\\.nuget\\packages\\system.security.accesscontrol\\5.0.0\\system.security.accesscontrol.5.0.0.nupkg.sha512",
     "C:\\Users\\moham\\.nuget\\packages\\system.security.principal.windows\\5.0.0\\system.security.principal.windows.5.0.0.nupkg.sha512",
-    "C:\\Users\\moham\\.nuget\\packages\\zstdsharp.port\\0.6.2\\zstdsharp.port.0.6.2.nupkg.sha512",
-    "C:\\Users\\moham\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.18\\microsoft.netcore.app.ref.7.0.18.nupkg.sha512",
-    "C:\\Users\\moham\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.18\\microsoft.windowsdesktop.app.ref.7.0.18.nupkg.sha512",
-    "C:\\Users\\moham\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.18\\microsoft.aspnetcore.app.ref.7.0.18.nupkg.sha512",
-    "C:\\Users\\moham\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\7.0.18\\microsoft.netcore.app.host.win-x64.7.0.18.nupkg.sha512"
+    "C:\\Users\\moham\\.nuget\\packages\\zstdsharp.port\\0.6.2\\zstdsharp.port.0.6.2.nupkg.sha512"
   ],
   "logs": []
 }
