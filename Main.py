@@ -1,3 +1,5 @@
+import os
+import shutil
 from Voice_Assistant.Speak import Speak
 Speak("Openning application...", -1, 1.0)
 import json
@@ -48,7 +50,7 @@ def listen_for_keywords():
          end_time = time.time()
          elapsed_time = end_time - start_time
          print(f"Function took {elapsed_time:.6f} seconds to execute.")
-         
+         print(recognized_text)
          if(recognized_text == False):
             Speak("Entering Sleep MODE", -1, 1.0)
             SleepMode()
@@ -160,7 +162,16 @@ def listen_for_keywords():
         ###########################################   
         elif (Software_Name in recognized_text) and ("clear cache" in recognized_text):
             pass
-        
+        ###########################################
+        ## Log out ##
+        ########################################### 
+        elif (Software_Name in recognized_text) and ("log me out" in recognized_text):
+            try:
+                shutil.rmtree('Database')
+                Speak("You have successfully logged out", -1, 1.0)
+            except OSError as e:
+                Speak(f"Error: {e.strerror}", -1, 1.0)
+            quit() 
         ###########################################
         ## Feedback from the system if the command is not recognised ##
         ########################################### 
@@ -173,8 +184,7 @@ def listen_for_keywords():
         ########################################### 
         elif (Software_Name not in recognized_text):
             Speak("invalid command, You must say Taylor. and the service you seek", -1, 1.0)
-            listen_for_keywords()
-            
+            listen_for_keywords()  
         else:
             listen_for_keywords()
 
