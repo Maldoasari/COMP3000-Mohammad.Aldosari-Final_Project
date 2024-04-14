@@ -17,7 +17,7 @@ from EmailService.EmailObserver import get_emails, listen_for_id, view_email_con
 from EmailService.EmailSender import send_email
 from EmailService.EmailsStorage import get_name_email
 from Security.Cryptography import create_database_directory
-from Voice_Assistant.Audio_Processor import delete_recording, process_wav_file, save_audio_as_wav
+from Voice_Assistant.Audio_Processor import delete_recording, get_random_joke, process_wav_file, save_audio_as_wav
 from Voice_Assistant.Read_Email_Voice_Inputs import POST
 from Voice_Assistant.Sleep_Mode import SleepMode
 from Web_BrowsingService.OpenWeb import Website_openPage_Handler, web_Search, webNameHandler
@@ -86,6 +86,11 @@ def listen_for_keywords():
 
         if (Software_Name in recognized_text) and ("how are you" in recognized_text):
             Speak("I am good. how about you?", -1, 1.0)
+            listen_for_keywords()
+        
+        elif (Software_Name in recognized_text) and ("tell me" in recognized_text) or ("tell me another" in recognized_text):
+            joke = get_random_joke()
+            Speak(f"Hear this, {joke}", -1, 1.0)
             listen_for_keywords()
             
         elif (Software_Name in recognized_text) and ("quit" in recognized_text):
