@@ -21,4 +21,5 @@
 
 *Note: this is the system server. also it may need you to install some libraries. dowload the software requirments if you have not. the console output will outline what is missing after you run the script. then rerun the script the result will be observable.
 
-
+##Jokes Dataset Reference:
+https://www.kaggle.com/datasets/abhinavmoudgil95/short-jokes?resource=download 
