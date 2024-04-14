@@ -1,10 +1,11 @@
 import re
+import playwright
 import speech_recognition as sr
 from playwright.sync_api import sync_playwright
 import time
 import pygetwindow as gw
 from  Voice_Assistant.Speak  import Speak
-
+from playwright.sync_api import sync_playwright
 def extract_words_between(text, first_word, second_word):
     pattern = fr"{first_word}\s+((?:\w+\s*)+?){second_word}"
     match = re.search(pattern, text)
@@ -119,16 +120,24 @@ def extract_words_between(text, first_word, second_word=None, type=None):
         return match.group(1).strip()
     else:
         return None
-    
-def search_google(page, query, n):
-    input_locator = page.locator("textarea[name='q']")
-    input_locator.click()  
-    input_locator.select_text()  
-    input_locator.press("Backspace")
-    input_locator.type(f"{query}")
-    input_locator.press("Enter")
-    
-    
+def search_google(page, query, n, current_url):
+    try:
+        if 'https://www.google.com/' == page.url:
+            pass
+        else:
+            page.evaluate(f"window.open('{current_url}', '_blank')")
+            page.goto('https://www.google.com/')
+
+        input_locator = page.locator("textarea[name='q']")
+        input_locator.click()  
+        input_locator.select_text()  
+        input_locator.press("Backspace")
+        input_locator.type(f"{query}")
+        input_locator.press("Enter")
+
+    except playwright._impl._api_types.Error as e:
+            if "Page closed" in str(e):
+                print("Error: Page was closed unexpectedly.")
     
 def get_nth_link_after_search(page, n):
     nth_link = page.locator('a').nth(n)

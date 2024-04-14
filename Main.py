@@ -26,7 +26,8 @@ import speech_recognition as sr
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 Speak("Done", -1, 1.0)
-
+url = "https://www.google.com"
+Website_Browsing_openPage_Handler(url)
 # Login or Sign Up checks: 
 # If the user has failed to login or sign in the application will automaticlly quit
 #valid = LoginOrSign()
@@ -181,7 +182,7 @@ def listen_for_keywords():
         ## Feedback from the system if the command is not recognised ##
         ########################################### 
         elif (Software_Name in recognized_text) and not ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text) or ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text) or ("open" in recognized_text and "website" in recognized_text) or ("search" in recognized_text and "engine" in recognized_text):
-            Speak("invalid command, please refer to the docemnation", -1, 1.0)
+            Speak("invalid command, please refer to the documentation", -1, 1.0)
             listen_for_keywords()
             
         ###########################################

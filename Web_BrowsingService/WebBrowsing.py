@@ -5,16 +5,18 @@ from Web_BrowsingService.OpenWeb import click_button_by_text, extract_words_betw
 recognizer = sr.Recognizer()
 
 def Website_Browsing_openPage_Handler(url):
-    Speak("openning google serach engine. Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
+    Speak("openning google search engine. Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
     with sync_playwright() as p:
         timeout = 120000
         browser = p.chromium.launch(headless=False)
         page = browser.new_page()
         page.set_default_timeout(timeout)  
         page.goto(url)
-
-        maximize_window()  
-
+        maximize_window()
+        def handle_url_change(event):
+            new_url = event['url']
+            print("New URL:", new_url)  
+        page.on('urlchanged', handle_url_change)
         while True:
             time1 = timeout
             page.set_default_timeout(time1)
@@ -33,13 +35,11 @@ def Website_Browsing_openPage_Handler(url):
                 elif "click on" in recognized_text and "button" in recognized_text:
                     extracted_word = extract_words_between(recognized_text, "click on", "button", "Inbetween")
                     click_button_by_text(page, extracted_word, "text")
-                    print(extracted_word)
                     continue
                 elif "search for" in recognized_text:
+                    current_url = page.url
                     extracted_word = extract_words_between(recognized_text, "search for", " ", None)
-                    print(extracted_word)
-                    search_google(page, extracted_word, 1)
-                    #print(f"Second link after searching for 'machine learning': {second_link}")
+                    search_google(page, extracted_word, 1, current_url)
                     continue
                 elif "go to" in recognized_text:    
                     continue
