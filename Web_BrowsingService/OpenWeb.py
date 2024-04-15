@@ -6,7 +6,7 @@ import time
 import pygetwindow as gw
 from  Voice_Assistant.Speak  import Speak
 from playwright.sync_api import sync_playwright
-def extract_words_between(text, first_word, second_word):
+async def extract_words_between(text, first_word, second_word):
     pattern = fr"{first_word}\s+((?:\w+\s*)+?){second_word}"
     match = re.search(pattern, text)
     if match:
@@ -109,7 +109,7 @@ def scroll_down_page(page, text):
 def click_button_by_text(page, button_text):
     page.click(f"text={button_text}")
 
-def extract_words_between(text, first_word, second_word=None, type=None):
+async def extract_words_between(text, first_word, second_word=None, type=None):
     if type == "Inbetween" and second_word:
         pattern = fr"{first_word}\s+((?:\w+\s*)+?){second_word}"
     else:
@@ -120,25 +120,25 @@ def extract_words_between(text, first_word, second_word=None, type=None):
         return match.group(1).strip()
     else:
         return None
-def search_google(page, query, n, current_url):
+async def search_google(page, query, n, current_url):
     try:
         if 'https://www.google.com/' == page.url:
             pass
         else:
-            page.evaluate(f"window.open('{current_url}', '_blank')")
-            page.goto('https://www.google.com/')
+            await page.evaluate(f"window.open('{current_url}', '_blank')")
+            await page.goto('https://www.google.com/')
 
         input_locator = page.locator("textarea[name='q']")
-        input_locator.click()  
-        input_locator.select_text()  
-        input_locator.press("Backspace")
-        input_locator.type(f"{query}")
-        input_locator.press("Enter")
+        await input_locator.click()  
+        await input_locator.select_text()  
+        await input_locator.press("Backspace")
+        await input_locator.type(f"{query}")
+        await input_locator.press("Enter")
 
     except playwright._impl._api_types.Error as e:
             if "Page closed" in str(e):
                 print("Error: Page was closed unexpectedly.")
-    
+                
 def get_nth_link_after_search(page, n):
     nth_link = page.locator('a').nth(n)
     return nth_link.get_attribute('href') if nth_link else None

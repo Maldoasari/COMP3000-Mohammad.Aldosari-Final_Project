@@ -1,3 +1,4 @@
+import asyncio
 import os
 import shutil
 from Voice_Assistant.Speak import Speak
@@ -26,8 +27,9 @@ import speech_recognition as sr
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 Speak("Done", -1, 1.0)
+Speak("openning google search engine. Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
 url = "https://www.google.com"
-Website_Browsing_openPage_Handler(url)
+asyncio.run(Website_Browsing_openPage_Handler(url))
 # Login or Sign Up checks: 
 # If the user has failed to login or sign in the application will automaticlly quit
 #valid = LoginOrSign()
@@ -159,6 +161,7 @@ def listen_for_keywords():
         ## Wbsite Browsing (Google): ##
         ###########################################
         elif (Software_Name in recognized_text) and ("search" in recognized_text) and ("engine" in recognized_text):
+            Speak("openning google search engine. Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
             url = "https://www.google.com"
             Website_Browsing_openPage_Handler(url)
             listen_for_keywords()
