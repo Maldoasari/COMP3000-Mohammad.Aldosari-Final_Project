@@ -17,7 +17,7 @@ async def listening(page, timeout):
     while True:
         page.set_default_timeout(timeout)
         with sr.Microphone() as source:
-            audio = recognizer.listen(source, phrase_time_limit=6)
+            audio = recognizer.listen(source)
         try:
             recognized_text = recognizer.recognize_google(audio)
             if "exit service" in recognized_text:
@@ -65,10 +65,27 @@ async def Website_Browsing_openPage_Handler(url):
             while True:
              if not status:
                 await asyncio.sleep(1)
+                await listen_for_Taylor()
                 await listening(page, timeout)
-                await asyncio.sleep(1)
                 continue
              else:   
                 break
             return  
 
+async def listen_for_Taylor():
+    while True:
+        with sr.Microphone() as source:
+            recognizer.adjust_for_ambient_noise(source)
+            try:
+             audio = recognizer.listen(source, timeout=1)
+            except sr.WaitTimeoutError:
+                continue
+        try:
+            text = recognizer.recognize_google(audio)
+            if "Taylor" in text:
+                Speak("yes!", -1, 1.0)
+                break
+            else:
+                pass
+        except sr.UnknownValueError:
+            pass
