@@ -27,9 +27,6 @@ import speech_recognition as sr
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 Speak("Done", -1, 1.0)
-Speak("openning google search engine. Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
-url = "https://www.google.com"
-asyncio.run(Website_Browsing_openPage_Handler(url))
 # Login or Sign Up checks: 
 # If the user has failed to login or sign in the application will automaticlly quit
 #valid = LoginOrSign()
@@ -46,7 +43,7 @@ Software_Name = "Taylor"
 def listen_for_keywords():
     with sr.Microphone() as source:
         try:      
-         audio_data = recognizer.listen(source, timeout=1800, phrase_time_limit=6) 
+         audio_data = recognizer.listen(source, timeout=1800, phrase_time_limit=4) 
          save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
          start_time = time.time()
          recognized_text = process_wav_file("Database/bin/user_input.wav")
@@ -163,7 +160,7 @@ def listen_for_keywords():
         elif (Software_Name in recognized_text) and ("search" in recognized_text) and ("engine" in recognized_text):
             Speak("openning google search engine. Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
             url = "https://www.google.com"
-            Website_Browsing_openPage_Handler(url)
+            asyncio.run(Website_Browsing_openPage_Handler(url))
             listen_for_keywords()
 
         ###########################################

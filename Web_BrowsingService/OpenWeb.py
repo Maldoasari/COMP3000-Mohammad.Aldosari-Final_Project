@@ -39,7 +39,7 @@ def web_Search(url):
 
 recognizer = sr.Recognizer()
 
-def maximize_window():
+async def maximize_window():
     windows = gw.getWindowsWithTitle('')
     for window in windows:
         if "chromium" in window.title.lower():
@@ -120,21 +120,21 @@ async def extract_words_between(text, first_word, second_word=None, type=None):
         return match.group(1).strip()
     else:
         return None
-async def search_google(page, query, n, current_url):
+async def search_google(page, query, n):
+    input_locator = page.locator("textarea[name='q']")
+    count = await input_locator.count()
     try:
-        if 'https://www.google.com/' == page.url:
+        if count > 0 and 'google' in page.url:
             pass
         else:
-            await page.evaluate(f"window.open('{current_url}', '_blank')")
             await page.goto('https://www.google.com/')
-
-        input_locator = page.locator("textarea[name='q']")
         await input_locator.click()  
         await input_locator.select_text()  
         await input_locator.press("Backspace")
         await input_locator.type(f"{query}")
+        Speak(f"searching for {query}", -1, 1.0)
         await input_locator.press("Enter")
-
+        
     except playwright._impl._api_types.Error as e:
             if "Page closed" in str(e):
                 print("Error: Page was closed unexpectedly.")
