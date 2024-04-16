@@ -33,7 +33,7 @@ Speak("Done", -1, 1.0)
 #if valid[0] == False:
    # Speak("Login or Sign up Failed", -1, 1.0)
     #quit()
-create_database_directory()
+
 # After a successfull login or sign in the system will greet the user:
 greetings = shuffleTxtEntry()
 Speak(greetings, -1, 1.0)

@@ -5,15 +5,21 @@ from Web_BrowsingService.OpenWeb import click_button_by_text, extract_words_betw
 from Voice_Assistant.Speak import Speak
 recognizer = sr.Recognizer()
 status = None
-    
+highlightedText = None
 async def reading_highlighted_text(page):
+    global highlightedText
     highlighted_text = await page.evaluate('''() => {
        
         return document.getSelection().toString();
     }''')
-    Speak(f"{highlighted_text}", -1, 1.0)            
+    if (len(highlighted_text) <= 0):
+        highlightedText = None
+    else:
+        highlightedText = highlighted_text
+                
 async def listening(page, timeout):
     global status
+    global highlightedText
     while True:
         page.set_default_timeout(timeout)
         with sr.Microphone() as source:
@@ -36,11 +42,19 @@ async def listening(page, timeout):
                 extracted_word = await extract_words_between(recognized_text, "search for", " ", None)
                 await search_google(page, extracted_word, 1)
                 status = False
-                await asyncio.sleep(1)
                 break
             elif "read this" in recognized_text:
                 await reading_highlighted_text(page) 
+                Speak(f"{highlightedText}", -1, 1.0)  
                 status = False
+                break
+            elif "search this" in recognized_text:
+                status = False
+                await reading_highlighted_text(page) 
+                if (highlightedText == None):
+                    Speak("You not selected a text", -1, 1.0)
+                    break
+                await search_google(page, highlightedText, 1)
                 break
             elif "go to" in recognized_text:    
                 break
@@ -77,7 +91,7 @@ def listen_for_Taylor():
         with sr.Microphone() as source:
             recognizer.adjust_for_ambient_noise(source)
             try:
-             audio = recognizer.listen(source, timeout=0.5)
+             audio = recognizer.listen(source)
             except sr.WaitTimeoutError:
                 continue
         try:
