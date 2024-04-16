@@ -74,6 +74,7 @@ csv_file = 'Voice_Assistant/shortjokes.csv'
 with open(csv_file, newline='', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         jokes = [row['Joke'] for row in reader]
+        
 def get_random_joke():
     random.shuffle(jokes)
     return random.choice(jokes)
