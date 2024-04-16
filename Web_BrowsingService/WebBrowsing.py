@@ -86,12 +86,12 @@ async def Website_Browsing_openPage_Handler(url):
                 break
             return  
 
-def listen_for_Taylor():
+def listen_for_Taylor(timeout=10):
     while True:
         with sr.Microphone() as source:
             recognizer.adjust_for_ambient_noise(source)
             try:
-             audio = recognizer.listen(source)
+                audio = recognizer.listen(source, timeout=timeout)
             except sr.WaitTimeoutError:
                 continue
         try:

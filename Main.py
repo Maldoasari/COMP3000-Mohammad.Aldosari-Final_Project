@@ -22,7 +22,7 @@ from Voice_Assistant.Audio_Processor import delete_recording, get_random_joke, p
 from Voice_Assistant.Read_Email_Voice_Inputs import POST
 from Voice_Assistant.Sleep_Mode import SleepMode
 from Web_BrowsingService.OpenWeb import Website_openPage_Handler, web_Search, webNameHandler
-from Web_BrowsingService.WebBrowsing import Website_Browsing_openPage_Handler   
+from Web_BrowsingService.WebBrowsing import Website_Browsing_openPage_Handler, listen_for_Taylor   
 import speech_recognition as sr
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
@@ -33,67 +33,62 @@ Speak("Done", -1, 1.0)
 #if valid[0] == False:
    # Speak("Login or Sign up Failed", -1, 1.0)
     #quit()
-
+create_database_directory()
 # After a successfull login or sign in the system will greet the user:
 greetings = shuffleTxtEntry()
 Speak(greetings, -1, 1.0)
 recognizer = sr.Recognizer()
-Software_Name = "Taylor"
 # this is listen function that would listen non-stop, until the user quits the program
 def listen_for_keywords():
+    #recognized_text = ''
+    listen_for_Taylor()
     with sr.Microphone() as source:
         try:      
-         audio_data = recognizer.listen(source, timeout=1800, phrase_time_limit=4) 
-         save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
-         start_time = time.time()
-         recognized_text = process_wav_file("Database/bin/user_input.wav")
-         end_time = time.time()
-         elapsed_time = end_time - start_time
-         print(f"Function took {elapsed_time:.6f} seconds to execute.")
-         print(recognized_text)
-         if(recognized_text == False):
-            Speak("Entering Sleep MODE", -1, 1.0)
-            SleepMode()
-            greetings = shuffleTxtEntry()
-            print(greetings)
-            Speak(greetings, -1, 1.0)
-            listen_for_keywords()
-            
-         elif(recognized_text == 500):
-             Speak("I could not understand the audio", -1, 1.0)
-             listen_for_keywords()
-         else:
-             pass
+            audio_data = recognizer.listen(source) 
+            save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
+            recognized_text = process_wav_file("Database/bin/user_input.wav")
+            if(recognized_text == False):
+                Speak("Entering Sleep MODE", -1, 1.0)
+                SleepMode()
+                greetings = shuffleTxtEntry()
+                print(greetings)
+                Speak(greetings, -1, 1.0)
+                listen_for_keywords()
+                    
+            elif(recognized_text == 500):
+                Speak("I could not understand the audio", -1, 1.0)
+                listen_for_keywords()
+            else:
+                pass
 
         except sr.WaitTimeoutError:
-            Speak("Entering Sleep MODE", -1, 1.0)
-            SleepMode()
-            greetings = shuffleTxtEntry()
-            print(greetings)
-            Speak(greetings, -1, 1.0)
-            listen_for_keywords()
-            
+                Speak("Entering Sleep MODE", -1, 1.0)
+                SleepMode()
+                greetings = shuffleTxtEntry()
+                print(greetings)
+                Speak(greetings, -1, 1.0)
+                listen_for_keywords()
+                
         except sr.UnknownValueError:
-            Speak("Entering Sleep MODE", -1, 1.0)
-            SleepMode()
-            greetings = shuffleTxtEntry()
-            print(greetings)
-            Speak(greetings, -1, 1.0)
-            listen_for_keywords()
-            
+                Speak("Entering Sleep MODE", -1, 1.0)
+                SleepMode()
+                greetings = shuffleTxtEntry()
+                print(greetings)
+                Speak(greetings, -1, 1.0)
+                listen_for_keywords()
+     
     try:
         delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav")
-
-        if (Software_Name in recognized_text) and ("how are you" in recognized_text):
+        if ("how are you" in recognized_text):
             Speak("I am good. how about you?", -1, 1.0)
             listen_for_keywords()
         
-        elif (Software_Name in recognized_text) and ("tell me" in recognized_text) or ("tell me another" in recognized_text):
+        elif ("tell me" in recognized_text) or ("tell me another" in recognized_text):
             joke = get_random_joke()
             Speak(f"Hear this, {joke}", -1, 1.0)
             listen_for_keywords()
             
-        elif (Software_Name in recognized_text) and ("quit" in recognized_text):
+        elif ("quit" in recognized_text):
             Speak("quitting..", -1, 1.0)
             DisableSys()
             subprocess.Popen(["python", "System_Activision.py"])
@@ -102,7 +97,7 @@ def listen_for_keywords():
         ###########################################
         ## Email Services: Send email ##
         ###########################################
-        elif (Software_Name in recognized_text) and ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
+        elif("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
                 status = Check_Email_Accessability()
                 if(status == False):
                    Speak("Email Configuration Failed", -1, 1.0)
@@ -129,7 +124,7 @@ def listen_for_keywords():
         ###########################################
         ## Email Services: observe emails ##
         ###########################################   
-        elif (Software_Name in recognized_text) and ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
+        elif ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
             status = Check_Email_Accessability()
             emails = get_emails()
             if emails:
@@ -148,7 +143,7 @@ def listen_for_keywords():
         ###########################################
         ## Wbsite hanlder: ##
         ###########################################
-        elif (Software_Name in recognized_text) and ("open" in recognized_text) and ("website" in recognized_text):
+        elif ("open" in recognized_text) and ("website" in recognized_text):
             url = webNameHandler(recognized_text)
             url = web_Search(url)
             Website_openPage_Handler(url)
@@ -157,7 +152,7 @@ def listen_for_keywords():
         ###########################################
         ## Wbsite Browsing (Google): ##
         ###########################################
-        elif (Software_Name in recognized_text) and ("search" in recognized_text) and ("engine" in recognized_text):
+        elif ("search" in recognized_text) and ("engine" in recognized_text):
             Speak("openning google search engine. Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
             url = "https://www.google.com"
             asyncio.run(Website_Browsing_openPage_Handler(url))
@@ -166,12 +161,12 @@ def listen_for_keywords():
         ###########################################
         ## Clear data stored in json file ##
         ###########################################   
-        elif (Software_Name in recognized_text) and ("clear cache" in recognized_text):
+        elif ("clear cache" in recognized_text):
             pass
         ###########################################
         ## Log out ##
         ########################################### 
-        elif (Software_Name in recognized_text) and ("log me out" in recognized_text):
+        elif ("log me out" in recognized_text):
             try:
                 shutil.rmtree('Database')
                 Speak("You have successfully logged out", -1, 1.0)
@@ -181,16 +176,14 @@ def listen_for_keywords():
         ###########################################
         ## Feedback from the system if the command is not recognised ##
         ########################################### 
-        elif (Software_Name in recognized_text) and not ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text) or ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text) or ("open" in recognized_text and "website" in recognized_text) or ("search" in recognized_text and "engine" in recognized_text):
+        elif not ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text) or ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text) or ("open" in recognized_text and "website" in recognized_text) or ("search" in recognized_text and "engine" in recognized_text):
             Speak("invalid command, please refer to the documentation", -1, 1.0)
             listen_for_keywords()
             
-        ###########################################
-        ## Feedback from the system if the name of the software is not mentioned ##
-        ########################################### 
-        elif (Software_Name not in recognized_text):
-            Speak("invalid command, You must say Taylor. and the service you seek", -1, 1.0)
-            listen_for_keywords()  
+        elif (recognized_text is None):
+            Speak("invalid, None Type detected", -1, 1.0)
+            listen_for_keywords()
+            
         else:
             listen_for_keywords()
 
