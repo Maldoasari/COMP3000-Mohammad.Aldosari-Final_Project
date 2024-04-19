@@ -38,7 +38,7 @@ def get_credentials():
 
     return creds
 
-def get_emails():
+async def get_emails():
     credentials = get_credentials()
     service = build('gmail', 'v1', credentials=credentials)
     
@@ -76,7 +76,7 @@ def get_emails():
     return emails
 
 
-def view_email_content(email_id, email_list):
+async def view_email_content(email_id, email_list):
     for e_id, sender, subject, body in email_list:
         if e_id == email_id:
             print(f"\nFrom: {sender}")

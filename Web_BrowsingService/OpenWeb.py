@@ -14,7 +14,7 @@ async def extract_words_between(text, first_word, second_word):
     else:
         return "Words not found"
     
-def webNameHandler(webSite):
+async def webNameHandler(webSite):
     get_web = extract_words_between(webSite, "open", "website",  "Inbetween")
     #cut_open = webSite.replace("open", "")
     #cut_website = cut_open.replace("website", "")
@@ -25,7 +25,7 @@ def webNameHandler(webSite):
     return url
     
 
-def web_Search(url):
+async def web_Search(url):
     if(url == "https://www.netflix.com"):
         url = url
         #NetflixHandler(url)
@@ -81,7 +81,7 @@ def Website_openPage_Handler(url):
                 except sr.UnknownValueError:
                     continue
     
-def scroll_up_page(page, text):
+async def scroll_up_page(page, text):
     numbers = re.findall(r'\b\d+\b', text)
     int_numbers = [int(nums) for nums in numbers]
     if int_numbers:
@@ -94,7 +94,7 @@ def scroll_up_page(page, text):
         time.sleep(0.2)
     #page.evaluate("window.scrollBy(0, -300);")
     
-def scroll_down_page(page, text):
+async def scroll_down_page(page, text):
     numbers = re.findall(r'\b\d+\b', text)
     int_numbers = [int(nums) for nums in numbers]
     if int_numbers:
@@ -106,7 +106,7 @@ def scroll_down_page(page, text):
         page.evaluate("window.scrollBy(0, 200);")
         time.sleep(0.2)
         
-def click_button_by_text(page, button_text):
+async def click_button_by_text(page, button_text):
     page.click(f"text={button_text}")
 
 async def extract_words_between(text, first_word, second_word=None, type=None):
@@ -139,7 +139,7 @@ async def search_google(page, query, n):
             if "Page closed" in str(e):
                 print("Error: Page was closed unexpectedly.")
                 
-def get_nth_link_after_search(page, n):
+async def get_nth_link_after_search(page, n):
     nth_link = page.locator('a').nth(n)
     return nth_link.get_attribute('href') if nth_link else None
 

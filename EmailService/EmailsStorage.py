@@ -1,6 +1,6 @@
 import json
 
-def get_name_email(name, email):
+async def get_name_email(name, email):
     data = []
     status = ""
     # Try reading the existing data from the file

@@ -1,11 +1,11 @@
 import asyncio
 import os
 import shutil
-from Voice_Assistant.Speak import Speak
-Speak("Openning application...", -1, 1.0)
 import json
 import subprocess
 import time
+import speech_recognition as sr
+from Voice_Assistant.Speak import Speak
 from Configuration.LoginORsignIN import LoginOrSign
 from EmailCreation.EmailAbout import ReadMsg
 from EmailCreation.EmailCheck import check
@@ -17,194 +17,23 @@ from EmailService.EmailAccessability import Check_Email_Accessability
 from EmailService.EmailObserver import get_emails, listen_for_id, view_email_content
 from EmailService.EmailSender import send_email
 from EmailService.EmailsStorage import get_name_email
-from Security.Cryptography import create_database_directory
 from Voice_Assistant.Audio_Processor import delete_recording, get_random_joke, process_wav_file, save_audio_as_wav
 from Voice_Assistant.Read_Email_Voice_Inputs import POST
 from Voice_Assistant.Sleep_Mode import SleepMode
 from Web_BrowsingService.OpenWeb import Website_openPage_Handler, web_Search, webNameHandler
-from Web_BrowsingService.WebBrowsing import Website_Browsing_openPage_Handler, listen_for_Taylor   
-import speech_recognition as sr
-import warnings
-warnings.filterwarnings("ignore", category=RuntimeWarning)
-Speak("Done", -1, 1.0)
-# Login or Sign Up checks: 
-# If the user has failed to login or sign in the application will automaticlly quit
-#valid = LoginOrSign()
-#if valid[0] == False:
-   # Speak("Login or Sign up Failed", -1, 1.0)
-    #quit()
-create_database_directory()
-# After a successfull login or sign in the system will greet the user:
-greetings = shuffleTxtEntry()
-Speak(greetings, -1, 1.0)
-recognizer = sr.Recognizer()
-# this is listen function that would listen non-stop, until the user quits the program
-def listen_for_keywords():
-    #recognized_text = ''
-    listen_for_Taylor()
-    with sr.Microphone() as source:
-        try:      
-            audio_data = recognizer.listen(source) 
-            save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
-            recognized_text = process_wav_file("Database/bin/user_input.wav")
-            if(recognized_text == False):
-                Speak("Entering Sleep MODE", -1, 1.0)
-                SleepMode()
-                greetings = shuffleTxtEntry()
-                print(greetings)
-                Speak(greetings, -1, 1.0)
-                listen_for_keywords()
-                    
-            elif(recognized_text == 500):
-                Speak("I could not understand the audio", -1, 1.0)
-                listen_for_keywords()
-            else:
-                pass
+from Web_BrowsingService.WebBrowsing import Website_Browsing_openPage_Handler, listen_for_Taylor
 
-        except sr.WaitTimeoutError:
-                Speak("Entering Sleep MODE", -1, 1.0)
-                SleepMode()
-                greetings = shuffleTxtEntry()
-                print(greetings)
-                Speak(greetings, -1, 1.0)
-                listen_for_keywords()
-                
-        except sr.UnknownValueError:
-                Speak("Entering Sleep MODE", -1, 1.0)
-                SleepMode()
-                greetings = shuffleTxtEntry()
-                print(greetings)
-                Speak(greetings, -1, 1.0)
-                listen_for_keywords()
-     
+async def DisableSys():
     try:
-        delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav")
-        if ("how are you" in recognized_text):
-            Speak("I am good. how about you?", -1, 1.0)
-            listen_for_keywords()
-        
-        elif ("tell me" in recognized_text) or ("tell me another" in recognized_text):
-            joke = get_random_joke()
-            Speak(f"Hear this, {joke}", -1, 1.0)
-            listen_for_keywords()
-            
-        elif ("quit" in recognized_text):
-            Speak("quitting..", -1, 1.0)
-            DisableSys()
-            subprocess.Popen(["python", "System_Activision.py"])
-            quit()
-            
-        ###########################################
-        ## Email Services: Send email ##
-        ###########################################
-        elif("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
-                status = Check_Email_Accessability()
-                if(status == False):
-                   Speak("Email Configuration Failed", -1, 1.0)
-                   DisableSys()
-                   subprocess.Popen(["python", "System_Activision.py"])
-                   quit()
-                   
-                generate_email = Generate_Email()
-                Speak("Would you like to send?", -1, 1.0)
-                status = check()
-                if status == True:
-                    send_email(generate_email[0], generate_email[1], generate_email[2], generate_email[3], 'user email')
-                    Speak("Email has been sent with success", -1, 1.0)
-                    store_email = get_name_email(generate_email[3], generate_email[2])
-                    Speak(f"Also, {store_email} with success", -1, 1.0)
-                else:
-                    print("\nSomething went wrong\n")
-                    Speak("Something went wrong", -1, 1.0)
-                    listen_for_keywords()
-                    
-                listen_for_keywords()
-                
-
-        ###########################################
-        ## Email Services: observe emails ##
-        ###########################################   
-        elif ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
-            status = Check_Email_Accessability()
-            emails = get_emails()
-            if emails:
-                for i, (id, sender, subject, _) in enumerate(emails):
-                    print(f"{i}: From {sender}, Subject: {subject}")
-                selected_email_id = listen_for_id(emails)
-                if selected_email_id:
-                    view_email_content(selected_email_id, emails)
-                else:
-                    print("No email selected or understood.")
-            else:
-                print("No new emails.")
-            listen_for_keywords()
-            
-            
-        ###########################################
-        ## Wbsite hanlder: ##
-        ###########################################
-        elif ("open" in recognized_text) and ("website" in recognized_text):
-            url = webNameHandler(recognized_text)
-            url = web_Search(url)
-            Website_openPage_Handler(url)
-            listen_for_keywords()
-            
-        ###########################################
-        ## Wbsite Browsing (Google): ##
-        ###########################################
-        elif ("search" in recognized_text) and ("engine" in recognized_text):
-            Speak("openning google search engine. Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
-            url = "https://www.google.com"
-            asyncio.run(Website_Browsing_openPage_Handler(url))
-            listen_for_keywords()
-
-        ###########################################
-        ## Clear data stored in json file ##
-        ###########################################   
-        elif ("clear cache" in recognized_text):
-            pass
-        ###########################################
-        ## Log out ##
-        ########################################### 
-        elif ("log me out" in recognized_text):
-            try:
-                shutil.rmtree('Database')
-                Speak("You have successfully logged out", -1, 1.0)
-            except OSError as e:
-                Speak(f"Error: {e.strerror}", -1, 1.0)
-            quit() 
-        ###########################################
-        ## Feedback from the system if the command is not recognised ##
-        ########################################### 
-        elif not ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text) or ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text) or ("open" in recognized_text and "website" in recognized_text) or ("search" in recognized_text and "engine" in recognized_text):
-            Speak("invalid command, please refer to the documentation", -1, 1.0)
-            listen_for_keywords()
-            
-        elif (recognized_text is None):
-            Speak("invalid, None Type detected", -1, 1.0)
-            listen_for_keywords()
-            
-        else:
-            listen_for_keywords()
-
-    except sr.UnknownValueError:
-        Speak("I could not understand the audio", -1, 1.0)
-        listen_for_keywords()
-    except sr.RequestError as e:
-        Speak("Could not request results; {0}".format(e), -1, 1.0)
-        listen_for_keywords()
-
-def DisableSys():
-    try:
-     with open("System.json", "r") as file:
-      data = json.load(file)
-      data["System"]["Active"] = False
+        with open("System.json", "r") as file:
+            data = json.load(file)
+            data["System"]["Active"] = False
     except (FileNotFoundError, json.JSONDecodeError):
-     pass
+        pass
     with open("System.json", 'w') as file:
-     json.dump(data, file, indent=4)
+        json.dump(data, file, indent=4)
 
-def Generate_Email():
+async def Generate_Email():
     subprocess.Popen(["python", "Voice_Assistant/Read_Email_Voice_Inputs.py"])
     generate_email = []
     check_Storage = storageCheck()
@@ -254,6 +83,169 @@ def Generate_Email():
     time.sleep(1)
     generate_email = [email_subject, email_message, email_address, email_name]
     return generate_email
- 
+
+async def listen_for_keywords():
+    listen_for_Taylor()
+    with sr.Microphone() as source:
+        try:      
+            audio_data = recognizer.listen(source) 
+            save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
+            recognized_text =  process_wav_file("Database/bin/user_input.wav")
+            if(recognized_text == False):
+                Speak("Entering Sleep MODE", -1, 1.0)
+                SleepMode()
+                greetings = await shuffleTxtEntry()
+                print(greetings)
+                Speak(greetings, -1, 1.0)
+                await listen_for_keywords()
+            elif(recognized_text == 500):
+                Speak("I could not understand the audio", -1, 1.0)
+                await listen_for_keywords()
+            else:
+                pass
+
+        except sr.WaitTimeoutError:
+                Speak("Entering Sleep MODE", -1, 1.0)
+                SleepMode()
+                greetings = await shuffleTxtEntry()
+                print(greetings)
+                Speak(greetings, -1, 1.0)
+                await listen_for_keywords()
+                
+        except sr.UnknownValueError:
+                Speak("Entering Sleep MODE", -1, 1.0)
+                SleepMode()
+                greetings = shuffleTxtEntry()
+                print(greetings)
+                Speak(greetings, -1, 1.0)
+                await listen_for_keywords()
+
+    try:
+        delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav")
+        if ("how are you" in recognized_text):
+            Speak("I am good. how about you?", -1, 1.0)
+            await listen_for_keywords()
+        
+        elif ("tell me" in recognized_text) or ("tell me another" in recognized_text):
+            joke = await get_random_joke()
+            Speak(f"Hear this, {joke}", -1, 1.0)
+            await listen_for_keywords()
+            
+        elif ("quit" in recognized_text):
+            Speak("quitting..", -1, 1.0)
+            await DisableSys()
+            subprocess.Popen(["python", "System_Activision.py"])
+            quit()
+            
+        ###########################################
+        ## Email Services: Send email ##
+        ###########################################
+        elif("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
+                status = Check_Email_Accessability()
+                if(status == False):
+                   Speak("Email Configuration Failed", -1, 1.0)
+                   DisableSys()
+                   subprocess.Popen(["python", "System_Activision.py"])
+                   quit()
+                   
+                generate_email = await Generate_Email()
+                Speak("Would you like to send?", -1, 1.0)
+                status = check()
+                if status == True:
+                    await send_email(generate_email[0], generate_email[1], generate_email[2], generate_email[3], 'user email')
+                    Speak("Email has been sent with success", -1, 1.0)
+                    store_email = await get_name_email(generate_email[3], generate_email[2])
+                    Speak(f"Also, {store_email} with success", -1, 1.0)
+                else:
+                    print("\nSomething went wrong\n")
+                    Speak("Something went wrong", -1, 1.0)
+                    await listen_for_keywords()
+                await listen_for_keywords()
+                
+
+        ###########################################
+        ## Email Services: observe emails ##
+        ###########################################   
+        elif ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
+            status = Check_Email_Accessability()
+            emails = await get_emails()
+            if emails:
+                for i, (id, sender, subject, _) in enumerate(emails):
+                    print(f"{i}: From {sender}, Subject: {subject}")
+                selected_email_id = listen_for_id(emails)
+                if selected_email_id:
+                    await view_email_content(selected_email_id, emails)
+                else:
+                    print("No email selected or understood.")
+            else:
+                print("No new emails.")
+            await listen_for_keywords()
+            
+            
+        ###########################################
+        ## Wbsite hanlder: ##
+        ###########################################
+        elif ("open" in recognized_text) and ("website" in recognized_text):
+            url = await webNameHandler(recognized_text)
+            url = await web_Search(url)
+            await Website_openPage_Handler(url)
+            await listen_for_keywords()
+            
+        ###########################################
+        ## Wbsite Browsing (Google): ##
+        ###########################################
+        elif ("search" in recognized_text) and ("engine" in recognized_text):
+            Speak("openning google search engine. Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
+            url = "https://www.google.com"
+            await Website_Browsing_openPage_Handler(url)
+            #asyncio.run(Website_Browsing_openPage_Handler(url))
+            await listen_for_keywords()
+
+        ###########################################
+        ## Clear data stored in json file ##
+        ###########################################   
+        elif ("clear cache" in recognized_text):
+            pass
+        ###########################################
+        ## Log out ##
+        ########################################### 
+        elif ("log me out" in recognized_text):
+            try:
+                shutil.rmtree('Database')
+                Speak("You have successfully logged out", -1, 1.0)
+            except OSError as e:
+                Speak(f"Error: {e.strerror}", -1, 1.0)
+            quit() 
+        ###########################################
+        ## Feedback from the system if the command is not recognised ##
+        ########################################### 
+        elif not ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text) or ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text) or ("open" in recognized_text and "website" in recognized_text) or ("search" in recognized_text and "engine" in recognized_text):
+            Speak("invalid command, please refer to the documentation", -1, 1.0)
+            await listen_for_keywords()
+            
+        elif (recognized_text is None):
+            Speak("invalid, None Type detected", -1, 1.0)
+            await listen_for_keywords()
+            
+        else:
+            await listen_for_keywords()
+
+    except sr.UnknownValueError:
+        await Speak("I could not understand the audio", -1, 1.0)
+        await listen_for_keywords()
+    except sr.RequestError as e:
+        await Speak("Could not request results; {0}".format(e), -1, 1.0)
+        await listen_for_keywords()
+
 if __name__ == "__main__":
-   listen_for_keywords() 
+    Speak("Openning application...", -1, 1.0)
+    valid = LoginOrSign()
+    if not valid[0]:
+        Speak("Login or Sign up Failed", -1, 1.0)
+        quit()
+    greetings = shuffleTxtEntry()
+    Speak(greetings, -1, 1.0)
+    recognizer = sr.Recognizer()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(listen_for_keywords())
+    #asyncio.run(listen_for_keywords()) 

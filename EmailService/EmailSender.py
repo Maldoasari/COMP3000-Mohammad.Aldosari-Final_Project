@@ -2,7 +2,6 @@ from tkinter import messagebox
 import imaplib, smtplib, json
 from email.mime.text import MIMEText
 from Security.Resttful_API import Update_record_by_email
-from google_auth_oauthlib.flow import Flow
 import base64
 import json
 from google.oauth2.credentials import Credentials
@@ -34,7 +33,7 @@ def delete_all_emails(user_email, app_password):
     mail.logout()
     
     
-def send_email(subject, message_body, to_email, nameOfRec, type):
+async def send_email(subject, message_body, to_email, nameOfRec, type):
      # Send email
     SMTP_SERVER = 'smtp.gmail.com'
     SMTP_PORT = 587

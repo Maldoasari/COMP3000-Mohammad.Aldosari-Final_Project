@@ -74,7 +74,6 @@ async def Website_Browsing_openPage_Handler(url):
             page = await browser.new_page()
             timeout = 120000
             page.set_default_timeout(timeout) 
-            
             await page.goto(url)
             while True:
              await asyncio.sleep(1)
@@ -85,15 +84,12 @@ async def Website_Browsing_openPage_Handler(url):
              else:   
                 break
             return  
-
-def listen_for_Taylor(timeout=10):
+"""""
+def listen_for_Taylor():
     while True:
         with sr.Microphone() as source:
             recognizer.adjust_for_ambient_noise(source)
-            try:
-                audio = recognizer.listen(source, timeout=timeout)
-            except sr.WaitTimeoutError:
-                continue
+            audio = recognizer.listen(source)
         try:
             text = recognizer.recognize_google(audio)
             if ("Taylor" in text) or ("Tyler" in text):
@@ -103,3 +99,23 @@ def listen_for_Taylor(timeout=10):
                 continue
         except sr.UnknownValueError:
             continue
+"""
+
+def listen_for_Taylor():
+    while True:
+        get =  b()
+        try:
+            text = recognizer.recognize_google(get)
+            if ("Taylor" in text) or ("Tyler" in text):
+                Speak("yes!", -1, 1.0)
+                break
+            else:
+                continue
+        except sr.UnknownValueError:
+            continue
+def b():
+    with sr.Microphone() as source:
+            recognizer.adjust_for_ambient_noise(source)
+            audio = recognizer.listen(source)
+            return audio
+    

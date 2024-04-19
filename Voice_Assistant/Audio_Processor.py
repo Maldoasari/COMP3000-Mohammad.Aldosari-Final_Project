@@ -96,8 +96,11 @@ def delete_recording(filename1, filename2, filename3, filename4):
         print(f"Error occurred: {e}")
 
 def save_audio_as_wav(audio_data, filename):
-    with open(filename, "wb") as file:
-        file.write(audio_data.get_wav_data())
+     if audio_data is not None:
+        with open(filename, "wb") as file:
+            file.write(audio_data.get_wav_data())
+     else:
+        print("No audio data received.")
 
 def isit_background_noise(filename, threshold=-45): #40 for quitness - 45 for voice commands. 45 is perfect by far for detecting quitness and voice commands
     # Load the audio file
