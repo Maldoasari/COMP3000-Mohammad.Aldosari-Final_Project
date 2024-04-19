@@ -106,124 +106,125 @@ async def listen_for_service():
 async def listen_for_keywords():
     recognized_text = await listen_for_service()
     if (recognized_text is None) or (recognized_text is False):
-        Speak("sorry, could not understand what you said", -1, 1.0)
         await listen_for_keywords()
-    try:
-        delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav", "Database/bin/IsTaylor.wav")
-        if (software_Name[0] or software_Name[1] in recognized_text) and ("how are you" in recognized_text):
-            Speak("I am good. how about you?", -1, 1.0)
-            await listen_for_keywords()
-        
-        elif (software_Name[0] or software_Name[1] in recognized_text) and ("tell me" in recognized_text) or ("tell me another" in recognized_text):
-            joke = get_random_joke()
-            Speak(f"Hear this, {joke}", -1, 1.0)
-            await listen_for_keywords()
+    elif(software_Name[0] or software_Name[1] in recognized_text):
+        try:
+            delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav", "Database/bin/IsTaylor.wav")
+            if (software_Name[0] or software_Name[1] in recognized_text) and ("how are you" in recognized_text):
+                Speak("I am good. how about you?", -1, 1.0)
+                await listen_for_keywords()
             
-        elif (software_Name[0] or software_Name[1] in recognized_text)and("quit" in recognized_text):
-            Speak("quitting..", -1, 1.0)
-            SleepMode()
-            Speak("taylor is on..", -1, 1.0)
-            await listen_for_keywords()
-
-            
-        ###########################################
-        ## Email Services: Send email ##
-        ###########################################
-        elif(software_Name[0] or software_Name[1] in recognized_text)and("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
-                status = Check_Email_Accessability()
-                if(status == False):
-                   Speak("Email Configuration Failed", -1, 1.0)
-                   DisableSys()
-                   subprocess.Popen(["python", "System_Activision.py"])
-                   quit()
-                   
-                generate_email = await Generate_Email()
-                Speak("Would you like to send?", -1, 1.0)
-                status = check()
-                if status == True:
-                    send_email(generate_email[0], generate_email[1], generate_email[2], generate_email[3], 'user email')
-                    Speak("Email has been sent with success", -1, 1.0)
-                    store_email = await get_name_email(generate_email[3], generate_email[2])
-                    Speak(f"Also, {store_email} with success", -1, 1.0)
-                else:
-                    print("\nSomething went wrong\n")
-                    Speak("Something went wrong", -1, 1.0)
-                    await listen_for_keywords()
+            elif (software_Name[0] or software_Name[1] in recognized_text) and ("tell me" in recognized_text) or ("tell me another" in recognized_text):
+                joke = get_random_joke()
+                Speak(f"Hear this, {joke}", -1, 1.0)
                 await listen_for_keywords()
                 
+            elif (software_Name[0] or software_Name[1] in recognized_text)and("quit" in recognized_text):
+                Speak("quitting..", -1, 1.0)
+                SleepMode()
+                Speak("taylor is on..", -1, 1.0)
+                await listen_for_keywords()
 
-        ###########################################
-        ## Email Services: observe emails ##
-        ###########################################   
-        elif (software_Name[0] or software_Name[1] in recognized_text)and("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
-            status = Check_Email_Accessability()
-            emails = await get_emails()
-            if emails:
-                for i, (id, sender, subject, _) in enumerate(emails):
-                    print(f"{i}: From {sender}, Subject: {subject}")
-                selected_email_id = listen_for_id(emails)
-                if selected_email_id:
-                    await view_email_content(selected_email_id, emails)
+                
+            ###########################################
+            ## Email Services: Send email ##
+            ###########################################
+            elif(software_Name[0] or software_Name[1] in recognized_text)and("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text):
+                    status = Check_Email_Accessability()
+                    if(status == False):
+                     Speak("Email Configuration Failed", -1, 1.0)
+                     DisableSys()
+                     subprocess.Popen(["python", "System_Activision.py"])
+                     quit()
+                    
+                    generate_email = await Generate_Email()
+                    Speak("Would you like to send?", -1, 1.0)
+                    status = check()
+                    if status == True:
+                        send_email(generate_email[0], generate_email[1], generate_email[2], generate_email[3], 'user email')
+                        Speak("Email has been sent with success", -1, 1.0)
+                        store_email = await get_name_email(generate_email[3], generate_email[2])
+                        Speak(f"Also, {store_email} with success", -1, 1.0)
+                    else:
+                        print("\nSomething went wrong\n")
+                        Speak("Something went wrong", -1, 1.0)
+                        await listen_for_keywords()
+                    await listen_for_keywords()
+                    
+
+            ###########################################
+            ## Email Services: observe emails ##
+            ###########################################   
+            elif (software_Name[0] or software_Name[1] in recognized_text)and("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text):
+                status = Check_Email_Accessability()
+                emails = await get_emails()
+                if emails:
+                    for i, (id, sender, subject, _) in enumerate(emails):
+                        print(f"{i}: From {sender}, Subject: {subject}")
+                    selected_email_id = listen_for_id(emails)
+                    if selected_email_id:
+                        await view_email_content(selected_email_id, emails)
+                    else:
+                        print("No email selected or understood.")
                 else:
-                    print("No email selected or understood.")
+                    print("No new emails.")
+                await listen_for_keywords()
+                
+                
+            ###########################################
+            ## Wbsite hanlder: ##
+            ###########################################
+            elif (software_Name[0] or software_Name[1] in recognized_text)and("open" in recognized_text) and ("website" in recognized_text):
+                url = await webNameHandler(recognized_text)
+                url = await web_Search(url)
+                await Website_openPage_Handler(url)
+                await listen_for_keywords()
+                
+            ###########################################
+            ## Wbsite Browsing (Google): ##
+            ###########################################
+            elif (software_Name[0] or software_Name[1] in recognized_text)and("search" in recognized_text) and ("engine" in recognized_text):
+                Speak("openning google search engine. Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
+                url = "https://www.google.com"
+                await Website_Browsing_openPage_Handler(url)
+                #asyncio.run(Website_Browsing_openPage_Handler(url))
+                await listen_for_keywords()
+
+            ###########################################
+            ## Clear data stored in json file ##
+            ###########################################   
+            elif (software_Name[0] or software_Name[1] in recognized_text)and("clear cache" in recognized_text):
+                pass
+            ###########################################
+            ## Log out ##
+            ########################################### 
+            elif (software_Name[0] or software_Name[1] in recognized_text)and("log me out" in recognized_text):
+                try:
+                    shutil.rmtree('Database')
+                    Speak("You have successfully logged out", -1, 1.0)
+                except OSError as e:
+                    Speak(f"Error: {e.strerror}", -1, 1.0)
+                quit() 
+            ###########################################
+            ## Feedback from the system if the command is not recognised ##
+            ########################################### 
+            elif (software_Name[0] or software_Name[1] in recognized_text) and not ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text) or ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text) or ("open" in recognized_text and "website" in recognized_text) or ("search" in recognized_text and "engine" in recognized_text):
+                Speak("invalid command, please refer to the documentation", -1, 1.0)
+                await listen_for_keywords()
+                
+            elif (recognized_text is None) or (recognized_text is False):
+                Speak("invalid, None Type detected", -1, 1.0)
+                await listen_for_keywords()
+                
             else:
-                print("No new emails.")
-            await listen_for_keywords()
-            
-            
-        ###########################################
-        ## Wbsite hanlder: ##
-        ###########################################
-        elif (software_Name[0] or software_Name[1] in recognized_text)and("open" in recognized_text) and ("website" in recognized_text):
-            url = await webNameHandler(recognized_text)
-            url = await web_Search(url)
-            await Website_openPage_Handler(url)
-            await listen_for_keywords()
-            
-        ###########################################
-        ## Wbsite Browsing (Google): ##
-        ###########################################
-        elif (software_Name[0] or software_Name[1] in recognized_text)and("search" in recognized_text) and ("engine" in recognized_text):
-            Speak("openning google search engine. Just to give you a haeds up, if you want to exit say exit service", -1, 1.0)
-            url = "https://www.google.com"
-            await Website_Browsing_openPage_Handler(url)
-            #asyncio.run(Website_Browsing_openPage_Handler(url))
-            await listen_for_keywords()
+                await listen_for_keywords()
 
-        ###########################################
-        ## Clear data stored in json file ##
-        ###########################################   
-        elif (software_Name[0] or software_Name[1] in recognized_text)and("clear cache" in recognized_text):
-            pass
-        ###########################################
-        ## Log out ##
-        ########################################### 
-        elif (software_Name[0] or software_Name[1] in recognized_text)and("log me out" in recognized_text):
-            try:
-                shutil.rmtree('Database')
-                Speak("You have successfully logged out", -1, 1.0)
-            except OSError as e:
-                Speak(f"Error: {e.strerror}", -1, 1.0)
-            quit() 
-        ###########################################
-        ## Feedback from the system if the command is not recognised ##
-        ########################################### 
-        elif (software_Name[0] or software_Name[1] in recognized_text) and not ("send an email" in recognized_text) or ("send email" in recognized_text) or ("email service" in recognized_text) or ("observe" in recognized_text) or ("new emails" in recognized_text) or ("check email" in recognized_text) or ("open" in recognized_text and "website" in recognized_text) or ("search" in recognized_text and "engine" in recognized_text):
-            Speak("invalid command, please refer to the documentation", -1, 1.0)
+        except sr.UnknownValueError:
             await listen_for_keywords()
-            
-        elif (recognized_text is None):
-            Speak("invalid, None Type detected", -1, 1.0)
+        except sr.RequestError as e:
             await listen_for_keywords()
-            
-        else:
-            await listen_for_keywords()
-
-    except sr.UnknownValueError:
+    else:
         await listen_for_keywords()
-    except sr.RequestError as e:
-        await listen_for_keywords()
-
 if __name__ == "__main__":
     Speak("Openning application...", -1, 1.0)
     valid = LoginOrSign()
