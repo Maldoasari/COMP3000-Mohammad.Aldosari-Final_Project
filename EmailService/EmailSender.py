@@ -32,8 +32,7 @@ def delete_all_emails(user_email, app_password):
     # Logout and close connection
     mail.logout()
     
-    
-async def send_email(subject, message_body, to_email, nameOfRec, type):
+def send_email(subject, message_body, to_email, nameOfRec, type):
      # Send email
     SMTP_SERVER = 'smtp.gmail.com'
     SMTP_PORT = 587

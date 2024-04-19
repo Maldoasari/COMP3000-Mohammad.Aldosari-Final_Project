@@ -1,6 +1,8 @@
 import asyncio
+import time
 import speech_recognition as sr
 from playwright.async_api import async_playwright
+from Voice_Assistant.Audio_Processor import IsSpeech, save_audio_as_wav
 from Web_BrowsingService.OpenWeb import click_button_by_text, extract_words_between, search_google
 from Voice_Assistant.Speak import Speak
 recognizer = sr.Recognizer()
@@ -45,14 +47,18 @@ async def listening(page, timeout):
                 break
             elif "read this" in recognized_text:
                 await reading_highlighted_text(page) 
-                Speak(f"{highlightedText}", -1, 1.0)  
+                if (highlightedText == None):
+                    Speak("You are not selecting any text", -1, 1.0)
+                    break
+                else:
+                    Speak(f"{highlightedText}", -1, 1.0)  
                 status = False
                 break
             elif "search this" in recognized_text:
                 status = False
                 await reading_highlighted_text(page) 
                 if (highlightedText == None):
-                    Speak("You not selected a text", -1, 1.0)
+                    Speak("You are not selecting any text", -1, 1.0)
                     break
                 await search_google(page, highlightedText, 1)
                 break
@@ -84,38 +90,21 @@ async def Website_Browsing_openPage_Handler(url):
              else:   
                 break
             return  
-"""""
-def listen_for_Taylor():
-    while True:
-        with sr.Microphone() as source:
-            recognizer.adjust_for_ambient_noise(source)
-            audio = recognizer.listen(source)
-        try:
-            text = recognizer.recognize_google(audio)
-            if ("Taylor" in text) or ("Tyler" in text):
-                Speak("yes!", -1, 1.0)
-                break
-            else:
-                continue
-        except sr.UnknownValueError:
-            continue
-"""
+
 
 def listen_for_Taylor():
     while True:
-        get =  b()
-        try:
-            text = recognizer.recognize_google(get)
-            if ("Taylor" in text) or ("Tyler" in text):
-                Speak("yes!", -1, 1.0)
-                break
-            else:
+        with sr.Microphone() as source:
+            try:
+                audio_data = recognizer.listen(source, timeout=2, phrase_time_limit=2) 
+                text = recognizer.recognize_google(audio_data)
+                if "Taylor" in text or "Tyler" in text:
+                    Speak("yes!", -1, 1.0)
+                    break
+                else:
+                    continue
+            except (sr.UnknownValueError, sr.WaitTimeoutError):
                 continue
-        except sr.UnknownValueError:
-            continue
-def b():
-    with sr.Microphone() as source:
-            recognizer.adjust_for_ambient_noise(source)
-            audio = recognizer.listen(source)
-            return audio
-    
+
+
+ 

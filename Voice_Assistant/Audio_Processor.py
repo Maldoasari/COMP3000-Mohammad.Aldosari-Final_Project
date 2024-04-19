@@ -1,28 +1,19 @@
 import csv
 import random
 import os, wave, webrtcvad, librosa, scipy
-import noisereduce as nr
-import soundfile as sf
 from pydub import AudioSegment
 import speech_recognition as sr
 import numpy as np
 
-def process_wav_file(filename):
-    # Load audio file
-    y, samplerate = librosa.load(filename, sr=None)
-    
-    # Perform noise reduction
-    reduced_noise = nr.reduce_noise(y=y, sr=samplerate)
-    sf.write('Database/bin/processed_audio.wav', reduced_noise, samplerate=samplerate)
-    
+def IsSpeech(filename):
     # Resample the audio
-    resampled_audio = resample_wav_file("Database/bin/processed_audio.wav")
-    resampled_audio.export('Database/bin/resampled_audio_file1.wav', format="wav")
+    resampled_audio = resample_wav_file(filename=filename)
+    resampled_audio.export('Database/bin/resampled_aud', format="wav")
     
     # Initialize VAD
     vad = webrtcvad.Vad(1)
     
-    with wave.open("Database/bin/resampled_audio_file1.wav", 'rb') as wf:
+    with wave.open('Database/bin/resampled_aud', 'rb') as wf:
         sample_rate = wf.getframerate()
         if sample_rate not in (8000, 16000, 32000, 48000):
             raise ValueError(f"Unsupported sample rate: {sample_rate}")
@@ -57,7 +48,7 @@ def process_wav_file(filename):
     # Convert frames to AudioData for recognition
     # Load your audio file
      recognizer = sr.Recognizer()
-     with sr.AudioFile('Database/bin/user_input.wav') as source:
+     with sr.AudioFile(filename) as source:
     # Record the audio file as an audio data object
       audio_data = recognizer.record(source)
       recognized_text = recognizer.recognize_google(audio_data)
@@ -84,12 +75,13 @@ def resample_wav_file(filename, target_sample_rate=16000):
     audio = AudioSegment.from_wav(filename)
     resampled_audio = audio.set_frame_rate(target_sample_rate)
     return resampled_audio
-def delete_recording(filename1, filename2, filename3, filename4):
+def delete_recording(filename1, filename2, filename3, filename4, filename5):
     try:
         os.remove(filename1)
         os.remove(filename2)
         os.remove(filename3)
         os.remove(filename4)
+        os.remove(filename5)
     except FileNotFoundError:
         print(f"File not found!")
     except Exception as e:
