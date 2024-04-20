@@ -247,15 +247,24 @@ async def listen_for_keywords():
     else:
         await listen_for_keywords()
 
+# Check if the script is being run directly
 if __name__ == "__main__":
-    Speak("Openning application...", -1, 1.0)
+    # Speak a message indicating that the application is opening
+    Speak("Opening application...", -1, 1.0)
+    # Check if login or sign-up is successful
     valid = LoginOrSign()
+    # If login or sign-up fails, speak a failure message and quit
     if not valid[0]:
         Speak("Login or Sign up Failed", -1, 1.0)
         quit()
+    # Get a random greeting message
     greetings = shuffleTxtEntry()
+    # Speak the greeting
     Speak(greetings, -1, 1.0)
+    # Initialize the speech recognizer
     recognizer = sr.Recognizer()
+    # Get the event loop
     loop = asyncio.get_event_loop()
+    # Run the function to listen for keywords
     loop.run_until_complete(listen_for_keywords())
-    #asyncio.run(listen_for_keywords()) 
+
