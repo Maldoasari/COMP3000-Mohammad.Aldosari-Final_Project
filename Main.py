@@ -1,88 +1,97 @@
-import asyncio
-import os
-import shutil
-import json
-import subprocess
-import time
-import speech_recognition as sr
-from Voice_Assistant.Speak import Speak
-from Configuration.LoginORsignIN import LoginOrSign
-from EmailCreation.EmailAbout import ReadMsg
-from EmailCreation.EmailCheck import check
-from EmailCreation.EmailName import ReadName
-from EmailCreation.EmailWhat import Subject
-from EmailCreation.EmailWho import AddNew_or_ChooseFromStorage, storage, storageCheck, whoIStheR
-from EmailService.CodeGeneration import shuffleTxtEntry
-from EmailService.EmailAccessability import Check_Email_Accessability
-from EmailService.EmailObserver import get_emails, listen_for_id, view_email_content
-from EmailService.EmailSender import send_email
-from EmailService.EmailsStorage import get_name_email
-from Voice_Assistant.Audio_Processor import IsSpeech, delete_recording, get_random_joke, save_audio_as_wav
-from Voice_Assistant.Read_Email_Voice_Inputs import POST
-from Voice_Assistant.Sleep_Mode import SleepMode
-from Web_BrowsingService.OpenWeb import Website_openPage_Handler, web_Search, webNameHandler
-from Web_BrowsingService.WebBrowsing import Website_Browsing_openPage_Handler, listen_for_Taylor
+# THIS IS THE MAIN FILE AND ALL OPERATIONS/OTHER FILES ARE LINKED HERE
+# THE FIRST SECTION OF THIS FILE IS ADDING AND IMPORTING THE NECESSARY MODULES
 
-async def DisableSys():
-    try:
-        with open("System.json", "r") as file:
-            data = json.load(file)
-            data["System"]["Active"] = False
-    except (FileNotFoundError, json.JSONDecodeError):
-        pass
-    with open("System.json", 'w') as file:
-        json.dump(data, file, indent=4)
-        
+import asyncio  # For asynchronous programming
+import shutil  # For file operations
+import subprocess  # For running subprocesses
+import time  # For time-related operations
+import speech_recognition as sr  # For speech recognition
+from Voice_Assistant.Speak import Speak  # Custom module for text-to-speech
+from Configuration.LoginORsignIN import LoginOrSign  # Custom module for login or sign-in functionality
+from EmailCreation.EmailAbout import ReadMsg  # Custom module for writing email messages with user's voice
+from EmailCreation.EmailCheck import check  # Custom module for email checking before sending (confirmation)
+from EmailCreation.EmailName import ReadName  # Custom module for writing email receiver's name with user's voice
+from EmailCreation.EmailWhat import Subject  # Custom module for writing email subject with user's voice
+from EmailCreation.EmailWho import AddNew_or_ChooseFromStorage, storage, storageCheck, whoIStheR  # Custom modules for managing email recipients and writing an email with user's voice
+from EmailService.CodeGeneration import shuffleTxtEntry  # Custom module for shuffling text entries
+from EmailService.EmailAccessability import Check_Email_Accessability  # Custom module for checking email accessibility
+from EmailService.EmailObserver import get_emails, listen_for_id, view_email_content  # Custom modules for email observation and interaction
+from EmailService.EmailSender import send_email  # Custom module for sending emails
+from EmailService.EmailsStorage import get_name_email  # Custom module for storing email addresses
+from Voice_Assistant.Audio_Processor import IsSpeech, delete_recording, get_random_joke, save_audio_as_wav  # Custom modules for audio processing
+from Voice_Assistant.Read_Email_Voice_Inputs import POST  # Custom module for reading email voice inputs for display
+from Voice_Assistant.Sleep_Mode import SleepMode  # Custom module for sleep mode functionality
+from Web_BrowsingService.OpenWeb import Website_openPage_Handler, web_Search, webNameHandler  # Custom modules for web browsing functionality
+from Web_BrowsingService.WebBrowsing import Website_Browsing_openPage_Handler  # Custom modules for browsing web pages
+
+# Name of the software to be called as a way to activate the system or include to execute any command. This is how it's spoken.
 software_Name = ['Taylor', 'Tyler']
 
+# This function is for displaying a GUI interface (email template) and walking the user through the process of sending an email.
 async def Generate_Email():
+    # Open the email voice input script (email template) in a subprocess
     subprocess.Popen(["python", "Voice_Assistant/Read_Email_Voice_Inputs.py"])
     generate_email = []
+    # Check if there are any stored email addresses
     check_Storage = storageCheck()
     if (check_Storage == None):
-        Speak("Brillent, What is the email?", -1, 1.0)
+        # If no stored email addresses, prompt the user to input the email address
+        Speak("Brilliant, What is the email?", -1, 1.0)
         email_address = whoIStheR()
     else:  
-        Speak("Would you like to add new. or pick from storage?", -1, 1.0)
+        # If there are stored email addresses, ask the user if they want to add a new one or choose from storage
+        Speak("Would you like to add new or pick from storage?", -1, 1.0)
         Add_or_Storage = AddNew_or_ChooseFromStorage()
         if(Add_or_Storage == "add"):
-           Speak("Brillent, you have chosen the add new record service. To who?", -1, 1.0)
+           # If the user chooses to add a new email, prompt them to input the email address
+           Speak("Brilliant, you have chosen the add new record service. To who?", -1, 1.0)
            email_address = whoIStheR()
         elif(Add_or_Storage == "storage"):
-            Speak("Brillent, you picked to choose from storage", -1, 1.0)
+            # If the user chooses to pick from storage, retrieve the email address from storage
+            Speak("Brilliant, you picked to choose from storage", -1, 1.0)
             email_address = storage()
             if email_address == None:
+                # If there are no email addresses stored, prompt the user to add emails
                 Speak("Add emails to store them", -1, 1.0)
                 email_address = whoIStheR()
         else:
-            Speak("The Defult path is Adding new email. To who?", -1, 1.0)
+            # If no valid input is received, default to adding a new email address and prompt the user to input it
+            Speak("The Default path is Adding new email. To who?", -1, 1.0)
             email_address = whoIStheR()
+    # Post the email address to the json file to print in email template
     time.sleep(1)
     POST("Database/Content.json", "Email", "post", email_address)
     print("Email:\n", email_address)
     POST("Database/Content.json", "system", "post", " ")
     time.sleep(2)
+    # Prompt the user to input the email subject
     Speak("What is the Subject?", -1, 1.0)
     email_subject = Subject()
     time.sleep(1)
+    # Post the email subject to the json file to print in email template
     POST("Database/Content.json", "Subject", "post", email_subject)
     print("Subject:\n",email_subject)
     POST("Database/Content.json", "system", "post", " ")
     time.sleep(1)
+    # Prompt the user to input the email message
     Speak("What is your message?", -1, 1.0)
     email_message = ReadMsg()
     time.sleep(1)
+    # Post the email message to the json file to print in email template
     POST("Database/Content.json", "message", "post", email_message)
     POST("Database/Content.json", "system", "post", " ")
     print("Message:\n",email_message)
     time.sleep(1)
-    Speak("What his. or her. or its name?", -1, 1.0)
+    # Prompt the user to input the recipient's name
+    Speak("What is his, her, or its name?", -1, 1.0)
     Speak("Say space to add space", -1, 1.0)
     email_name = ReadName()
     time.sleep(1)
+    # Post the recipient's name to the json file to print in email template
     POST("Database/Content.json", "Name", "post", email_name)
     print("Name:\n",email_name)
     time.sleep(1)
+    # Store the generated email information in a list and return it
     generate_email = [email_subject, email_message, email_address, email_name]
     return generate_email
 
@@ -133,8 +142,6 @@ async def listen_for_keywords():
                     status = Check_Email_Accessability()
                     if(status == False):
                      Speak("Email Configuration Failed", -1, 1.0)
-                     DisableSys()
-                     subprocess.Popen(["python", "System_Activision.py"])
                      quit()
                     
                     generate_email = await Generate_Email()
