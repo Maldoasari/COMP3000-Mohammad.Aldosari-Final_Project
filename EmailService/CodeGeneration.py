@@ -5,7 +5,7 @@ def generate_random_5_digit_number():
     return ''.join(random.choice('0123456789') for _ in range(5))
 
 # This function is helping the system to choose greeting words randomly
-async def shuffleTxtEntry():
+def shuffleTxtEntry():
     
   lst = ["Taylor. is listening..", "Taylor. is ON", "Taylor. is waiting.", "Taylor loves your voice. speak up!..."]
 

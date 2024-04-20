@@ -194,9 +194,11 @@ def Top_level_domain():
             Capture = recognizer.recognize_google(audio).lower()
             for i in top_level_domain:
                 if(i in Capture):
+                    POST("Database/Content.json", "system", "post", f"Done. you have chosen {i}")
                     Speak(f"Done. you have chosen {i}", 0, 1.0)
                     return i 
                 else:
+                    POST("Database/Content.json", "system", "post", f"the given domain is not found")
                     Speak("the given domain is not found", 0, 1.0)
                     print("the given domain is not found")
                     domain = Top_level_domain()
@@ -218,6 +220,7 @@ def checkWho(reciver):
     email_address = ''
     reciver_without_spaces = reciver.replace(" ", "")
     time.sleep(0.1)
+    POST("Database/Content.json", "system", "post", f"Confirm.. \n or Change letters... \n or insert a letter ")
     Speak("Confirm.. or Change letters... or insert a letter ", 0, 1.0)
     with sr.Microphone() as source:
         try:
@@ -233,6 +236,7 @@ def checkWho(reciver):
                 return email_address
                 
             elif ("no" in Capture) or ("change letter" in Capture) or ("change" in Capture):
+                POST("Database/Content.json", "system", "post", f"Change letters within the email")
                 Speak("Change letters within the email", 0, 1.0)
                 result = ChangerTool(reciver_without_spaces)
                 Speak("Modified Successfully", 0, 1.0)
@@ -287,6 +291,7 @@ def whoIStheR():
             audio = recognizer.listen(source)
             p_reciver = recognizer.recognize_google(audio).lower().replace("period", ".").replace("dash", "-")
             reciver = p_reciver.replace(" ", "")
+            POST("Database/Content.json", "system", "post", f"Confirm that you have said:\n {reciver}")
             Speak(f"Check what you have said:\n", 0, 1.0)
             print(f"Confirm that you have said:\n {reciver}")
             time.sleep(1)
@@ -305,6 +310,7 @@ def whoIStheR():
 def AddNew_or_ChooseFromStorage():
     status = ''
     print("Add new? or Choose from storage?")
+    
    # time.sleep(0.1)
     with sr.Microphone() as source:
         try:
@@ -342,7 +348,7 @@ def choose_email(emails, x, count):
     clone_emails = emails
     clone_x = x
     clone_count = count
-    POST("Database/Content.json", "system", "post", f"your storage have {len(emails)} records")
+    POST("Database/Content.json", "system", "post", f"your storage have {len(emails)-1} records")
     Speak(f"your storage have {len(emails) - 1} records", 0, 1.0)
     if(len(emails) == 1):
         return None
