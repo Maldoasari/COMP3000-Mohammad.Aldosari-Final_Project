@@ -11,7 +11,7 @@ def IsSpeech(filename):
     resampled_audio.export('Database/bin/resampled_aud', format="wav")
     
     # Initialize VAD
-    vad = webrtcvad.Vad(1)
+    vad = webrtcvad.Vad(2)
     
     with wave.open('Database/bin/resampled_aud', 'rb') as wf:
         sample_rate = wf.getframerate()

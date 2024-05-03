@@ -101,7 +101,7 @@ async def listen_for_service():
     with sr.Microphone() as source:
         try:      
             # Listen to audio input
-            audio_data = recognizer.listen(source) 
+            audio_data = recognizer.listen(source, timeout=10, phrase_time_limit=3) 
             # Save audio as WAV file
             save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
             # Check if speech is detected in the audio
@@ -117,6 +117,8 @@ async def listen_for_service():
                 return recognized_text
         except sr.UnknownValueError:
             return
+        except sr.WaitTimeoutError:
+            return
 
                 
 # This function listens for keywords and performs corresponding actions based on recognized speech.
@@ -128,7 +130,7 @@ async def listen_for_keywords():
         await listen_for_keywords()
     
     # Check if software name is mentioned in recognized text
-    elif(software_Name[0] or software_Name[1] in recognized_text):
+    elif(software_Name[0] in recognized_text) or (software_Name[1] in recognized_text):
         try:
             # Delete temporary audio recordings
             delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav", "Database/bin/IsTaylor.wav")

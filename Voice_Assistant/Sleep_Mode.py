@@ -5,7 +5,7 @@ def SleepMode():
       while True:
        with sr.Microphone() as source2:
             try:
-                audio_data_Wait = recognizer.listen(source2)
+                audio_data_Wait = recognizer.listen(source2, timeout=10, phrase_time_limit=3)
                 WakUPcommand = recognizer.recognize_google(audio_data_Wait).lower()
                 if "taylor wake up" in WakUPcommand:
                     break
