@@ -6,6 +6,7 @@ import shutil  # For file operations
 import subprocess  # For running subprocesses
 import time  # For time-related operations
 import speech_recognition as sr  # For speech recognition
+from Security.Cryptography import create_database_directory
 from Voice_Assistant.Speak import Speak  # Custom module for text-to-speech
 from Configuration.LoginORsignIN import LoginOrSign  # Custom module for login or sign-in functionality
 from EmailCreation.EmailAbout import ReadMsg  # Custom module for writing email messages with user's voice
@@ -257,6 +258,7 @@ if __name__ == "__main__":
     if not valid[0]:
         Speak("Login or Sign up Failed", -1, 1.0)
         quit()
+    create_database_directory()
     # Get a random greeting message
     greetings = shuffleTxtEntry()
     # Speak the greeting

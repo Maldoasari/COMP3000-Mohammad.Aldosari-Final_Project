@@ -8,7 +8,7 @@ from Voice_Assistant.Speak import Speak
 recognizer = sr.Recognizer()
 status = None
 highlightedText = None
-
+software_Name = ['taylor', 'tyler']
 keywords = ['exit service', 'scroll up', 'scroll down', 'click on', ]
 async def reading_highlighted_text(page):
     global highlightedText
@@ -54,9 +54,9 @@ async def process_recognized_text(page, recognized_text):
         pass
 
 async def listening(page, timeout):
-    global status
+    #global status
     global highlightedText
-    status = False
+    #status = False
 
     try:
         with sr.Microphone() as source:
@@ -78,19 +78,19 @@ async def Website_Browsing_openPage_Handler(url):
             page.set_default_timeout(timeout) 
             await page.goto(url)
             while True:
-             await asyncio.sleep(1)
+             #await asyncio.sleep(1)
              if not status:
-                await listen_for_Taylor()
+                #listen_for_Taylor()
                 await listening(page, timeout)
                 continue
              else:   
                 break
+           
             return  
-
-software_Name = ['taylor', 'tyler']
-async def listen_for_Taylor():
+"""""
+def listen_for_Taylor():
+     while True:
         with sr.Microphone() as source:
-            while True:
              try:
                 audio_data = recognizer.listen(source, timeout=2, phrase_time_limit=2) 
                 text = recognizer.recognize_google(audio_data).lower()
@@ -103,4 +103,4 @@ async def listen_for_Taylor():
                 continue
 
 
- 
+"""""
