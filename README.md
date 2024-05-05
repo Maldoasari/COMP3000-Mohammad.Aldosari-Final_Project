@@ -93,7 +93,7 @@ The rest commands are still in progress...
   
   "exit service"
 
-* Note: some of the services has not been completed yet, but the first three services are completed and functional [sending, reading an email and browsing the internet]
+*Note: some of the services has not been completed yet, but the first three services are completed and functional [sending, reading an email and browsing the internet]
 
   
   
