@@ -1,13 +1,14 @@
 # THIS IS THE MAIN FILE AND ALL OPERATIONS/OTHER FILES ARE LINKED HERE
 # THE FIRST SECTION OF THIS FILE IS ADDING AND IMPORTING THE NECESSARY MODULES
-
+import threading # Threads for increasing exe time 
+from Voice_Assistant.Speak import Speak  # Custom module for text-to-speech
 import asyncio  # For asynchronous programming
 import shutil  # For file operations
 import subprocess  # For running subprocesses
 import time  # For time-related operations
 import speech_recognition as sr  # For speech recognition
 from Security.Cryptography import create_database_directory
-from Voice_Assistant.Speak import Speak  # Custom module for text-to-speech
+
 from Configuration.LoginORsignIN import LoginOrSign  # Custom module for login or sign-in functionality
 from EmailCreation.EmailAbout import ReadMsg  # Custom module for writing email messages with user's voice
 from EmailCreation.EmailCheck import check  # Custom module for email checking before sending (confirmation)
@@ -97,24 +98,27 @@ async def Generate_Email():
     return generate_email
 
 # The following function is for processing audio and checking the speech inside the audio.
-async def listen_for_service():
+def listen_for_service():
     with sr.Microphone() as source:
         try:      
             # Listen to audio input
             audio_data = recognizer.listen(source, timeout=10, phrase_time_limit=3) 
             # Save audio as WAV file
-            save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
+            recognized_text = recognizer.recognize_google(audio_data)
+            return recognized_text
+            #save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
             # Check if speech is detected in the audio
-            recognized_text =  IsSpeech("Database/bin/user_input.wav")
+            #recognized_text =  IsSpeech("Database/bin/user_input.wav")
+           
             # if there is no speech break
-            if(recognized_text == False):
-                return
+            #if(recognized_text == False):
+                #return
             # if there is somthing wrong break
-            elif(recognized_text == 500):
-                return
+            #elif(recognized_text == 500):
+              #  return
             # if there is nothing wrong break
-            else:
-                return recognized_text
+           # else:
+                #return recognized_text
         except sr.UnknownValueError:
             return
         except sr.WaitTimeoutError:
@@ -123,8 +127,10 @@ async def listen_for_service():
                 
 # This function listens for keywords and performs corresponding actions based on recognized speech.
 async def listen_for_keywords():
+    
     # Get recognized text from audio input
-    recognized_text = await listen_for_service()
+    recognized_text = listen_for_service()
+   
     # Check if recognized text is None or False, if so, continue listening
     if (recognized_text is None) or (recognized_text is False):
         await listen_for_keywords()
@@ -255,11 +261,11 @@ if __name__ == "__main__":
     # Speak a message indicating that the application is opening
     Speak("Opening application...", -1, 1.0)
     # Check if login or sign-up is successful
-    valid = LoginOrSign()
+    #valid = LoginOrSign()
     # If login or sign-up fails, speak a failure message and quit
-    if not valid[0]:
-        Speak("Login or Sign up Failed", -1, 1.0)
-        quit()
+    #if not valid[0]:
+       # Speak("Login or Sign up Failed", -1, 1.0)
+        #quit()
     create_database_directory()
     # Get a random greeting message
     greetings = shuffleTxtEntry()

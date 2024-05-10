@@ -25,7 +25,7 @@ async def reading_highlighted_text(page):
 async def process_recognized_text(page, recognized_text):
     global status
     global highlightedText
-
+    status = False
     if "exit service" in recognized_text:
         status = True
         Speak("exiting service", -1, 1.0)
@@ -61,11 +61,13 @@ async def listening(page, timeout):
     try:
         with sr.Microphone() as source:
             page.set_default_timeout(timeout)
-            audio = recognizer.listen(source)
+            audio = recognizer.listen(source, timeout=10, phrase_time_limit=3)
             recognized_text = await asyncio.get_event_loop().run_in_executor(None, recognizer.recognize_google, audio)
             await process_recognized_text(page, recognized_text.lower())
     except sr.UnknownValueError:
         pass
+    except sr.WaitTimeoutError:
+            return
 
 async def Website_Browsing_openPage_Handler(url):
     global status

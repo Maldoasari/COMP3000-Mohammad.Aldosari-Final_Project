@@ -1,36 +1,47 @@
 import csv
 import random
+import threading
 import os, wave, webrtcvad, librosa, scipy
 from pydub import AudioSegment
 import speech_recognition as sr
 import numpy as np
 
+def process_chunk(audio_chunk, vad, sample_rate, audio_frames):
+    ## checkking for speech for each chunk
+    frames_per_chunk = len(audio_chunk) // 2  
+    if vad.is_speech(audio_chunk, sample_rate):
+        audio_frames.append(audio_chunk)
+
 def IsSpeech(filename):
     # Resample the audio
     resampled_audio = resample_wav_file(filename=filename)
     resampled_audio.export('Database/bin/resampled_aud', format="wav")
-    
+
     # Initialize VAD
-    vad = webrtcvad.Vad(2)
-    
+    vad = webrtcvad.Vad(1)
+
     with wave.open('Database/bin/resampled_aud', 'rb') as wf:
         sample_rate = wf.getframerate()
         if sample_rate not in (8000, 16000, 32000, 48000):
             raise ValueError(f"Unsupported sample rate: {sample_rate}")
 
         # Calculate the number of audio frames per chunk (e.g., 20 ms)
-        frames_per_chunk = int(sample_rate * 0.02)  
-        bytes_per_chunk = frames_per_chunk * 2  
+        frames_per_chunk = int(sample_rate * 0.02)
+        bytes_per_chunk = frames_per_chunk * 2
         audio_frames = []
 
-        # Read and process each chunk
         audio_chunk = wf.readframes(frames_per_chunk)
+        threads = []
+
         while len(audio_chunk) == bytes_per_chunk:
-            # Check for speech in the chunk
-            if vad.is_speech(audio_chunk, sample_rate):
-                audio_frames.append(audio_chunk)
+            thread = threading.Thread(target=process_chunk, args=(audio_chunk, vad, sample_rate, audio_frames))
+            thread.start()
+            threads.append(thread)
             audio_chunk = wf.readframes(frames_per_chunk)
-        
+
+        for thread in threads:
+            thread.join()
+
         # Combine voice detected chunks
         combined_audio = b''.join(audio_frames)
         with wave.open("Database/bin/vad_combined_audio.wav", 'wb') as out_wf:
@@ -38,29 +49,31 @@ def IsSpeech(filename):
             out_wf.setsampwidth(wf.getsampwidth())
             out_wf.setframerate(sample_rate)
             out_wf.writeframes(combined_audio)
+
     audio = AudioSegment.from_file("Database/bin/vad_combined_audio.wav", format="wav")
     if len(audio) <= 0:
         return False
+
     # Check for background noise on the combined audio
     elif isit_background_noise("Database/bin/vad_combined_audio.wav"):
         return False
-    else:  
-    # Convert frames to AudioData for recognition
-    # Load your audio file
-     recognizer = sr.Recognizer()
-     with sr.AudioFile(filename) as source:
-    # Record the audio file as an audio data object
-      audio_data = recognizer.record(source)
-      recognized_text = recognizer.recognize_google(audio_data)
-     try:
-        if len(recognized_text) > 0:
-            return recognized_text
-        else:
-            return None
-     except sr.UnknownValueError:
-        return 500
-     except sr.RequestError:
-        return "API unavailable."
+
+    else:
+        # Convert frames to AudioData for recognition
+        recognizer = sr.Recognizer()
+        with sr.AudioFile(filename) as source:
+            # Record the audio file as an audio data object
+            audio_data = recognizer.record(source)
+            try:
+                recognized_text = recognizer.recognize_google(audio_data)
+                if len(recognized_text) > 0:
+                    return recognized_text
+                else:
+                    return None
+            except sr.UnknownValueError:
+                return 500
+            except sr.RequestError:
+                return "API unavailable."
 csv_file = 'Voice_Assistant/shortjokes.csv'   
 with open(csv_file, newline='', encoding='utf-8') as file:
         reader = csv.DictReader(file)

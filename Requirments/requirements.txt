@@ -13,5 +13,4 @@ imageio[ffmpeg]
 noisereduce 
 pyaudio
 llvmlite 
-numba
 playwright
