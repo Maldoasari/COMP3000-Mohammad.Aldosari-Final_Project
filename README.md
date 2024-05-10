@@ -21,5 +21,82 @@
 
 *Note: this is the system server. also it may need you to install some libraries. dowload the software requirments if you have not. the console output will outline what is missing after you run the script. then rerun the script the result will be observable.
 
+# AFTER SETTING UP THE SOFTWARE SUCCESSFULLY YOU CAN EXPLORE ITS CAPABILITY AND SERVICES
+## WHAT COMMANDS ARE AVAILABLE AND HOW TO COMMUNICATE WITH THE SOFTWARE?
+## FIRST YOU ARE REQUIRED TO LOGIN OR SIGN UP
+
+
+
+### 1. HOW TO SEND AN EMAIL?
+- SAY OR INCLUDE THE FOLLOWING COMMAND:
+  
+  "Taylor" "send an email"
+
+- THE SOFTWARE WILL WALK YOU THROUGH THE PROCESS AND WHEN YOU FINISH YOU WILL BE DIRECTED TO THE MAIN MENU
+
+
+  
+### 2. HOW TO READ AN EMAIL?
+- SAY OR INCLUDE THE FOLLOWING COMMAND:
+  
+  "Taylor" "read my emails"
+
+
+- THE SOFTWARE WILL WALK YOU THROUGH THE PROCESS AND WHEN YOU FINISH YOU WILL BE DIRECTED TO THE MAIN MENU
+
+
+  
+### 3. HOW TO ACTIVATE THE BROWSING SERVICE AND BROWSE THE INTERNET
+- SAY OR INCLUDE THE FOLLOWING COMMAND:
+  
+  "Taylor" "search engine"
+  
+- THEN A WINDOW WILL OPEN FOR YOU BEEN DIRECTED TO GOOGLE SEARCH ENGINE. YOU CAN SAY THE FOLLOWING COMMANDS WHILE BROWSING:
+  
+The First Command is: "read this" + [highlighted text]
+
+=> to read any highlighted text by the software
+
+
+The second command is: "search this" + [highlighted text] 
+
+=> to search the highlighted text via the Google search engine
+
+
+The third command is: "search for" + [topic] 
+
+=> to search for any topic 
+
+
+The fourth command is: "exit service" 
+
+=> YOU WILL BE DIRECTED TO THE MAIN MENU 
+
+The rest commands are still in progress...
+
+### 4. HOW TO OPEN A CERTAIN WEBSITE AND SCROLL UP OR DOWN:
+- SAY OR INCLUDE THE FOLLOWING COMMAND:
+  
+  "Taylor" "open" [Name_Of_Website] "website"
+
+- A WINDOW WILL OPEN AND IT WILL SHOW YOU THE WESBITE THAT YOU SPOKEN OR WANT TO GO TO
+  
+- THEN YOU CAN SAY THE FOLLOWING COMMAND TO SCROLL UP OR DOWN WITHOUT A MOUSE:
+  
+  "Scroll up" OR "Scroll down"
+
+- ALSO YOU BE MORE PRECISE:
+  
+  "Scroll up by 100px" OR "Scroll down by 250px"
+
+- YOU CAN RETURN TO THE MAIN MENUE BY SAYING:
+  
+  "exit service"
+
+*Note: some of the services has not been completed yet, but the first three services are completed and functional [sending, reading an email and browsing the internet]
+
+  
+  
+
 ##Jokes Dataset Reference:
 https://www.kaggle.com/datasets/abhinavmoudgil95/short-jokes?resource=download 
