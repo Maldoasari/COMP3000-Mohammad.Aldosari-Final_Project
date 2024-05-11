@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VoicesDoServicesProject")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+af692e79c526abb58c333e23212c73659449083d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d20e3fc795713cd6aae9b83983599738311e7090")]
 [assembly: System.Reflection.AssemblyProductAttribute("VoicesDoServicesProject")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VoicesDoServicesProject")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

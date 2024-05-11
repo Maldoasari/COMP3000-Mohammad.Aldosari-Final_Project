@@ -1,3 +1,7 @@
+# This file also need alot of work, as it should display a GUI interface for the user to observe the emails content
+# it has the same structure as the email tamplet in Read_Email_Voice_Inputs.py but there should be a way to combain them 
+# and it has been commented for not affacting the system performnce in one script. 
+"""""
 import json, os, tkinter as tk
    
 def Email_gui_output_template():
@@ -125,7 +129,7 @@ def Email_gui_output_template():
 if __name__ == "__main__":
     Email_gui_output_template()
 
-
+"""
 
 
 

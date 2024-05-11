@@ -1,5 +1,17 @@
-import csv
 import random
+import csv
+
+csv_file = 'Voice_Assistant/shortjokes.csv'   
+with open(csv_file, newline='', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        jokes = [row['Joke'] for row in reader]
+        
+def get_random_joke():
+    random.shuffle(jokes)
+    return random.choice(jokes)
+
+# This section need a bit of work, and it has been commented for not affacting the system performnce.  
+"""""
 import threading
 import os, wave, webrtcvad, librosa, scipy
 from pydub import AudioSegment
@@ -74,14 +86,7 @@ def IsSpeech(filename):
                 return 500
             except sr.RequestError:
                 return "API unavailable."
-csv_file = 'Voice_Assistant/shortjokes.csv'   
-with open(csv_file, newline='', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
-        jokes = [row['Joke'] for row in reader]
-        
-def get_random_joke():
-    random.shuffle(jokes)
-    return random.choice(jokes)
+
 
 
 def resample_wav_file(filename, target_sample_rate=16000):
@@ -144,3 +149,4 @@ def remove_silence(audio, sr, threshold=0.01, chunk_size=5000):
         if np.max(chunk) > threshold:
             trimmed_audio.extend(chunk)
     return np.array(trimmed_audio)
+"""""

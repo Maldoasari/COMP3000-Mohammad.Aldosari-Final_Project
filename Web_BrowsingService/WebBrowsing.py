@@ -1,8 +1,6 @@
 import asyncio
-import time
 import speech_recognition as sr
 from playwright.async_api import async_playwright
-from Voice_Assistant.Audio_Processor import IsSpeech, save_audio_as_wav
 from Web_BrowsingService.OpenWeb import click_button_by_text, extract_words_between, search_google
 from Voice_Assistant.Speak import Speak
 recognizer = sr.Recognizer()
@@ -61,7 +59,7 @@ async def listening(page, timeout):
     try:
         with sr.Microphone() as source:
             page.set_default_timeout(timeout)
-            audio = recognizer.listen(source, timeout=10, phrase_time_limit=3)
+            audio = recognizer.listen(source, timeout=10, phrase_time_limit=4.5)
             recognized_text = await asyncio.get_event_loop().run_in_executor(None, recognizer.recognize_google, audio)
             await process_recognized_text(page, recognized_text.lower())
     except sr.UnknownValueError:

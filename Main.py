@@ -9,7 +9,8 @@ import time  # For time-related operations
 import speech_recognition as sr  # For speech recognition
 from Security.Cryptography import create_database_directory
 
-from Configuration.LoginORsignIN import LoginOrSign  # Custom module for login or sign-in functionality
+#uncomment the following line to enable login and sign up functionality:
+#from Configuration.LoginORsignIN import LoginOrSign  # Custom module for login or sign-in functionality
 from EmailCreation.EmailAbout import ReadMsg  # Custom module for writing email messages with user's voice
 from EmailCreation.EmailCheck import check  # Custom module for email checking before sending (confirmation)
 from EmailCreation.EmailName import ReadName  # Custom module for writing email receiver's name with user's voice
@@ -20,7 +21,8 @@ from EmailService.EmailAccessability import Check_Email_Accessability  # Custom 
 from EmailService.EmailObserver import get_emails, listen_for_id, view_email_content  # Custom modules for email observation and interaction
 from EmailService.EmailSender import send_email  # Custom module for sending emails
 from EmailService.EmailsStorage import get_name_email  # Custom module for storing email addresses
-from Voice_Assistant.Audio_Processor import IsSpeech, delete_recording, get_random_joke, save_audio_as_wav  # Custom modules for audio processing
+#from Voice_Assistant.Audio_Processor import IsSpeech, delete_recording, get_random_joke, save_audio_as_wav  # Custom modules for audio processing
+from Voice_Assistant.Audio_Processor import get_random_joke  # Custom function for randomly picking jokes 
 from Voice_Assistant.Read_Email_Voice_Inputs import POST  # Custom module for reading email voice inputs for display
 from Voice_Assistant.Sleep_Mode import SleepMode  # Custom module for sleep mode functionality
 from Web_BrowsingService.OpenWeb import Website_openPage_Handler, web_Search, webNameHandler  # Custom modules for web browsing functionality
@@ -106,19 +108,6 @@ def listen_for_service():
             # Save audio as WAV file
             recognized_text = recognizer.recognize_google(audio_data)
             return recognized_text
-            #save_audio_as_wav(audio_data, "Database/bin/user_input.wav")
-            # Check if speech is detected in the audio
-            #recognized_text =  IsSpeech("Database/bin/user_input.wav")
-           
-            # if there is no speech break
-            #if(recognized_text == False):
-                #return
-            # if there is somthing wrong break
-            #elif(recognized_text == 500):
-              #  return
-            # if there is nothing wrong break
-           # else:
-                #return recognized_text
         except sr.UnknownValueError:
             return
         except sr.WaitTimeoutError:
@@ -139,7 +128,7 @@ async def listen_for_keywords():
     elif(software_Name[0] in recognized_text) or (software_Name[1] in recognized_text):
         try:
             # Delete temporary audio recordings
-            delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav", "Database/bin/IsTaylor.wav")
+            #delete_recording("Database/bin/resampled_audio_file1.wav", "Database/bin/processed_audio.wav", "Database/bin/user_input.wav", "Database/bin/vad_combined_audio.wav", "Database/bin/IsTaylor.wav")
             
             ###########################################
             ## Respond to specific recognized phrases ##
@@ -260,6 +249,10 @@ async def listen_for_keywords():
 if __name__ == "__main__":
     # Speak a message indicating that the application is opening
     Speak("Opening application...", -1, 1.0)
+    """""
+    Disaplying login and sign up function for smooth demostration as its functionality has been covered in the video 
+    if the marker wants to see the result of the login or sign up, then i should uncomment the following lines:
+    """""
     # Check if login or sign-up is successful
     #valid = LoginOrSign()
     # If login or sign-up fails, speak a failure message and quit

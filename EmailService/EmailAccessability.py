@@ -1,4 +1,3 @@
-import re
 import subprocess
 import json
 import email, imaplib
@@ -6,7 +5,6 @@ from Voice_Assistant.Read_Email_Voice_Inputs import Get
 from Voice_Assistant.Speak import Speak
 from EmailService.EmailStatus import Check_Email_Status
 import speech_recognition as sr
-#from Module import Check_Email_Status, send_email, delete_all_emails
 from EmailService.EmailSender import send_email
 from Security.Resttful_API import Get_record_by_email
 from Security.Cryptography import decrypt_text
@@ -29,59 +27,86 @@ def word_to_number(word):
         "eleven": 11
     }
     return mapping.get(word, None)
+
 recognizer = sr.Recognizer()
 num = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twleve"]
+
 def Check_Email_Accessability():
+ # check if the email is accessable or not, this can be achived if credentials.json is not found
  Check_Email = Check_Email_Status() 
+
  if(Check_Email): 
   return True
+ # if not found activate the Link_Gmail_Auth0.py script, which is about auth using Google console project created before
  else:
   command = ["python", "EmailService/Link_Gmail_Auth0.py"]
   subprocess.Popen(command)
   Speak("A window has been opned. you can login securly. to your gmail account to activate the email service", -1, 1.0)
+  # to have a smooth and fast responce i created a json file that acts as a bridge between Link_Gmail_Auth0.py and this function
+  # if the email status and useremail has chnaged to not None. then break, else keep running. 
   while True:
         data = Get("Database/Data.json")
         if isinstance(data, dict):
          status = data.get("email_ststus")
          useremail = data.get("User_email")
+         
         if (status is not None) and (useremail is not None):
          status = status
          useremail = useremail
+         
         if (status):
             send_email("Success", f"Email Service activated with Success", useremail, "User", "system email")
             break
+        
         else:
             continue
+        
   Speak("Brilint. you have activated the email service", -1, 1.0)
   return True
-
+# a function to extract code and change the formate of the text when needed. 
+# (e.g. from alphabetical formate to numrical values)
 def Code_extractor():
     code = ""
+    # listen for code
     with sr.Microphone() as source:
+    
      while True:
         audio = recognizer.listen(source)
+        
         try:
+            
          Capture = recognizer.recognize_google(audio).lower()
+         # get each element in Capture (user speaks the code)
          for c in Capture:
+            # get each element in Num (a list of alphabetical formate numbers e.g. "zero", "one"...etc)
             for n in num:
+                # if an element in Capture is one of the element in the list of alphabetical formate numbers. 
+                # then convert it to numrical value and store it in x, then from from x store place it in code var.
+                # this is when the alphabetical formate numbers is found or detected
                 if c == n:
                     x = ''
                     x = word_to_number(c)
                     code = code + x
+                # on the other hand, if an element in Capture is numrical value, then move it stright away to code var
                 elif c.isdigit():
                     code = code + c
-                    break  
+                    break 
+                # the operation will be in a loop until it meets the req. 
                 else:
                     continue
          break
+     
         except sr.UnknownValueError:
             print("Sorry, I couldn't understand the audio.")
             continue
+        
         except sr.RequestError:
             print("API unavailable or quota exceeded.")
             continue
+        
     return code
 
+"""""
 def Store_Contacts():
     try:
       with open("Database/Data.json", "r") as file:
@@ -131,3 +156,4 @@ def Store_Contacts():
 
 
     mail.logout()
+"""

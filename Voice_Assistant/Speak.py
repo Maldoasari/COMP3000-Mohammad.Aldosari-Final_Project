@@ -1,3 +1,4 @@
+# Creating an engine from pyttsx3 for the software to enable it to speak and return feedback to the user when possible
 import pyttsx3
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
